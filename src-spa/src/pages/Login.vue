@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md" style="max-width: 400px">
-      <q-form ref="formMain" @submit="onSubmit" class="q-gutter-md">
+      <q-form ref="formMain" @submit.prevent="login" class="q-gutter-md">
         <div class="row">
           <div class="col">
             <q-input outlined v-model="username" label="Your Email"></q-input>
@@ -45,8 +45,6 @@
 </style>
 
 <script>
-import axios from 'axios'
-
 export default {
   data () {
     return {
@@ -57,25 +55,21 @@ export default {
   },
 
   methods: {
-    onSubmit () {
-      var router = this.$router
-
-      axios.post('/postlogin', {
-        password: this.password, username: this.username
-      }).then(function (response) {
-        if (response.status === 200) {
-          router.push('Dashboard')
-        }
-      }).catch(function (error) {
-        if (error.response.status === 500) {
-          this.$q.notify({
-            color: 'negative',
-            position: 'top',
-            message: 'Loading failed',
-            icon: 'report_problem'
-          })
-        } else { console.log(error.response.data) }
-      })
+    login () {
+      let username = this.username
+      let password = this.password
+      this.$store.dispatch('login', { username, password })
+        .then(() => { this.$router.push('/') })
+        .catch((error) => {
+          if (error.response.status === 500) {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: 'Loading failed',
+              icon: 'report_problem'
+            })
+          } else { console.log(error.response.data) }
+        })
     },
     shown () {
       this.isShowing = true

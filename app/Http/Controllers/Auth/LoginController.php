@@ -34,6 +34,7 @@ class LoginController extends Controller
             $response = [
                 'message' => 'Login Successful',
                 'status' => 200,
+                'token' => $request->session()->token(),
             ];
         } else {
             $logmessagelogin = '[Login] - User Login - ' . $request['username'] . ' Failed to login.';
@@ -44,6 +45,6 @@ class LoginController extends Controller
                 'status' => 500,
             ];
         }
-        return response()->json($response);
+        return response()->json($response, 200);
     }
 }
