@@ -58,11 +58,13 @@ export default {
 
   methods: {
     onSubmit () {
+      var router = this.$router
+
       axios.post('/postlogin', {
         password: this.password, username: this.username
       }).then(function (response) {
         if (response.status === 200) {
-          this.$router.push('Dashboard')
+          router.push('Dashboard')
         }
       }).catch(function (error) {
         if (error.response.status === 500) {
