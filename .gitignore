@@ -1,0 +1,33 @@
+# Editor directories and files
+.idea
+.vscode
+.styleci.yml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Laravel
+.env
+composer.lock
+/vendor
+/resources/views/vendor
+/public
+/node_modules
+
+#quasar
+/src-spa/.quasar
+/src-spa/.DS_Store
+/src-spa/.thumbs.db
+/src-spa/node_modules
+/src-spa/dist
+/src-spa/src-cordova/node_modules
+/src-spa/src-cordova/platforms
+/src-spa/src-cordova/plugins
+/src-spa/src-cordova/www
+/src-spa/package-lock.json
+/src-spa/yarn.lock
+/src-spa/npm-debug.log*
+/src-spa/yarn-debug.log*
+/src-spa/yarn-error.log*
+
