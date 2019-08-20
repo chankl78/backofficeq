@@ -13,7 +13,6 @@ composer.lock
 /vendor
 /resources/views/vendor
 /public
-/storage
 /node_modules
 
 #quasar
