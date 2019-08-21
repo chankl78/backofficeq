@@ -4,13 +4,35 @@
       <q-form ref="formMain" @submit.prevent="login" class="q-gutter-md">
         <div class="row">
           <div class="col">
-            <q-input outlined v-model="username" label="Your Email"></q-input>
-            <q-input outlined v-model="password" label="Password" type="password"></q-input>
+            <q-input
+              ref="username"
+              outlined
+              v-model="username"
+              label="Username *"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Username is required']"
+            ></q-input>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <q-btn label=" Submit " type="submit" color="primary" class="full-width q-mt-md"><q-icon name="mdi-arrow-top-right-thick" /></q-btn>
+            <q-input
+              ref="password"
+              outlined
+              v-model="password"
+              label="Password *"
+              type="password"
+              lazy-rules
+              :rules="[
+                val => val !== null && val !== '' || 'Password is required',
+                val => val && val.length > 4 || 'Min password length is 4 chars'
+              ]"
+            ></q-input>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <q-btn label=" Login " type="submit" color="primary" class="full-width q-mt-md"><q-icon name="mdi-arrow-top-right-thick" /></q-btn>
           </div>
         </div>
         <div class="row">
@@ -18,7 +40,9 @@
             <q-btn label=" Forget Password " color="primary" flat class="q-ml-sm justify-start"><q-icon name="mdi-lock-reset" /></q-btn>
           </div>
           <div class="col-4">
-            <q-btn label=" Register " color="primary" flat class="q-ml-sm justify-end" ><q-icon name="mdi-account-plus" /></q-btn>
+            <q-btn label=" Register " color="primary" flat class="q-ml-sm justify-end" @click.prevent="register" >
+              <q-icon name="mdi-account-plus" />
+            </q-btn>
           </div>
           <q-dialog v-model="medium" @show="shown" @hide="isShowing = false">
             <q-card style="width: 700px; max-width: 80vw;">
@@ -53,7 +77,6 @@ export default {
       medium: false
     }
   },
-
   methods: {
     login () {
       let username = this.username
@@ -70,6 +93,9 @@ export default {
             })
           } else { console.log(error.response.data) }
         })
+    },
+    register () {
+      this.$router.push('/register')
     },
     shown () {
       this.isShowing = true
