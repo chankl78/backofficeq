@@ -26,6 +26,7 @@ class LoginController extends Controller
     {
         $agent = new Agent();
         $response = [];
+        $status = 200;
 
         if (Auth::attempt(['username' => $request['username'], 'password' => $request['password']])) {
             $logmessagelogin = '[Login] - User Login - ' . Auth::user()->name . ' ' . Auth::user()->uniquecode;
@@ -42,9 +43,10 @@ class LoginController extends Controller
             Log::warning($logmessagelogin . ' - ' . $agent->device() . ' - ' . $agent->platform() . ' - ' . $agent->version($agent->platform()) . ' - ' . $agent->browser() . ' - ' . $agent->version($agent->browser()));
             $response = [
                 'message' => 'Login Failed',
-                'status' => 500,
+                'status' => 401,
             ];
+            $status = 401;
         }
-        return response()->json($response, 200);
+        return response()->json($response, $status);
     }
 }
