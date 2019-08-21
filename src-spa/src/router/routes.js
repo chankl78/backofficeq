@@ -3,6 +3,8 @@ import MasterLayout from '../layouts/MasterLayout'
 import Login from '../pages/Login'
 import Dashboard from '../pages/Dashboard'
 import Error404 from '../pages/Error404'
+import Register from '../pages/Register'
+import ResetPassword from '../pages/ResetPassword'
 
 const routes = [
   {
@@ -11,6 +13,22 @@ const routes = [
     children: [{
       path: '',
       component: Login
+    }]
+  },
+  {
+    path: '/register',
+    component: LoginLayout,
+    children: [{
+      path: '',
+      component: Register
+    }]
+  },
+  {
+    path: '/reset-password',
+    component: LoginLayout,
+    children: [{
+      path: '',
+      component: ResetPassword
     }]
   },
   {

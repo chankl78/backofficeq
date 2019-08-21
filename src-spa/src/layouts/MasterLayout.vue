@@ -11,6 +11,7 @@
           </q-avatar>
           Title
         </q-toolbar-title>
+        <q-btn stretch flat label="Logout" @click.prevent="logout" />
       </q-toolbar>
     </q-header>
 
@@ -41,6 +42,11 @@ export default {
   data () {
     return {
       left: true
+    }
+  },
+  methods: {
+    logout () {
+      this.$store.dispatch('logout').then(() => { this.$router.push('/login') })
     }
   }
 }
