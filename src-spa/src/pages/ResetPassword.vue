@@ -6,12 +6,17 @@
           <div class="col">
             <q-input
               ref="email"
+              name="email"
               outlined
               v-model="email"
               label="Email *"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Email is required']"
-            ></q-input>
+              v-validate="'required|email'"
+              :error="errors.has('email')"
+            >
+              <template v-slot:error>
+                {{ errors.first('email') }}
+              </template>
+            </q-input>
           </div>
         </div>
         <div class="row">
