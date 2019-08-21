@@ -1,18 +1,46 @@
+import LoginLayout from '../layouts/LoginLayout'
+import MasterLayout from '../layouts/MasterLayout'
+import Login from '../pages/Login'
+import Dashboard from '../pages/Dashboard'
+import Error404 from '../pages/Error404'
+import Register from '../pages/Register'
+import ResetPassword from '../pages/ResetPassword'
 
 const routes = [
   {
-    path: '/',
-    component: () => import('layouts/LoginLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/Login') }
-    ]
+    path: '/login',
+    component: LoginLayout,
+    children: [{
+      path: '',
+      component: Login
+    }]
   },
   {
-    path: '/Dashboard',
-    component: () => import('layouts/MasterLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/Dashboard') }
-    ]
+    path: '/register',
+    component: LoginLayout,
+    children: [{
+      path: '',
+      component: Register
+    }]
+  },
+  {
+    path: '/reset-password',
+    component: LoginLayout,
+    children: [{
+      path: '',
+      component: ResetPassword
+    }]
+  },
+  {
+    path: '/',
+    component: MasterLayout,
+    children: [{
+      path: '',
+      component: Dashboard
+    }],
+    meta: {
+      requiresAuth: true
+    }
   }
 ]
 
@@ -20,7 +48,7 @@ const routes = [
 if (process.env.MODE !== 'ssr') {
   routes.push({
     path: '*',
-    component: () => import('pages/Error404.vue')
+    component: Error404
   })
 }
 
