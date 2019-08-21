@@ -61,6 +61,19 @@ Vue.use(Vuex)
           })
         })
       },
+      register ({ commit }, user) {
+        return new Promise((resolve, reject) => {
+          commit('auth_request')
+          axios.post('/register', user).then((response) => {
+            if (response.status === 200) {
+              resolve(response)
+            }
+          }).catch((err) => {
+            commit('auth_error')
+            reject(err)
+          })
+        })
+      },
       logout ({ commit }) {
         return new Promise((resolve, reject) => {
           commit('logout')
