@@ -31,6 +31,11 @@ Vue.use(Vuex)
       auth_error (state) {
         state.status = 'error'
       },
+      auth_reset_pass_request (state) {
+        state.status = 'loading'
+        state.token = ''
+        state.user = ''
+      },
       logout (state) {
         state.status = ''
         state.token = ''
@@ -62,6 +67,19 @@ Vue.use(Vuex)
           localStorage.removeItem('token')
           delete axios.defaults.headers.common['X-CSRF-TOKEN']
           resolve()
+        })
+      },
+      resetPassword ({commit}, email) {
+        return new Promise((resolve, reject) => {
+          commit('auth_reset_pass_request')
+          axios.post('/reset-pass', { 'email': email }).then((response) => {
+            if (response.status === 200) {
+              resolve(response)
+            }
+          }).catch((err) => {
+            commit('auth_error')
+            reject(err)
+          })
         })
       }
     },

@@ -34,6 +34,7 @@
 </template>
 
 <script>
+/* eslint-disable quotes */
 export default {
   name: 'ResetPassword',
   data () {
@@ -44,7 +45,28 @@ export default {
   methods: {
     resetPassword () {
       let email = this.email
-      console.log(email)
+      this.$store.dispatch('resetPassword', email)
+        .then(() => this.$router.push('/login'))
+        .catch((error) => {
+          if (error.response.status === 402) {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.message,
+              icon: 'report_problem'
+            })
+          } else {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: [
+                error.response.data.message,
+                error.response.data.errors.email
+              ].join("\n"),
+              icon: 'report_problem'
+            })
+          }
+        })
     },
     login () {
       this.$router.push('/login')
