@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Passwords\PasswordBroker;
+use App\Models\LogsmLogs;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Jenssegers\Agent\Agent;
 
 class ResetPasswordController extends Controller
 {
@@ -39,28 +42,6 @@ class ResetPasswordController extends Controller
         $this->middleware('guest');
     }
 
-    /*public function sendResetPassEmail(Request $request)
-    {
-        $response = $this->passwords->sendResetLink($request->only('email'), function($m) {
-            $m->subject($this->getEmailSubject());
-        });
-
-        switch ($response) {
-            case PasswordBroker::RESET_LINK_SENT:
-                return response()->json([
-                    'error' => false,
-                    'message' => 'A password link has been sent to your email address',
-                ], 200);
-                break;
-            case PasswordBroker::INVALID_USER:
-            default:
-                return response()->json([
-                    'error' => true,
-                    'message' => 'User not registered',
-                ], 402);
-        }
-    }*/
-
     protected function rules()
     {
         return ['email' => 'required|email'];
@@ -68,6 +49,11 @@ class ResetPasswordController extends Controller
 
     protected function sendResetResponse($response)
     {
+        $agent = new Agent();
+        $logmessage = '[Reset Password] Password reset successfully.';
+        LogsmLogs::storelogs(Str::uuid(), 0, 'Reset', 'User', 'Users\ResetPassword', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ResetPassword, NULL, NULL, $agent->device(), $agent->platform(), $agent->version($agent->platform()), $agent->browser(), $agent->version($agent->browser()), \Request::getClientIp(true), session()->getId(), "Success");
+        Log::info($logmessage . ' - ' . $agent->device() . ' - ' . $agent->platform() . ' - ' . $agent->version($agent->platform()) . ' - ' . $agent->browser() . ' - ' . $agent->version($agent->browser()));
+
         return response()->json([
             'error' => false,
             'message' => trans($response),
@@ -76,6 +62,11 @@ class ResetPasswordController extends Controller
 
     protected function sendResetFailedResponse(Request $request, $response)
     {
+        $agent = new Agent();
+        $logmessage = '[Reset Password] Failed to reset password.';
+        LogsmLogs::storelogs(Str::uuid(), 0, 'Reset', 'User', 'Users\ResetPassword', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, $logmessage, NULL, NULL, $agent->device(), $agent->platform(), $agent->version($agent->platform()), $agent->browser(), $agent->version($agent->browser()), \Request::getClientIp(true), session()->getId(), "Failed");
+        Log::warning($logmessage . ' - ' . $agent->device() . ' - ' . $agent->platform() . ' - ' . $agent->version($agent->platform()) . ' - ' . $agent->browser() . ' - ' . $agent->version($agent->browser()));
+
         return response()->json([
             'error' => true,
             'message' => trans($response),
