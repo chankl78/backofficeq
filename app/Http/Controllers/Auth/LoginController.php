@@ -29,14 +29,22 @@ class LoginController extends Controller
         $status = 200;
 
         if (Auth::attempt(['username' => $request['username'], 'password' => $request['password']])) {
-            $logmessagelogin = '[Login] - User Login - ' . Auth::user()->name . ' ' . Auth::user()->uniquecode;
-            LogsmLogs::storelogs(Str::uuid(), Auth::user()->id, 'Login', 'User', 'Users\Login', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, $logmessagelogin, NULL, NULL, $agent->device(), $agent->platform(), $agent->version($agent->platform()), $agent->browser(), $agent->version($agent->browser()), \Request::getClientIp(true), session()->getId(), "Success");
-            Log::info($logmessagelogin . ' - ' . $agent->device() . ' - ' . $agent->platform() . ' - ' . $agent->version($agent->platform()) . ' - ' . $agent->browser() . ' - ' . $agent->version($agent->browser()));
-            $response = [
-                'message' => 'Login Successful',
-                'status' => 200,
-                'token' => $request->session()->token(),
-            ];
+            if (Auth::attempt(['username' => $request['username'], 'password' => $request['password'], 'status' => 'Pending'])) {
+                $response = [
+                    'message' => 'User is not activated',
+                    'status' => 401,
+                ];
+                $status = 401;
+            } else {
+                $logmessagelogin = '[Login] - User Login - ' . Auth::user()->name . ' ' . Auth::user()->uniquecode;
+                LogsmLogs::storelogs(Str::uuid(), Auth::user()->id, 'Login', 'User', 'Users\Login', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, $logmessagelogin, NULL, NULL, $agent->device(), $agent->platform(), $agent->version($agent->platform()), $agent->browser(), $agent->version($agent->browser()), \Request::getClientIp(true), session()->getId(), "Success");
+                Log::info($logmessagelogin . ' - ' . $agent->device() . ' - ' . $agent->platform() . ' - ' . $agent->version($agent->platform()) . ' - ' . $agent->browser() . ' - ' . $agent->version($agent->browser()));
+                $response = [
+                    'message' => 'Login Successful',
+                    'status' => 200,
+                    'token' => $request->session()->token(),
+                ];
+            }
         } else {
             $logmessagelogin = '[Login] - User Login - ' . $request['username'] . ' Failed to login.';
             LogsmLogs::storelogs(Str::uuid(), 0, 'Login', 'User', 'Users\Login', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, $logmessagelogin, NULL, NULL, $agent->device(), $agent->platform(), $agent->version($agent->platform()), $agent->browser(), $agent->version($agent->browser()), \Request::getClientIp(true), session()->getId(), "Failed");

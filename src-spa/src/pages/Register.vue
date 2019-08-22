@@ -89,7 +89,8 @@ export default {
         password_confirmation: this.passwordRepeat
       }
       this.$validator.validateAll().then((isValid) => {
-        if (isValid) {
+        console.log(isValid)
+        // if (isValid) {
           this.$store.dispatch('register', data)
             .then(() => { /* this.$router.push('/login') */ })
             .catch((err) => {
@@ -107,12 +108,12 @@ export default {
                 icon: 'report_problem'
               })
             })
-        }
+        // }
       }).catch(() => {
         this.$q.notify({
           color: 'negative',
           position: 'top',
-          message: this.errors.all(),
+          message: this.errors.all() || 'Unable to register user',
           icon: 'report_problem'
         })
       })

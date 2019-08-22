@@ -82,14 +82,14 @@ export default {
             this.$q.notify({
               color: 'negative',
               position: 'top',
-              message: 'Bad credentials',
+              message: error.response.data.message || 'Bad credentials',
               icon: 'report_problem'
             })
           } else {
             this.$q.notify({
               color: 'negative',
               position: 'top',
-              message: 'Loading failed',
+              message: error.response.data.message || 'Loading failed',
               icon: 'report_problem'
             })
           }

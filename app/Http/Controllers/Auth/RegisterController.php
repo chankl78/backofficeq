@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Str;
@@ -75,7 +76,6 @@ class RegisterController extends Controller
             $validatedData['password'] = Hash::make(array_get($validatedData, 'password'));
             $validatedData['uniquecode'] = Str::uuid();
             $validatedData['roleid'] = env('LH_ROLEID');
-            //$validatedData['activation_code'] = str_random(30).time();
 
             event(new Registered($user = $this->create($validatedData)));
 
