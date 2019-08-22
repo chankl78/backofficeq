@@ -91,23 +91,23 @@ export default {
       this.$validator.validateAll().then((isValid) => {
         console.log(isValid)
         // if (isValid) {
-          this.$store.dispatch('register', data)
-            .then(() => { /* this.$router.push('/login') */ })
-            .catch((err) => {
-              let messages = err.response.data.message
-              if (err.response.data.errors) {
-                messages = []
-                for (let error in err.response.data.errors) {
-                  messages.push(err.response.data.errors[error][0])
-                }
+        this.$store.dispatch('register', data)
+          .then(() => { /* this.$router.push('/login') */ })
+          .catch((err) => {
+            let messages = err.response.data.message
+            if (err.response.data.errors) {
+              messages = []
+              for (let error in err.response.data.errors) {
+                messages.push(err.response.data.errors[error][0])
               }
-              this.$q.notify({
-                color: 'negative',
-                position: 'top',
-                message: messages,
-                icon: 'report_problem'
-              })
+            }
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: messages,
+              icon: 'report_problem'
             })
+          })
         // }
       }).catch(() => {
         this.$q.notify({
