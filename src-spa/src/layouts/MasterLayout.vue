@@ -44,6 +44,16 @@ export default {
       left: true
     }
   },
+  beforeMount () {
+    this.$store.dispatch('dashboardLoad').then((resp) => {
+      if (resp.status === 401) {
+        this.$router.push('/login')
+      }
+    }).catch((err) => {
+      console.log(err)
+      this.$router.push('/login')
+    })
+  },
   methods: {
     logout () {
       this.$store.dispatch('logout').then(() => { this.$router.push('/login') })

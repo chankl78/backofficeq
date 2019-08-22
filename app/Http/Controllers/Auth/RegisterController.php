@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Str;
@@ -76,7 +77,14 @@ class RegisterController extends Controller
             $validatedData['uniquecode'] = Str::uuid();
             $validatedData['roleid'] = env('LH_ROLEID');
             //$validatedData['activation_code'] = str_random(30).time();
-
+            Mail::send('email.mail', [
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'message' => 'TEST OK'
+            ], function($message) use ($request) {
+                $message->from($request->get('email'));
+                $message->to('valery.v.krukov@gmail.com')->subject('Contact form');
+            });
             event(new Registered($user = $this->create($validatedData)));
 
             $this->guard()->login($user);
