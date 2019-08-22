@@ -15,11 +15,12 @@ class Cors
      */
     public function handle($request, Closure $next)
     {
-        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Origin: " . env('APP_CLIENT_URL'));
 
         $headers = [
             'Access-Control-Allow-Methods'=> 'POST, GET, OPTIONS, PUT, DELETE',
-            'Access-Control-Allow-Headers'=> 'Content-Type, X-Auth-Token, Origin, X-CSRF-TOKEN'
+            'Access-Control-Allow-Credentials' => 'true',
+            'Access-Control-Allow-Headers'=> 'Content-Type, X-Auth-Token, Origin, Authorization, X-Requested-With, X-CSRF-TOKEN, X-XSRF-TOKEN'
         ];
         if ($request->getMethod() == "OPTIONS") {
             return response()->make('OK', 200, $headers);

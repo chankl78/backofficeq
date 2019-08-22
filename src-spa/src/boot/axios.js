@@ -3,10 +3,13 @@ import store from '../store'
 
 export default async ({ Vue }) => {
   Vue.prototype.$axios = axios
+  // Vue.prototype.$axios.defaults.withCredentials = true
+
   const token = localStorage.getItem('token')
   if (token) {
     Vue.prototype.$axios.defaults.headers.common['X-CSRF-TOKEN'] = token
   }
+
   const baseURL = 'http://localhost'
   if (typeof baseURL !== 'undefined') {
     Vue.prototype.$axios.defaults.baseURL = baseURL

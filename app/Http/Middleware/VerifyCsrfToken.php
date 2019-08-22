@@ -22,6 +22,7 @@ class VerifyCsrfToken extends Middleware
         '/postlogin',
         '/reset-pass',
         '/register',
-        '/reset-password'
+        '/reset-password',
+        '/email/*'
     ];
 }

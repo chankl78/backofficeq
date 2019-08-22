@@ -107,7 +107,7 @@ Vue.use(Vuex)
       dashboardLoad ({ commit }) {
         return new Promise((resolve, reject) => {
           commit('dashboard_load_request')
-          axios.get('/dashboard').then((response) => {
+          axios.get('/dashboard', { withCredentials: true }).then((response) => {
             if (response.status === 200) {
               resolve(response)
             }

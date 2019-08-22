@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as AuthenticatableUser;
 use App\Traits\Encryptable;
 use Illuminate\Support\Str;
+use App\Notifications\VerifyEmail;
 
 class AccessmUser extends AuthenticatableUser implements AuthenticatableContract, CanResetPasswordContract, MustVerifyEmail
 {
@@ -48,6 +47,6 @@ class AccessmUser extends AuthenticatableUser implements AuthenticatableContract
 
     public function sendEmailVerificationNotification()
     {
-//
+        $this->notify(new VerifyEmail);
     }
 }

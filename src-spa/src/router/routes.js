@@ -5,6 +5,7 @@ import Dashboard from '../pages/Dashboard'
 import Error404 from '../pages/Error404'
 import Register from '../pages/Register'
 import ResetPassword from '../pages/ResetPassword'
+import VerifyEmail from '../pages/VerifyEmail'
 
 const routes = [
   {
@@ -29,6 +30,14 @@ const routes = [
     children: [{
       path: '',
       component: ResetPassword
+    }]
+  },
+  {
+    path: '/verify-email',
+    component: LoginLayout,
+    children: [{
+      path: '',
+      component: VerifyEmail
     }]
   },
   {

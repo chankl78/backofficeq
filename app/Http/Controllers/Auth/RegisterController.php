@@ -76,6 +76,7 @@ class RegisterController extends Controller
             $validatedData['password'] = Hash::make(array_get($validatedData, 'password'));
             $validatedData['uniquecode'] = Str::uuid();
             $validatedData['roleid'] = env('LH_ROLEID');
+            $validatedData['remember_token'] = Str::random(10);
 
             event(new Registered($user = $this->create($validatedData)));
 
