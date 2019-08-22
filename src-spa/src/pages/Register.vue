@@ -90,7 +90,7 @@ export default {
       }
       this.$validator.validateAll().then((isValid) => {
         console.log(isValid)
-        if (isValid) {
+        // if (isValid) {
           this.$store.dispatch('register', data)
             .then(() => { /* this.$router.push('/login') */ })
             .catch((err) => {
@@ -108,7 +108,7 @@ export default {
                 icon: 'report_problem'
               })
             })
-        }
+        // }
       }).catch(() => {
         this.$q.notify({
           color: 'negative',
