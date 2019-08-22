@@ -1,39 +1,53 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md full-width" style="max-width: 400px">
-      <q-form ref="formMain" @submit.prevent="register" class="q-gutter-md">
+      <q-form ref="formMain" @submit.prevent="handleRegister" class="q-gutter-md">
         <div class="row">
           <div class="col">
             <q-input
               ref="email"
+              name="email"
               outlined
               v-model="email"
+              v-validate="'required|email'"
               label="Email *"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Email is required']"
-            ></q-input>
+              :error="errors.has('email')"
+            >
+              <template v-slot:error>
+                {{ errors.first('email') }}
+              </template>
+            </q-input>
           </div>
         </div>
         <div class="row">
           <div class="col">
             <q-input
               ref="password"
+              name="password"
               outlined
               v-model="password"
               label="Password *"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Password is required']"
-            ></q-input>
+              v-validate="'required|min:6|max:35|confirmed'"
+              :error="errors.has('passwordRepeat')"
+              type="password"
+            >
+              <template v-slot:error>
+                {{ errors.first('password') }}
+              </template>
+            </q-input>
           </div>
         </div>
         <div class="row">
           <div class="col">
             <q-input
               ref="passwordRepeat"
+              name="passwordRepeat"
               outlined
               v-model="passwordRepeat"
               label="Password confirm *"
-              lazy-rules
+              v-validate="'required|confirmed:password'"
+              :error="errors.has('passwordRepeat')"
+              type="password"
             ></q-input>
           </div>
         </div>
@@ -68,6 +82,42 @@ export default {
     }
   },
   methods: {
+    handleRegister () {
+      let data = {
+        email: this.email,
+        password: this.password,
+        password_confirmation: this.passwordRepeat
+      }
+      this.$validator.validateAll().then((isValid) => {
+        console.log(isValid)
+        if (isValid) {
+          this.$store.dispatch('register', data)
+            .then(() => { /* this.$router.push('/login') */ })
+            .catch((err) => {
+              let messages = err.response.data.message
+              if (err.response.data.errors) {
+                messages = []
+                for (let error in err.response.data.errors) {
+                  messages.push(err.response.data.errors[error][0])
+                }
+              }
+              this.$q.notify({
+                color: 'negative',
+                position: 'top',
+                message: messages,
+                icon: 'report_problem'
+              })
+            })
+        }
+      }).catch(() => {
+        this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: this.errors.all() || 'Unable to register user',
+          icon: 'report_problem'
+        })
+      })
+    },
     login () {
       this.$router.push('/login')
     }

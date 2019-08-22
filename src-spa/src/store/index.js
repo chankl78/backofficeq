@@ -17,7 +17,8 @@ Vue.use(Vuex)
     state: {
       status: '',
       token: localStorage.getItem('token'),
-      user: {}
+      user: {},
+      dashboardData: {}
     },
     mutations: {
       auth_request (state) {
@@ -30,6 +31,7 @@ Vue.use(Vuex)
       },
       auth_error (state) {
         state.status = 'error'
+        state.dashboardData = {}
       },
       auth_reset_pass_request (state) {
         state.status = 'loading'
@@ -39,6 +41,13 @@ Vue.use(Vuex)
       logout (state) {
         state.status = ''
         state.token = ''
+        state.dashboardData = {}
+      },
+      dashboard_load_request (state) {
+        state.dashboardData = {}
+      },
+      dashboard_loaded (state, data) {
+        state.dashboardData = data
       }
     },
     actions: {
@@ -61,6 +70,19 @@ Vue.use(Vuex)
           })
         })
       },
+      register ({ commit }, user) {
+        return new Promise((resolve, reject) => {
+          commit('auth_request')
+          axios.post('/register', user).then((response) => {
+            if (response.status === 200) {
+              resolve(response)
+            }
+          }).catch((err) => {
+            commit('auth_error')
+            reject(err)
+          })
+        })
+      },
       logout ({ commit }) {
         return new Promise((resolve, reject) => {
           commit('logout')
@@ -72,7 +94,20 @@ Vue.use(Vuex)
       resetPassword ({commit}, email) {
         return new Promise((resolve, reject) => {
           commit('auth_reset_pass_request')
-          axios.post('/reset-pass', { 'email': email }).then((response) => {
+          axios.post('/reset-pass', { 'username': email }).then((response) => {
+            if (response.status === 200) {
+              resolve(response)
+            }
+          }).catch((err) => {
+            commit('auth_error')
+            reject(err)
+          })
+        })
+      },
+      dashboardLoad ({ commit }) {
+        return new Promise((resolve, reject) => {
+          commit('dashboard_load_request')
+          axios.get('/dashboard').then((response) => {
             if (response.status === 200) {
               resolve(response)
             }

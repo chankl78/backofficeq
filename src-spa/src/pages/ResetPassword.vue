@@ -6,18 +6,26 @@
           <div class="col">
             <q-input
               ref="email"
+              name="email"
               outlined
               v-model="email"
               label="Email *"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Email is required']"
-            ></q-input>
+              v-validate="'required|email'"
+              :error="errors.has('email')"
+            >
+              <template v-slot:error>
+                {{ errors.first('email') }}
+              </template>
+            </q-input>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <q-btn label=" Reset password " color="primary" type="submit" class="full-width q-mt-md" >
+            <q-btn :loading="resetProgress" label=" Reset password " color="primary" type="submit" class="full-width q-mt-md" >
               <q-icon name="mdi-lock-reset" />
+              <template v-slot:loading>
+                 PROCESSING...
+              </template>
             </q-btn>
           </div>
         </div>
@@ -39,14 +47,24 @@ export default {
   name: 'ResetPassword',
   data () {
     return {
-      email: ''
+      email: '',
+      resetProgress: false
     }
   },
   methods: {
     resetPassword () {
       let email = this.email
+      this.resetProgress = true
       this.$store.dispatch('resetPassword', email)
-        .then(() => this.$router.push('/login'))
+        .then((resp) => {
+          this.$q.notify({
+            color: 'positive',
+            position: 'top',
+            message: resp.data.message,
+            icon: 'report_problem'
+          })
+          this.resetProgress = false
+        })
         .catch((error) => {
           if (error.response.status === 402) {
             this.$q.notify({
@@ -66,6 +84,7 @@ export default {
               icon: 'report_problem'
             })
           }
+          this.resetProgress = false
         })
     },
     login () {

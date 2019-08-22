@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\AccessmUser;
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -43,16 +48,57 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            //'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:Access_m_User'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
+    }
+
+    protected function register(Request $request)
+    {
+        $validator = $this->validator($request->all());
+        $validatedData = $validator->validate();
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => '',
+                'message' => $validator->errors()
+            ], 401);
+        }
+        try {
+            $validatedData['name'] = $validatedData['email'];
+            $validatedData['username'] = $validatedData['email'];
+            $validatedData['password'] = Hash::make(array_get($validatedData, 'password'));
+            $validatedData['uniquecode'] = Str::uuid();
+            $validatedData['roleid'] = env('LH_ROLEID');
+            //$validatedData['activation_code'] = str_random(30).time();
+            Mail::send('email.mail', [
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'message' => 'TEST OK'
+            ], function($message) use ($request) {
+                $message->from($request->get('email'));
+                $message->to('valery.v.krukov@gmail.com')->subject('Contact form');
+            });
+            event(new Registered($user = $this->create($validatedData)));
+
+            $this->guard()->login($user);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => '',
+                'message' => 'Unable to register user.'
+            ], 401);
+        }
+
+        return response()->json([
+                'status' => 200,
+                'message' => 'Successfully created a new account. Please check your email and activate your account.',
+            ], 200);
     }
 
     /**
@@ -63,10 +109,6 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        return AccessmUser::create($data);
     }
 }
