@@ -64,6 +64,7 @@ export default {
             icon: 'report_problem'
           })
           this.resetProgress = false
+          this.$router.push('/login')
         })
         .catch((error) => {
           if (error.response.status === 402) {
