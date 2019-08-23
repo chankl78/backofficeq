@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Controllers\Controller;
+use App\Services\BackofficeqLoggerService;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -12,9 +13,12 @@ class ForgotPasswordController extends Controller
 {
     use SendsPasswordResetEmails;
 
-    public function __construct()
+    protected $logger;
+
+    public function __construct(BackofficeqLoggerService $logger)
     {
         $this->middleware('guest');
+        $this->logger = $logger;
     }
 
     public function sendResetLinkEmail(Request $request)
@@ -36,11 +40,15 @@ class ForgotPasswordController extends Controller
 
     protected function sendResetLinkResponse(Request $request, $response)
     {
+        $this->logger->info('[Reset Password Link] Password reset link sent successfully.');
+
         return response()->json(['message' => trans($response)], 200);
     }
 
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
+        $this->logger->warning('[Reset Password Link] Failed.');
+
         return response()->json([
             'status' => 401,
             'message' => trans($response)

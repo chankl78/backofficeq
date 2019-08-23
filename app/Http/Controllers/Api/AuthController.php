@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\AccessmUser;
+use App\Services\BackofficeqLoggerService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
@@ -16,6 +17,12 @@ class AuthController extends Controller
 {
     use SendsPasswordResetEmails;
 
+    protected $logger;
+
+    public function __construct(BackofficeqLoggerService $logger)
+    {
+        $this->logger = $logger;
+    }
 
     public function register(Request $request)
     {
@@ -45,11 +52,15 @@ class AuthController extends Controller
 
             $this->guard()->login($user);
 
+            $this->logger->info('[Registration] Successfully created a new account.');
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Successfully created a new account. Please check your email and activate your account.',
             ], 200);
         } catch (\Exception $exception) {
+            $this->logger->warning('[Registration] Unable to register user.');
+
             return response()->json([
                 'status' => '',
                 'message' => 'Unable to register user.'
@@ -62,6 +73,8 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
+            $this->logger->info('[Login] User logged in.');
+
             return response()->json([
                 'status' => 'success',
                 'user' => [
@@ -69,6 +82,8 @@ class AuthController extends Controller
                 ]
             ], 200)->header('Authorization', $token);
         }
+
+        $this->logger->warning('[Login] Bad credentials.');
 
         return response()->json([
             'message' => 'Bad credentials',
@@ -78,6 +93,8 @@ class AuthController extends Controller
     public function logout()
     {
         $this->guard()->logout();
+
+        $this->logger->info('[Logout] User logged out.');
 
         return response()->json([
             'status' => 'success',
