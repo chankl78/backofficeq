@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Auth\Authenticatable;
@@ -13,7 +14,9 @@ use App\Traits\Encryptable;
 use Illuminate\Support\Str;
 use App\Notifications\VerifyEmail;
 
-class AccessmUser extends AuthenticatableUser implements AuthenticatableContract, CanResetPasswordContract, MustVerifyEmail
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class AccessmUser extends AuthenticatableUser implements AuthenticatableContract, CanResetPasswordContract, MustVerifyEmail, JWTSubject
 {
     protected $table = 'Access_m_User';
 
@@ -48,5 +51,20 @@ class AccessmUser extends AuthenticatableUser implements AuthenticatableContract
     public function sendEmailVerificationNotification()
     {
         $this->notify(new VerifyEmail);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token));
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

@@ -48,7 +48,11 @@ module.exports = function (ctx) {
         'QInput',
         'QBanner',
         'QDialog',
-        'QAvatar'
+        'QAvatar',
+        'QPageSticky',
+        'QPageScroller',
+        'QScrollArea',
+        'QSeparator'
       ],
 
       directives: [

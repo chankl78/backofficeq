@@ -55,7 +55,7 @@ export default {
     resetPassword () {
       let email = this.email
       this.resetProgress = true
-      this.$store.dispatch('resetPassword', email)
+      this.$store.dispatch('forgotPassword', email)
         .then((resp) => {
           this.$q.notify({
             color: 'positive',

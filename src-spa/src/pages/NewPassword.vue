@@ -6,6 +6,11 @@
       </div>
       <div class="row">
         <div class="col">
+          <p v-if="newPassword != ''">Your new password is: {{ newPassword }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
           <q-btn label=" Login " color="primary" class="full-width q-mt-md" @click.prevent="login" >
             <q-icon name="mdi-account" />
           </q-btn>
@@ -17,15 +22,19 @@
 
 <script>
 export default {
-  name: 'VerifyEmail',
+  name: 'NewPassword',
   data () {
     return {
-      resultMessage: ''
+      resultMessage: '',
+      newPassword: ''
     }
   },
   mounted () {
-    const verifyUrl = this.$route.query.queryURL
-    this.$store.dispatch('verifyEmail', verifyUrl).then((resp) => {
+    const link = this.$route.query.resetUrl
+    this.$store.dispatch('resetPassword', link).then((resp) => {
+      if (resp.data.password) {
+        this.newPassword = resp.data.password
+      }
       this.resultMessage = resp.data.message
     }).catch((err) => {
       this.resultMessage = err.response.data.message

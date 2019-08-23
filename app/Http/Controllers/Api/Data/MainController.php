@@ -1,18 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\Api\Data;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class MainController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'verified']);
-    }
-
     public function index()
     {
         return response()->json([
@@ -21,7 +15,8 @@ class MainController extends Controller
                 'something1' => '123',
                 'something2' => '234',
                 'something3' => '345'
-            ]
+            ],
+            'user' => Auth::user()->username
         ], 200);
     }
 }

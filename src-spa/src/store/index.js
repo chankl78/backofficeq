@@ -54,12 +54,11 @@ Vue.use(Vuex)
       login ({ commit }, user) {
         return new Promise((resolve, reject) => {
           commit('auth_request')
-          axios.post('/postlogin', user).then((response) => {
+          axios.post('/api/auth/login', user).then((response) => {
             if (response.status === 200) {
-              const token = response.data.token
+              const token = response.headers.authorization
               const user = response.data.user
               localStorage.setItem('token', token)
-              axios.defaults.headers.common['X-CSRF-TOKEN'] = token
               commit('auth_success', token, user)
               resolve(response)
             }
@@ -73,7 +72,7 @@ Vue.use(Vuex)
       register ({ commit }, user) {
         return new Promise((resolve, reject) => {
           commit('auth_request')
-          axios.post('/register', user).then((response) => {
+          axios.post('/api/auth/register', user).then((response) => {
             if (response.status === 200) {
               resolve(response)
             }
@@ -91,10 +90,34 @@ Vue.use(Vuex)
           resolve()
         })
       },
-      resetPassword ({commit}, email) {
+      forgotPassword ({commit}, email) {
+        return new Promise((resolve, reject) => {
+          axios.post('/api/auth/forgot', { 'username': email }).then((response) => {
+            if (response.status === 200) {
+              resolve(response)
+            }
+          }).catch((err) => {
+            commit('auth_error')
+            reject(err)
+          })
+        })
+      },
+      resetPassword ({ commit }, link) {
         return new Promise((resolve, reject) => {
           commit('auth_reset_pass_request')
-          axios.post('/reset-pass', { 'username': email }).then((response) => {
+          axios.get(link).then((response) => {
+            if (response.status === 200) {
+              resolve(response)
+            }
+          }).catch((err) => {
+            commit('auth_error')
+            reject(err)
+          })
+        })
+      },
+      verifyEmail ({ commit }, link) {
+        return new Promise((resolve, reject) => {
+          axios.get(link).then((response) => {
             if (response.status === 200) {
               resolve(response)
             }
@@ -107,7 +130,7 @@ Vue.use(Vuex)
       dashboardLoad ({ commit }) {
         return new Promise((resolve, reject) => {
           commit('dashboard_load_request')
-          axios.get('/dashboard', { withCredentials: true }).then((response) => {
+          axios.get('/api/data/default').then((response) => {
             if (response.status === 200) {
               resolve(response)
             }

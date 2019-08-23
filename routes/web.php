@@ -5,7 +5,7 @@ Route::post('postlogin', 'Auth\LoginController@authenticate');
 
 // Reset password
 Route::post('reset-pass', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::get('refresh-pass', 'Auth\ResetPasswordController@reset')->name('password.reset');
+Route::get('refresh-pass', 'Auth\ResetPasswordController@reset');
 
 // Register
 Route::post('register', 'Auth\RegisterController@register');

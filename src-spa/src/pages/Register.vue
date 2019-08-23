@@ -53,8 +53,11 @@
         </div>
         <div class="row">
           <div class="col">
-            <q-btn label=" Register " type="submit" color="primary" class="full-width q-mt-md">
+            <q-btn :loading="registerProgress" label=" Register " type="submit" color="primary" class="full-width q-mt-md">
               <q-icon name="mdi-arrow-top-right-thick" />
+              <template v-slot:loading>
+                  PROCESSING...
+              </template>
             </q-btn>
           </div>
         </div>
@@ -78,7 +81,8 @@ export default {
       username: '',
       email: '',
       password: '',
-      passwordRepeat: ''
+      passwordRepeat: '',
+      registerProgress: false
     }
   },
   methods: {
@@ -89,11 +93,18 @@ export default {
         password_confirmation: this.passwordRepeat
       }
       this.$validator.validateAll().then((isValid) => {
-        console.log(isValid)
-        // if (isValid) {
+        this.registerProgress = true
         this.$store.dispatch('register', data)
-          .then(() => { /* this.$router.push('/login') */ })
+          .then((resp) => {
+            this.registerProgress = false
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: resp.data.message
+            })
+          })
           .catch((err) => {
+            this.registerProgress = false
             let messages = err.response.data.message
             if (err.response.data.errors) {
               messages = []
@@ -108,7 +119,6 @@ export default {
               icon: 'report_problem'
             })
           })
-        // }
       }).catch(() => {
         this.$q.notify({
           color: 'negative',
