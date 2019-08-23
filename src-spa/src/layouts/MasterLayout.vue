@@ -3,7 +3,7 @@
 
     <q-header reveal elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="left = !left" />
+        <q-btn dense flat round icon="menu" @click="drawerLeft = !drawerLeft" />
 
         <q-toolbar-title>
           <q-avatar>
@@ -11,11 +11,35 @@
           </q-avatar>
           Title
         </q-toolbar-title>
+        <q-btn stretch flat label="Logout" @click.prevent="logout" />
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="left" side="left" overlay elevated>
-      <!-- drawer content -->
+    <q-drawer
+      v-model="drawerLeft"
+      side="left"
+      elevated
+      show-if-above
+    >
+      <q-scroll-area class="fit">
+        <q-list v-for="(menuItem, index) in menuList" :key="index">
+          <q-item clickable :to="{ name: menuItem.to }" v-ripple exact>
+            <q-item-section avatar>
+              <q-icon :name="menuItem.icon" />
+            </q-item-section>
+            <q-item-section>{{ menuItem.label }}</q-item-section>
+          </q-item>
+          <q-separator v-if="menuItem.separator" />
+        </q-list>
+        <q-list>
+          <q-item clickable @click="logout" v-ripple>
+            <q-item-section avatar>
+              <q-icon :name="'mdi-logout'" />
+            </q-item-section>
+            <q-item-section>Logout</q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
@@ -40,7 +64,42 @@
 export default {
   data () {
     return {
-      left: true
+      drawerLeft: true,
+      menuList: [
+        {
+          icon: 'mdi-home',
+          to: 'home',
+          label: 'Home',
+          separator: false
+        },
+        {
+          icon: 'mdi-account',
+          to: 'profile',
+          label: 'Profile',
+          separator: false
+        },
+        {
+          icon: 'mdi-settings',
+          to: 'settings',
+          label: 'Settings',
+          separator: true
+        }
+      ]
+    }
+  },
+  beforeMount () {
+    this.$store.dispatch('dashboardLoad').then((resp) => {
+      if (resp.status === 401) {
+        this.$router.push('/login')
+      }
+    }).catch((err) => {
+      console.log(err)
+      this.$router.push('/login')
+    })
+  },
+  methods: {
+    logout () {
+      this.$store.dispatch('logout').then(() => { this.$router.push('/login') })
     }
   }
 }

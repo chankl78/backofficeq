@@ -7,7 +7,8 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     boot: [
       'i18n',
-      'axios'
+      'axios',
+      'vee'
     ],
 
     css: [
@@ -16,7 +17,8 @@ module.exports = function (ctx) {
 
     extras: [
       // 'ionicons-v4',
-      'mdi-v3'
+      'mdi-v3',
+      'material-icons'
     ],
 
     framework: {
@@ -46,7 +48,11 @@ module.exports = function (ctx) {
         'QInput',
         'QBanner',
         'QDialog',
-        'QAvatar'
+        'QAvatar',
+        'QPageSticky',
+        'QPageScroller',
+        'QScrollArea',
+        'QSeparator'
       ],
 
       directives: [
