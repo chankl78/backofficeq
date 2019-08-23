@@ -87,7 +87,7 @@ export default {
       ]
     }
   },
-  beforeMount () {
+  created () {
     this.$store.dispatch('dashboardLoad').then((resp) => {
       if (resp.status === 401) {
         this.$router.push('/login')
