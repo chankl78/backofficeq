@@ -102,6 +102,7 @@ export default {
               position: 'top',
               message: resp.data.message
             })
+            this.$router.push('/login')
           })
           .catch((err) => {
             this.registerProgress = false
