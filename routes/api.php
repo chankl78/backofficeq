@@ -17,6 +17,7 @@ Route::prefix('auth')->group(function () {
     Route::post('login', 'Api\AuthController@login');
     Route::get('refresh', 'Api\AuthController@refresh');
     Route::post('forgot', 'Api\ForgotPasswordController@sendResetLinkEmail');
+    Route::get('email/verify/{id}', 'Api\VerificationController@verify')->name('verification.verify');
     Route::get('reset', 'Api\ResetPasswordController@reset')->name('password.reset');
 
     Route::group(['middleware' => 'auth:api'], function() {
