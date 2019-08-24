@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'VerifyEmail',
   data () {
@@ -25,13 +27,14 @@ export default {
   },
   mounted () {
     const verifyUrl = this.$route.query.queryURL
-    this.$store.dispatch('verifyEmail', verifyUrl).then((resp) => {
+    this.verifyEmail(verifyUrl).then((resp) => {
       this.resultMessage = resp.data.message
     }).catch((err) => {
       this.resultMessage = err.response.data.message
     })
   },
   methods: {
+    ...mapActions(['verifyEmail']),
     login () {
       this.$router.push('/login')
     }

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -77,9 +78,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'user' => [
-                    'username' => Auth::user()->user,
-                ]
+                'user' => auth()->user()
             ], 200)->header('Authorization', $token);
         }
 

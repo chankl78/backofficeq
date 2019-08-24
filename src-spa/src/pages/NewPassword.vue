@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'NewPassword',
   data () {
@@ -31,7 +33,7 @@ export default {
   },
   mounted () {
     const link = this.$route.query.resetUrl
-    this.$store.dispatch('resetPassword', link).then((resp) => {
+    this.resetPassword(link).then((resp) => {
       if (resp.data.password) {
         this.newPassword = resp.data.password
       }
@@ -41,6 +43,7 @@ export default {
     })
   },
   methods: {
+    ...mapActions(['resetPassword']),
     login () {
       this.$router.push('/login')
     }

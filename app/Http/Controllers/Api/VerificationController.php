@@ -31,7 +31,7 @@ class VerificationController extends Controller
             ], 200);
         } else {
             return response()->json([
-                'message' => 'Email verified!',
+                'message' => 'Verification error',
             ], 401);
         }
     }

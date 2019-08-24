@@ -11,7 +11,7 @@
           </q-avatar>
           Title
         </q-toolbar-title>
-        <q-btn stretch flat label="Logout" @click.prevent="logout" />
+        <q-btn stretch flat label="Logout" @click.prevent="handleLogout" />
       </q-toolbar>
     </q-header>
 
@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+
 export default {
   data () {
     return {
@@ -87,8 +89,13 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapState({
+      menu: state => state.menuList
+    })
+  },
   created () {
-    this.$store.dispatch('dashboardLoad').then((resp) => {
+    this.loadDashboard().then((resp) => {
       if (resp.status === 401) {
         this.$router.push('/login')
       }
@@ -98,8 +105,12 @@ export default {
     })
   },
   methods: {
-    logout () {
-      this.$store.dispatch('logout').then(() => { this.$router.push('/login') })
+    ...mapActions([
+      'loadDashboard',
+      'logout'
+    ]),
+    handleLogout () {
+      this.logout().then(() => { this.$router.push('/login') })
     }
   }
 }

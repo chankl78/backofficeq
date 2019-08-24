@@ -74,6 +74,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Register',
   data () {
@@ -86,6 +88,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['register']),
     handleRegister () {
       let data = {
         email: this.email,
@@ -94,7 +97,7 @@ export default {
       }
       this.$validator.validateAll().then((isValid) => {
         this.registerProgress = true
-        this.$store.dispatch('register', data)
+        this.register(data)
           .then((resp) => {
             this.registerProgress = false
             this.$q.notify({

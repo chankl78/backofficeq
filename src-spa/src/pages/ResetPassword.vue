@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md full-width" style="max-width: 400px">
-      <q-form ref="formMain" @submit.prevent="resetPassword" class="q-gutter-md">
+      <q-form ref="formMain" @submit.prevent="handleForgotPassword" class="q-gutter-md">
         <div class="row">
           <div class="col">
             <q-input
@@ -42,7 +42,8 @@
 </template>
 
 <script>
-/* eslint-disable quotes */
+import { mapActions } from 'vuex'
+
 export default {
   name: 'ResetPassword',
   data () {
@@ -52,10 +53,11 @@ export default {
     }
   },
   methods: {
-    resetPassword () {
+    ...mapActions(['forgotPassword']),
+    handleForgotPassword () {
       let email = this.email
       this.resetProgress = true
-      this.$store.dispatch('forgotPassword', email)
+      this.forgotPassword(email)
         .then((resp) => {
           this.$q.notify({
             color: 'positive',
@@ -81,7 +83,7 @@ export default {
               message: [
                 error.response.data.message,
                 error.response.data.errors.email
-              ].join("\n"),
+              ].join('. '),
               icon: 'report_problem'
             })
           }
