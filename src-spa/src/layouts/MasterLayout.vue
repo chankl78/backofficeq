@@ -22,7 +22,7 @@
       show-if-above
     >
       <q-scroll-area class="fit">
-        <q-list v-for="(menuItem, index) in menuList" :key="index">
+        <q-list v-for="(menuItem, index) in dashboardMenu" :key="index">
           <q-item clickable :to="{ name: menuItem.to }" v-ripple exact>
             <q-item-section avatar>
               <q-icon :name="menuItem.icon" />
@@ -32,7 +32,7 @@
           <q-separator v-if="menuItem.separator" />
         </q-list>
         <q-list>
-          <q-item clickable @click="logout" v-ripple>
+          <q-item clickable @click="handleLogout" v-ripple>
             <q-item-section avatar>
               <q-icon :name="'mdi-logout'" />
             </q-item-section>
@@ -67,31 +67,12 @@ export default {
   data () {
     return {
       drawerLeft: true,
-      menuList: [
-        {
-          icon: 'mdi-home',
-          to: 'home',
-          label: 'Home',
-          separator: false
-        },
-        {
-          icon: 'mdi-account',
-          to: 'profile',
-          label: 'Profile',
-          separator: false
-        },
-        {
-          icon: 'mdi-settings',
-          to: 'settings',
-          label: 'Settings',
-          separator: true
-        }
-      ]
+      dashboardMenu: []
     }
   },
   computed: {
     ...mapState({
-      menu: state => state.menuList
+      user: state => state.user
     })
   },
   created () {
@@ -99,6 +80,7 @@ export default {
       if (resp.status === 401) {
         this.$router.push('/login')
       }
+      this.dashboardMenu = resp.data.menu
     }).catch((err) => {
       console.log(err)
       this.$router.push('/login')

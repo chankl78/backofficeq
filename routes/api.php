@@ -27,7 +27,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::prefix('data')->group(function () {
-    Route::middleware(['jwt.auth', 'verified'])->group(function() {
+    Route::middleware(['auth:api'])->group(function() {
         Route::get('default', 'Api\Data\MainController@index');
     });
 });

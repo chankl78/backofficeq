@@ -11,13 +11,13 @@ const actions = {
   stopLoading ({ commit }) {
     commit('STOP_LOADING')
   },
-  loadDashboard ({ commit, dispatch }) {
+  loadDashboard ({ commit }) {
     commit('LOAD_DASHBOARD')
     return new Promise((resolve, reject) => {
       commit('LOAD_DATA')
       axios.get('/api/data/default').then((response) => {
         if (response.status === 200) {
-          commit('LOAD_DASHBOARD_OK', response.data)
+          commit('LOAD_DASHBOARD_OK', response.data.menu)
           resolve(response)
         }
       }).catch((err) => {
