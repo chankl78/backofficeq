@@ -17,6 +17,7 @@ const routes = [
     component: LoginLayout,
     children: [{
       path: '',
+      name: 'login',
       component: Login
     }]
   },
@@ -24,6 +25,7 @@ const routes = [
     path: '/register',
     component: LoginLayout,
     children: [{
+      name: 'register',
       path: '',
       component: Register
     }]
@@ -32,6 +34,7 @@ const routes = [
     path: '/reset-password',
     component: LoginLayout,
     children: [{
+      name: 'reset-password',
       path: '',
       component: ResetPassword
     }]
@@ -40,6 +43,7 @@ const routes = [
     path: '/verify-email',
     component: LoginLayout,
     children: [{
+      name: 'verify-email',
       path: '',
       component: VerifyEmail
     }]
@@ -48,6 +52,7 @@ const routes = [
     path: '/new-password',
     component: LoginLayout,
     children: [{
+      name: 'new-password',
       path: '',
       component: NewPassword
     }]
@@ -59,7 +64,10 @@ const routes = [
       {
         path: '',
         name: 'home',
-        component: Home
+        component: Home,
+        meta: {
+          requiresAuth: true
+        }
       },
       {
         path: '/profile',

@@ -3,6 +3,7 @@ import axios from 'axios'
 
 const state = {
   loading: false,
+  token: localStorage.getItem('token'),
   menuList: [],
   dashboard: {}
 }
@@ -11,8 +12,9 @@ const actions = {
   stopLoading ({ commit }) {
     commit('STOP_LOADING')
   },
-  loadDashboard ({ commit }) {
+  loadDashboard ({ commit, dispatch }) {
     commit('LOAD_DASHBOARD')
+    dispatch('fetchAccessToken')
     return new Promise((resolve, reject) => {
       commit('LOAD_DATA')
       axios.get('/api/data/default').then((response) => {

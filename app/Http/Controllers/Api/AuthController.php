@@ -74,12 +74,20 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
-            $this->logger->info('[Login] User logged in.');
+            if ($this->guard()->user()->hasVerifiedEmail()) {
+                $this->logger->info('[Login] User logged in.');
 
-            return response()->json([
-                'status' => 'success',
-                'user' => auth()->user()
-            ], 200)->header('Authorization', $token);
+                return response()->json([
+                    'status' => 'success',
+                    'user' => auth()->user()
+                ], 200)->header('Authorization', $token);
+            } else {
+                $this->logger->warning('[Login] Email address is not verified.');
+
+                return response()->json([
+                    'message' => 'Your email address is not verified.',
+                ], 401);
+            }
         }
 
         $this->logger->warning('[Login] Bad credentials.');

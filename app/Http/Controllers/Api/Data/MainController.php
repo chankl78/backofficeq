@@ -45,7 +45,72 @@ class MainController extends Controller
     protected function getUserMenu()
     {
         $user = Auth::user();
+        $roleMenuAdditions = [];
 
-        return array_merge($this->defaultMenuItems, []);
+        if ($user->getAuthIdentifier()) {
+            if (auth()->user()->roleid == 'Resource Administrator') {
+                $access = [
+                    'icon' => 'mdi-shield-account',
+                    'to' => 'home',
+                    'label' => 'Access Rights',
+                    'separator' => false,
+                    'expandable' => true,
+                    'children' => [
+                        [
+                            'icon' => 'mdi-alpha-r-box',
+                            'to' => '',
+                            'label' => 'Role Access',
+                            'separator' => false,
+                            'expandable' => false,
+                            'level' => 1
+                        ],
+                        [
+                            'icon' => 'mdi-alpha-u-box',
+                            'to' => '',
+                            'label' => 'User Access',
+                            'separator' => false,
+                            'expandable' => false,
+                            'level' => 1
+                        ],
+                        [
+                            'icon' => 'mdi-table',
+                            'to' => '',
+                            'label' => 'Default Table',
+                            'separator' => false,
+                            'expandable' => true,
+                            'level' => 1,
+                            'children' => [
+                                [
+                                    'icon' => 'mdi-alpha-a-circle',
+                                    'to' => '',
+                                    'label' => 'Access Types',
+                                    'separator' => false,
+                                    'expandable' => false,
+                                    'level' => 2
+                                ],
+                                [
+                                    'icon' => 'mdi-alpha-r-circle',
+                                    'to' => '',
+                                    'label' => 'Roles',
+                                    'separator' => false,
+                                    'expandable' => false,
+                                    'level' => 2
+                                ],
+                                [
+                                    'icon' => 'mdi-alpha-s-circle',
+                                    'to' => '',
+                                    'label' => 'Status',
+                                    'separator' => false,
+                                    'expandable' => false,
+                                    'level' => 2
+                                ]
+                            ]
+                        ]
+                    ]
+                ];
+                $roleMenuAdditions = array_merge($roleMenuAdditions, [$access]);
+            }
+        }
+        return array_merge($this->defaultMenuItems, $roleMenuAdditions);
     }
 }

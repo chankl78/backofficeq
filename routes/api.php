@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::prefix('auth')->group(function () {
     Route::post('register', 'Api\AuthController@register');
-    Route::post('login', 'Api\AuthController@login')->middleware('verified');
+    Route::post('login', 'Api\AuthController@login');//->middleware('verified');
     Route::get('refresh', 'Api\AuthController@refresh');
     Route::post('forgot', 'Api\ForgotPasswordController@sendResetLinkEmail');
     Route::get('email/verify/{id}', 'Api\VerificationController@verify')->name('verification.verify');
@@ -27,7 +27,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::prefix('data')->group(function () {
-    Route::middleware(['auth:api'])->group(function() {
+    Route::middleware(['auth:api', 'verified:api'])->group(function() {
         Route::get('default', 'Api\Data\MainController@index');
     });
 });

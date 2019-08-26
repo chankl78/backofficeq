@@ -2,13 +2,12 @@ import axios from 'axios'
 
 const state = {
   status: '',
-  token: localStorage.getItem('token'),
+  token: null, // localStorage.getItem('token'),
   user: {}
 }
 
 const getters = {
-  isLoggedIn: state => !!state.token,
-  authStatus: state => state.status
+  isLoggedIn: state => !!state.token
 }
 
 const actions = {
@@ -89,6 +88,12 @@ const actions = {
         reject(err)
       })
     })
+  },
+  fetchAccessToken ({ commit }) {
+    return new Promise((resolve, reject) => {
+      commit('UPDATE_ACCESS_TOKEN', localStorage.getItem('token'))
+      resolve(localStorage.getItem('token'))
+    })
   }
 }
 
@@ -118,6 +123,9 @@ const mutations = {
     state.status = 'loading'
     state.token = null
     state.user = {}
+  },
+  UPDATE_ACCESS_TOKEN (state, token) {
+    state.token = token
   }
 }
 

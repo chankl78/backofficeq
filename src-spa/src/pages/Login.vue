@@ -78,14 +78,19 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['login']),
+    ...mapActions(['login', 'fetchAccessToken']),
     handleLogin () {
       this.loginProgress = true
       let username = this.username
       let password = this.password
       this.login({ username, password })
-        .then(() => { this.$router.push('/') })
+        .then((response) => {
+          if (response.data.status === 'success') {
+            this.$router.replace('/')
+          }
+        })
         .catch((error) => {
+          console.log(error)
           if (error.response.status === 401) {
             this.$q.notify({
               color: 'negative',
