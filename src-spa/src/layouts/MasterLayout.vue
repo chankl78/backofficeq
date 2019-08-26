@@ -29,7 +29,6 @@
             </q-item-section>
             <q-item-section>{{ menuItem.label }}</q-item-section>
           </q-item>
-          <q-separator v-if="menuItem.separator" />
           <q-expansion-item
             v-if="menuItem.expandable"
             expand-separator
@@ -39,8 +38,15 @@
             default-closed
           >
             <q-list v-for="(menuItem2, index2) in menuItem.children" :key="index2">
-              <q-item v-if="!menuItem2.expandable" clickable v-ripple exact :inset-level="menuItem2.level">
-                <q-item-section avatar>
+              <q-item
+                v-if="!menuItem2.expandable"
+                clickable
+                v-ripple
+                exact
+                :inset-level="menuItem2.level"
+                :to="{ name: menuItem2.to }"
+              >
+                <q-item-section avatar v-if="menuItem2.icon">
                   <q-icon :name="menuItem2.icon" />
                 </q-item-section>
                 <q-item-section>{{ menuItem2.label }}</q-item-section>
@@ -55,8 +61,8 @@
                 :header-inset-level="menuItem2.level"
               >
                 <q-list v-for="(menuItem3, index3) in menuItem2.children" :key="index3">
-                  <q-item clickable v-ripple exact :inset-level="menuItem3.level">
-                    <q-item-section avatar>
+                  <q-item clickable v-ripple exact :inset-level="menuItem3.level" :to="{ name: menuItem3.to }">
+                    <q-item-section avatar v-if="menuItem3.icon">
                       <q-icon :name="menuItem3.icon" />
                     </q-item-section>
                     <q-item-section>{{ menuItem3.label }}</q-item-section>
@@ -65,34 +71,8 @@
               </q-expansion-item>
             </q-list>
           </q-expansion-item>
+          <q-separator v-if="menuItem.separator" />
         </q-list>
-        <!--q-list>
-            <q-expansion-item
-                expand-separator
-                icon="mail"
-                label="Inbox"
-                caption="5 unread emails"
-                default-opened
-            >
-                <q-expansion-item
-                    :header-inset-level="1"
-                    expand-separator
-                    icon="receipt"
-                    label="Receipts"
-                    default-opened
-                >
-                    <q-expansion-item switch-toggle-side dense-toggle label="Today" :header-inset-level="1" :content-inset-level="2">
-                        <q-card>
-                            <q-card-section>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                                commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                                eveniet doloribus ullam aliquid.
-                            </q-card-section>
-                        </q-card>
-                    </q-expansion-item>
-                </q-expansion-item>
-            </q-expansion-item>
-        </q-list-->
         <q-list>
           <q-item clickable @click="handleLogout" v-ripple>
             <q-item-section avatar>

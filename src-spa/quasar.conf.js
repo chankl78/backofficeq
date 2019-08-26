@@ -53,7 +53,11 @@ module.exports = function (ctx) {
         'QPageScroller',
         'QScrollArea',
         'QSeparator',
-        'QExpansionItem'
+        'QExpansionItem',
+        'QTable',
+        'QTh',
+        'QTr',
+        'QTd'
       ],
 
       directives: [

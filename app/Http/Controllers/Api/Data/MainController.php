@@ -53,20 +53,18 @@ class MainController extends Controller
                     'icon' => 'mdi-shield-account',
                     'to' => 'home',
                     'label' => 'Access Rights',
-                    'separator' => false,
+                    'separator' => true,
                     'expandable' => true,
                     'children' => [
                         [
-                            'icon' => 'mdi-alpha-r-box',
-                            'to' => '',
+                            'to' => 'role-access',
                             'label' => 'Role Access',
                             'separator' => false,
                             'expandable' => false,
                             'level' => 1
                         ],
                         [
-                            'icon' => 'mdi-alpha-u-box',
-                            'to' => '',
+                            'to' => 'user-access',
                             'label' => 'User Access',
                             'separator' => false,
                             'expandable' => false,
@@ -81,24 +79,21 @@ class MainController extends Controller
                             'level' => 1,
                             'children' => [
                                 [
-                                    'icon' => 'mdi-alpha-a-circle',
-                                    'to' => '',
+                                    'to' => 'default-table-access-types',
                                     'label' => 'Access Types',
                                     'separator' => false,
                                     'expandable' => false,
                                     'level' => 2
                                 ],
                                 [
-                                    'icon' => 'mdi-alpha-r-circle',
-                                    'to' => '',
+                                    'to' => 'default-table-roles',
                                     'label' => 'Roles',
                                     'separator' => false,
                                     'expandable' => false,
                                     'level' => 2
                                 ],
                                 [
-                                    'icon' => 'mdi-alpha-s-circle',
-                                    'to' => '',
+                                    'to' => 'default-table-statuses',
                                     'label' => 'Status',
                                     'separator' => false,
                                     'expandable' => false,

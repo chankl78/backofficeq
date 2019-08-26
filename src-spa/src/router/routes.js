@@ -10,6 +10,11 @@ import NewPassword from '../pages/NewPassword'
 import Home from '../pages/dashboard/Home'
 import Profile from '../pages/dashboard/Profile'
 import Settings from '../pages/dashboard/Settings'
+import Roles from '../pages/dashboard/access/Roles'
+import AccessTypes from '../pages/dashboard/access/AccessTypes'
+import Status from '../pages/dashboard/access/Status'
+import RoleAccess from '../pages/dashboard/access/RoleAccess'
+import UserAccess from '../pages/dashboard/access/UserAccess'
 
 const routes = [
   {
@@ -72,12 +77,58 @@ const routes = [
       {
         path: '/profile',
         name: 'profile',
-        component: Profile
+        component: Profile,
+        meta: {
+          requiresAuth: true
+        }
       },
       {
         path: '/settings',
         name: 'settings',
-        component: Settings
+        component: Settings,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/role-access',
+        name: 'role-access',
+        component: RoleAccess,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/user-access',
+        name: 'user-access',
+        component: UserAccess,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/default-table/access-types',
+        name: 'default-table-access-types',
+        component: AccessTypes,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/default-table/roles',
+        name: 'default-table-roles',
+        component: Roles,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/default-table/statuses',
+        name: 'default-table-statuses',
+        component: Status,
+        meta: {
+          requiresAuth: true
+        }
       }
     ],
     meta: {

@@ -9,9 +9,6 @@ const state = {
 }
 
 const actions = {
-  stopLoading ({ commit }) {
-    commit('STOP_LOADING')
-  },
   loadDashboard ({ commit, dispatch }) {
     commit('LOAD_DASHBOARD')
     dispatch('fetchAccessToken')
@@ -39,7 +36,6 @@ const mutations = {
     state.loading = true
   }),
   ...makeMutations([
-    'STOP_LOADING',
     'LOAD_DASHBOARD_FAIL',
     'LOAD_DATA_FAIL',
     'LOAD_USER_FAIL'
