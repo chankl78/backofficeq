@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md full-width" style="max-width: 400px">
-      <q-form ref="formMain" @submit.prevent="login" class="q-gutter-md">
+      <q-form ref="formMain" @submit.prevent="handleLogin" class="q-gutter-md">
         <div class="row">
           <div class="col">
             <q-input
@@ -42,12 +42,12 @@
         </div>
         <div class="row">
           <div class="col-7">
-            <q-btn label=" Forget Password " color="primary" flat class="q-ml-sm justify-start" @click.prevent="resetPassword">
+            <q-btn label=" Forget Password " color="primary" flat class="q-ml-sm justify-start" @click.prevent="handleResetPassword">
               <q-icon name="mdi-lock-reset" />
             </q-btn>
           </div>
           <div class="col-4">
-            <q-btn label=" Register " color="primary" flat class="q-ml-sm justify-end" @click.prevent="register" >
+            <q-btn label=" Register " color="primary" flat class="q-ml-sm justify-end" @click.prevent="handleRegister" >
               <q-icon name="mdi-account" />
             </q-btn>
           </div>
@@ -61,6 +61,8 @@
 </style>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+
 export default {
   data () {
     return {
@@ -70,14 +72,25 @@ export default {
       loginProgress: false
     }
   },
+  computed: {
+    ...mapState({
+      user: state => state.user
+    })
+  },
   methods: {
-    login () {
+    ...mapActions(['login', 'fetchAccessToken']),
+    handleLogin () {
       this.loginProgress = true
       let username = this.username
       let password = this.password
-      this.$store.dispatch('login', { username, password })
-        .then(() => { this.$router.push('/') })
+      this.login({ username, password })
+        .then((response) => {
+          if (response.data.status === 'success') {
+            this.$router.replace('/')
+          }
+        })
         .catch((error) => {
+          console.log(error)
           if (error.response.status === 401) {
             this.$q.notify({
               color: 'negative',
@@ -98,10 +111,10 @@ export default {
           this.loginProgress = false
         })
     },
-    register () {
+    handleRegister () {
       this.$router.push('/register')
     },
-    resetPassword () {
+    handleResetPassword () {
       this.$router.push('/reset-password')
     }
   }

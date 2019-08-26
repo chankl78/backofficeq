@@ -1,158 +1,19 @@
-/* eslint-disable */
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
 
-// import example from './module-example'
+import auth from './modules/auth'
+import dashboard from './modules/dashboard'
+import roles from './modules/access/roles'
 
 Vue.use(Vuex)
 
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation
- */
+const Store = new Vuex.Store({
+  modules: {
+    auth,
+    dashboard,
+    roles
+  },
+  strict: process.env.DEV
+})
 
-//export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    state: {
-      status: '',
-      token: localStorage.getItem('token'),
-      user: {},
-      dashboardData: {}
-    },
-    mutations: {
-      auth_request (state) {
-        state.status = 'loading'
-      },
-      auth_success (state, token, user) {
-        state.status = 'success'
-        state.token = token
-        state.user = user
-      },
-      auth_error (state) {
-        state.status = 'error'
-        state.dashboardData = {}
-      },
-      auth_reset_pass_request (state) {
-        state.status = 'loading'
-        state.token = ''
-        state.user = ''
-      },
-      logout (state) {
-        state.status = ''
-        state.token = ''
-        state.dashboardData = {}
-      },
-      dashboard_load_request (state) {
-        state.dashboardData = {}
-      },
-      dashboard_loaded (state, data) {
-        state.dashboardData = data
-      }
-    },
-    actions: {
-      login ({ commit }, user) {
-        return new Promise((resolve, reject) => {
-          commit('auth_request')
-          axios.post('/api/auth/login', user).then((response) => {
-            if (response.status === 200) {
-              const token = response.headers.authorization
-              const user = response.data.user
-              localStorage.setItem('token', token)
-              commit('auth_success', token, user)
-              resolve(response)
-            }
-          }).catch((err) => {
-            commit('auth_error')
-            localStorage.removeItem('token')
-            reject(err)
-          })
-        })
-      },
-      register ({ commit }, user) {
-        return new Promise((resolve, reject) => {
-          commit('auth_request')
-          axios.post('/api/auth/register', user).then((response) => {
-            if (response.status === 200) {
-              resolve(response)
-            }
-          }).catch((err) => {
-            commit('auth_error')
-            reject(err)
-          })
-        })
-      },
-      logout ({ commit }) {
-        return new Promise((resolve, reject) => {
-          commit('logout')
-          localStorage.removeItem('token')
-          delete axios.defaults.headers.common['X-CSRF-TOKEN']
-          resolve()
-        })
-      },
-      forgotPassword ({commit}, email) {
-        return new Promise((resolve, reject) => {
-          axios.post('/api/auth/forgot', { 'username': email }).then((response) => {
-            if (response.status === 200) {
-              resolve(response)
-            }
-          }).catch((err) => {
-            commit('auth_error')
-            reject(err)
-          })
-        })
-      },
-      resetPassword ({ commit }, link) {
-        return new Promise((resolve, reject) => {
-          commit('auth_reset_pass_request')
-          axios.get(link).then((response) => {
-            if (response.status === 200) {
-              resolve(response)
-            }
-          }).catch((err) => {
-            commit('auth_error')
-            reject(err)
-          })
-        })
-      },
-      verifyEmail ({ commit }, link) {
-        return new Promise((resolve, reject) => {
-          axios.get(link).then((response) => {
-            if (response.status === 200) {
-              resolve(response)
-            }
-          }).catch((err) => {
-            commit('auth_error')
-            reject(err)
-          })
-        })
-      },
-      dashboardLoad ({ commit }) {
-        return new Promise((resolve, reject) => {
-          commit('dashboard_load_request')
-          axios.get('/api/data/default').then((response) => {
-            if (response.status === 200) {
-              resolve(response)
-            }
-          }).catch((err) => {
-            commit('auth_error')
-            reject(err)
-          })
-        })
-      }
-    },
-    getters: {
-      isLoggedIn: state => !!state.token,
-      authStatus: state => state.status
-    },
-    modules: {
-      // example
-    },
-
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: process.env.DEV
-  })
-
-  export default Store
-//}
+export default Store

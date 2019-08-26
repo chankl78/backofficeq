@@ -11,7 +11,7 @@
           </q-avatar>
           Title
         </q-toolbar-title>
-        <q-btn stretch flat label="Logout" @click.prevent="logout" />
+        <q-btn stretch flat label="Logout" @click.prevent="handleLogout" />
       </q-toolbar>
     </q-header>
 
@@ -22,17 +22,59 @@
       show-if-above
     >
       <q-scroll-area class="fit">
-        <q-list v-for="(menuItem, index) in menuList" :key="index">
-          <q-item clickable :to="{ name: menuItem.to }" v-ripple exact>
+        <q-list v-for="(menuItem, index) in dashboardMenu" :key="index">
+          <q-item v-if="!menuItem.expandable" clickable :to="{ name: menuItem.to }" v-ripple exact>
             <q-item-section avatar>
               <q-icon :name="menuItem.icon" />
             </q-item-section>
             <q-item-section>{{ menuItem.label }}</q-item-section>
           </q-item>
+          <q-expansion-item
+            v-if="menuItem.expandable"
+            expand-separator
+            :icon="menuItem.icon"
+            :label="menuItem.label"
+            caption=""
+            default-closed
+          >
+            <q-list v-for="(menuItem2, index2) in menuItem.children" :key="index2">
+              <q-item
+                v-if="!menuItem2.expandable"
+                clickable
+                v-ripple
+                exact
+                :inset-level="menuItem2.level"
+                :to="{ name: menuItem2.to }"
+              >
+                <q-item-section avatar v-if="menuItem2.icon">
+                  <q-icon :name="menuItem2.icon" />
+                </q-item-section>
+                <q-item-section>{{ menuItem2.label }}</q-item-section>
+              </q-item>
+              <q-expansion-item
+                v-if="menuItem2.expandable"
+                expand-separator
+                :icon="menuItem2.icon"
+                :label="menuItem2.label"
+                caption=""
+                default-closed
+                :header-inset-level="menuItem2.level"
+              >
+                <q-list v-for="(menuItem3, index3) in menuItem2.children" :key="index3">
+                  <q-item clickable v-ripple exact :inset-level="menuItem3.level" :to="{ name: menuItem3.to }">
+                    <q-item-section avatar v-if="menuItem3.icon">
+                      <q-icon :name="menuItem3.icon" />
+                    </q-item-section>
+                    <q-item-section>{{ menuItem3.label }}</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-expansion-item>
+            </q-list>
+          </q-expansion-item>
           <q-separator v-if="menuItem.separator" />
         </q-list>
         <q-list>
-          <q-item clickable @click="logout" v-ripple>
+          <q-item clickable @click="handleLogout" v-ripple>
             <q-item-section avatar>
               <q-icon :name="'mdi-logout'" />
             </q-item-section>
@@ -61,45 +103,39 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+
 export default {
   data () {
     return {
       drawerLeft: true,
-      menuList: [
-        {
-          icon: 'mdi-home',
-          to: 'home',
-          label: 'Home',
-          separator: false
-        },
-        {
-          icon: 'mdi-account',
-          to: 'profile',
-          label: 'Profile',
-          separator: false
-        },
-        {
-          icon: 'mdi-settings',
-          to: 'settings',
-          label: 'Settings',
-          separator: true
-        }
-      ]
+      dashboardMenu: []
     }
   },
+  computed: {
+    ...mapState({
+      user: state => state.user
+    })
+  },
   created () {
-    this.$store.dispatch('dashboardLoad').then((resp) => {
+    this.loadDashboard().then((resp) => {
       if (resp.status === 401) {
         this.$router.push('/login')
       }
+      this.dashboardMenu = resp.data.menu
     }).catch((err) => {
       console.log(err)
       this.$router.push('/login')
     })
   },
   methods: {
-    logout () {
-      this.$store.dispatch('logout').then(() => { this.$router.push('/login') })
+    ...mapActions([
+      'loadDashboard',
+      'logout',
+      'fetchAccessToken'
+    ]),
+    handleLogout () {
+      this.logout().then(() => { this.$router.push('/login') })
     }
   }
 }

@@ -52,7 +52,12 @@ module.exports = function (ctx) {
         'QPageSticky',
         'QPageScroller',
         'QScrollArea',
-        'QSeparator'
+        'QSeparator',
+        'QExpansionItem',
+        'QTable',
+        'QTh',
+        'QTr',
+        'QTd'
       ],
 
       directives: [

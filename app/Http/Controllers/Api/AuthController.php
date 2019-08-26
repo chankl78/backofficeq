@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -73,14 +74,20 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
-            $this->logger->info('[Login] User logged in.');
+            if ($this->guard()->user()->hasVerifiedEmail()) {
+                $this->logger->info('[Login] User logged in.');
 
-            return response()->json([
-                'status' => 'success',
-                'user' => [
-                    'username' => Auth::user()->user,
-                ]
-            ], 200)->header('Authorization', $token);
+                return response()->json([
+                    'status' => 'success',
+                    'user' => auth()->user()
+                ], 200)->header('Authorization', $token);
+            } else {
+                $this->logger->warning('[Login] Email address is not verified.');
+
+                return response()->json([
+                    'message' => 'Your email address is not verified.',
+                ], 401);
+            }
         }
 
         $this->logger->warning('[Login] Bad credentials.');
