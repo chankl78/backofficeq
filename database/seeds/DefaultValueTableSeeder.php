@@ -753,6 +753,8 @@ class DefaultValueTableSeeder extends Seeder
         VehiclezBookingStatus::create(array('value' => 'Rejected'));
 
         Log::info("[Migration - Seeding] Vehicle Booking Status seeded!");
+
+        
         Log::notice("[Migration - Seeding] Default Value successfully seeded!");
     }
 }
