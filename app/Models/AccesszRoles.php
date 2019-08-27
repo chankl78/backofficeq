@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class AccesszRoles extends Model
 {
     protected $table = 'Access_z_Roles';
+
+    protected $fillable = ['value'];
 }

@@ -86,13 +86,6 @@ class MainController extends Controller
                                     'level' => 2
                                 ],
                                 [
-                                    'to' => 'default-table-roles',
-                                    'label' => 'Roles',
-                                    'separator' => false,
-                                    'expandable' => false,
-                                    'level' => 2
-                                ],
-                                [
                                     'to' => 'default-table-statuses',
                                     'label' => 'Status',
                                     'separator' => false,
