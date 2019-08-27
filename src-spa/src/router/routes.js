@@ -13,6 +13,7 @@ import Settings from '../pages/dashboard/Settings'
 import AccessTypes from '../pages/dashboard/access/AccessTypes'
 import AccessTypesEdit from '../pages/dashboard/access/AccessTypesEdit'
 import Status from '../pages/dashboard/access/Status'
+import StatusEdit from '../pages/dashboard/access/StatusEdit'
 import RoleAccess from '../pages/dashboard/access/RoleAccess'
 import RoleAccessEdit from '../pages/dashboard/access/RoleAccessEdit'
 import UserAccess from '../pages/dashboard/access/UserAccess'
@@ -160,6 +161,22 @@ const routes = [
         path: '/default-table/statuses',
         name: 'default-table-statuses',
         component: Status,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/default-table/statuses/new',
+        name: 'default-table-statuses-new',
+        component: StatusEdit,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/default-table/statuses/:id',
+        name: 'default-table-statuses-edit',
+        component: StatusEdit,
         meta: {
           requiresAuth: true
         }

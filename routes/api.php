@@ -43,5 +43,10 @@ Route::prefix('data')->group(function () {
         Route::post('type', 'Api\Data\TypesController@create');
         Route::put('type', 'Api\Data\TypesController@update');
         Route::delete('type', 'Api\Data\TypesController@delete');
+        Route::get('statuses', 'Api\Data\StatusesController@index');
+        Route::get('status', 'Api\Data\StatusesController@status');
+        Route::post('status', 'Api\Data\StatusesController@create');
+        Route::put('status', 'Api\Data\StatusesController@update');
+        Route::delete('status', 'Api\Data\StatusesController@delete');
     });
 });

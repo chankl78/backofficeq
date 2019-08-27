@@ -6,6 +6,7 @@ import dashboard from './modules/dashboard'
 import roles from './modules/access/roles'
 import users from './modules/access/users'
 import types from './modules/access/types'
+import statuses from './modules/access/statuses'
 
 Vue.use(Vuex)
 
@@ -15,7 +16,8 @@ const Store = new Vuex.Store({
     dashboard,
     roles,
     users,
-    types
+    types,
+    statuses
   },
   strict: process.env.DEV
 })

@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AccesszStatus extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'Access_z_Status';
+
+    protected $fillable = ['value'];
 
     // public static function boot()
     // {
