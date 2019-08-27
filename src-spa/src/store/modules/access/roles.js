@@ -100,7 +100,7 @@ const mutations = {
   }),
   LOAD_ROLES_OK (state, data) {
     state.status = 'success'
-    state.roles = data
+    state.roles = data.map((item) => ({ ...item, rowSelected: 'false' }))
   },
   DELETE_ROLE_OK (state, id) {
     state.roles = state.roles.filter((el) => {

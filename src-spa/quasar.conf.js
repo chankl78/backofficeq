@@ -39,6 +39,7 @@ module.exports = function (ctx) {
         'QToolbar',
         'QToolbarTitle',
         'QBtn',
+        'QBtnGroup',
         'QIcon',
         'QList',
         'QItem',
@@ -64,7 +65,8 @@ module.exports = function (ctx) {
         'QBreadcrumbsEl',
         'QCard',
         'QCardSection',
-        'QCardActions'
+        'QCardActions',
+        'QCheckbox'
       ],
 
       directives: [
@@ -74,7 +76,8 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'Dialog'
       ]
     },
 

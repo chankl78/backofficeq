@@ -10,7 +10,7 @@ class RolesController extends Controller
 {
     public function index()
     {
-        $roles = AccesszRoles::select(['id', 'value'])->get()->all();
+        $roles = AccesszRoles::select(['id', 'value'])->orderBy('created_at', 'DESC')->get()->all();
 
         return response()->json($roles, 200);
     }
