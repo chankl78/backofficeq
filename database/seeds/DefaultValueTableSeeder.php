@@ -21,6 +21,22 @@ use App\Models\LogszStatus;
 use App\Models\VehiclemVehicle;
 use App\Models\VehiclezBookingStatus;
 use App\Models\VehiclezMaintenanceType;
+use App\Models\AttendancezStatus;
+use App\Models\AttendancezType;
+use App\Models\CampaignzCampaignDetailType;
+use App\Models\CampaignzCampaignType;
+use App\Models\CampaignzStatus;
+use App\Models\EventzCountry;
+use App\Models\EventzEventType;
+use App\Models\EventzGohonzonStatus;
+use App\Models\EventzGohonzonType;
+use App\Models\EventzLanguage;
+use App\Models\EventzRegistrationStatus;
+use App\Models\EventzRole;
+use App\Models\GroupzDivisionType;
+use App\Models\GroupzGroupType;
+use App\Models\GroupzMemberStatus;
+use App\Models\GroupzStatus;
 
 class DefaultValueTableSeeder extends Seeder
 {
@@ -754,7 +770,245 @@ class DefaultValueTableSeeder extends Seeder
 
         Log::info("[Migration - Seeding] Vehicle Booking Status seeded!");
 
+        AttendancezStatus::create(array('value' => 'Active'));
+        AttendancezStatus::create(array('value' => 'Closed'));
+        AttendancezStatus::create(array('value' => 'Void'));
+
+        Log::info("[Migration - Seeding] Attendance Status seeded!");
+
+        AttendancezType::create(array('value' => 'Actual', 'description' => 'Attendance for Actual Day'));
+        AttendancezType::create(array('value' => 'Training', 'description' => 'Attendance for Training like NDP or Chingay towards the Actual Day'));
+        AttendancezType::create(array('value' => 'Discussion Meeting', 'description' => 'Discussion Meeting'));
+        AttendancezType::create(array('value' => 'District Study Meeting', 'description' => 'District Study Meeting'));
+        AttendancezType::create(array('value' => 'M&D PreKenshu', 'description' => 'M&D PreKenshu'));
+
+        Log::info("[Migration - Seeding] Attendance Type seeded!");
+
+        CampaignzCampaignDetailType::create(array('value' => 'Target'));
+        CampaignzCampaignDetailType::create(array('value' => 'Actual'));
+
+        Log::info("[Migration - Seeding] Campaign Detail Type seeded!");
+
+        CampaignzCampaignType::create(array('value' => 'Homevisit'));
+        CampaignzCampaignType::create(array('value' => 'Target'));
+        CampaignzCampaignType::create(array('value' => 'Daimoku'));
+
+        Log::info("[Migration - Seeding] Campaign Type seeded!");
+
+        CampaignzStatus::create(array('value' => 'Active'));
+        CampaignzStatus::create(array('value' => 'Closed'));
+        CampaignzStatus::create(array('value' => 'Void'));
+
+        Log::info("[Migration - Seeding] Campaign Status seeded!");
+
+        EventzCountry::create(array('value' => 'Antigua & Barbuda'));
+        EventzCountry::create(array('value' => 'Argentina'));
+        EventzCountry::create(array('value' => 'Australia'));
+        EventzCountry::create(array('value' => 'Austria'));
+        EventzCountry::create(array('value' => 'Barbados'));
+        EventzCountry::create(array('value' => 'Belgium'));
+        EventzCountry::create(array('value' => 'Belize'));
+        EventzCountry::create(array('value' => 'Benin'));
+        EventzCountry::create(array('value' => 'Bolivia'));
+        EventzCountry::create(array('value' => 'Brazil'));
+        EventzCountry::create(array('value' => 'Bulgaria'));
+        EventzCountry::create(array('value' => 'Burkina'));
+        EventzCountry::create(array('value' => 'Cambodia'));
+        EventzCountry::create(array('value' => 'Cameroon'));
+        EventzCountry::create(array('value' => 'Canada'));
+        EventzCountry::create(array('value' => 'Chile'));
+        EventzCountry::create(array('value' => 'Colombia'));
+        EventzCountry::create(array('value' => 'Costa Rica'));
+        EventzCountry::create(array('value' => 'Côte d Ivoire'));
+        EventzCountry::create(array('value' => 'Cuba'));
+        EventzCountry::create(array('value' => 'Czech Republic'));
+        EventzCountry::create(array('value' => 'Democratic Republic of the Congo'));
+        EventzCountry::create(array('value' => 'Denmark'));
+        EventzCountry::create(array('value' => 'Dominican Republic'));
+        EventzCountry::create(array('value' => 'Ecuador'));
+        EventzCountry::create(array('value' => 'El Salvador'));
+        EventzCountry::create(array('value' => 'Faso'));
+        EventzCountry::create(array('value' => 'Federated States of Micronesia'));
+        EventzCountry::create(array('value' => 'Finland'));
+        EventzCountry::create(array('value' => 'France'));
+        EventzCountry::create(array('value' => 'Gabon'));
+        EventzCountry::create(array('value' => 'Germany'));
+        EventzCountry::create(array('value' => 'Ghana'));
+        EventzCountry::create(array('value' => 'Greece'));
+        EventzCountry::create(array('value' => 'Guatemala'));
+        EventzCountry::create(array('value' => 'Gulf (Emirate of Dubai'));
+        EventzCountry::create(array('value' => 'Haiti'));
+        EventzCountry::create(array('value' => 'Honduras'));
+        EventzCountry::create(array('value' => 'Hong Kong'));
+        EventzCountry::create(array('value' => 'Hungary'));
+        EventzCountry::create(array('value' => 'Iceland'));
+        EventzCountry::create(array('value' => 'India'));
+        EventzCountry::create(array('value' => 'Indonesia'));
+        EventzCountry::create(array('value' => 'Ireland'));
+        EventzCountry::create(array('value' => 'Italy'));
+        EventzCountry::create(array('value' => 'Jamaica'));
+        EventzCountry::create(array('value' => 'Japan'));
+        EventzCountry::create(array('value' => 'Kenya'));
+        EventzCountry::create(array('value' => 'Korea'));
+        EventzCountry::create(array('value' => 'Laos'));
+        EventzCountry::create(array('value' => 'Luxembourg'));
+        EventzCountry::create(array('value' => 'Macao'));
+        EventzCountry::create(array('value' => 'Madagascar'));
+        EventzCountry::create(array('value' => 'Malaysia'));
+        EventzCountry::create(array('value' => 'Mauritius'));
+        EventzCountry::create(array('value' => 'Mexico'));
+        EventzCountry::create(array('value' => 'Nepal'));
+        EventzCountry::create(array('value' => 'Netherlands'));
+        EventzCountry::create(array('value' => 'New Caledonia'));
+        EventzCountry::create(array('value' => 'New Zealand'));
+        EventzCountry::create(array('value' => 'Nicaragua'));
+        EventzCountry::create(array('value' => 'Nigeria'));
+        EventzCountry::create(array('value' => 'Northern Mariana Islands'));
+        EventzCountry::create(array('value' => 'Norway'));
+        EventzCountry::create(array('value' => 'Palau'));
+        EventzCountry::create(array('value' => 'Panama'));
+        EventzCountry::create(array('value' => 'Peru'));
+        EventzCountry::create(array('value' => 'Philippines'));
+        EventzCountry::create(array('value' => 'Poland'));
+        EventzCountry::create(array('value' => 'Portugal'));
+        EventzCountry::create(array('value' => 'Puerto Rico'));
+        EventzCountry::create(array('value' => 'Republic of Croatia'));
+        EventzCountry::create(array('value' => 'Romania'));
+        EventzCountry::create(array('value' => 'Russia'));
+        EventzCountry::create(array('value' => 'Singapore'));
+        EventzCountry::create(array('value' => 'Slovenia'));
+        EventzCountry::create(array('value' => 'South Africa'));
+        EventzCountry::create(array('value' => 'Spain'));
+        EventzCountry::create(array('value' => 'Sri Lanka'));
+        EventzCountry::create(array('value' => 'Sweden'));
+        EventzCountry::create(array('value' => 'Switzerland'));
+        EventzCountry::create(array('value' => 'Taiwan'));
+        EventzCountry::create(array('value' => 'Thailand'));
+        EventzCountry::create(array('value' => 'Togo'));
+        EventzCountry::create(array('value' => 'Trinidad & Tobago'));
+        EventzCountry::create(array('value' => 'United Kingdom'));
+        EventzCountry::create(array('value' => 'Uruguay'));
+        EventzCountry::create(array('value' => 'USA'));
+        EventzCountry::create(array('value' => 'Venezuela'));
+        EventzCountry::create(array('value' => 'Zambia'));
+
+        Log::info("[Migration - Seeding] Event Country seeded!");
+
+        EventzEventType::create(array('value' => 'Culture'));
+        EventzEventType::create(array('value' => 'Meeting'));
+        EventzEventType::create(array('value' => 'Study'));
+        EventzEventType::create(array('value' => 'Community Service Event'));
+        EventzEventType::create(array('value' => 'Senior CitizEventen Programme'));
+        EventzEventType::create(array('value' => 'Pre M and D Kenshu'));
+        EventzEventType::create(array('value' => 'Friendship Meeting'));
+        EventzEventType::create(array('value' => 'Hall of Great Vow Training Programme'));
+        EventzEventType::create(array('value' => 'Homevisit'));
+        EventzEventType::create(array('value' => 'Entrance Study Exam'));
+        EventzEventType::create(array('value' => 'Elementary Study Exam'));
+        EventzEventType::create(array('value' => 'RSVP'));
+
+        Log::info("[Migration - Seeding] Event Type seeded!");
+
+        EventzGohonzonStatus::create(array('value' => 'Pending'));
+        EventzGohonzonStatus::create(array('value' => 'Confirmed'));
+        EventzGohonzonStatus::create(array('value' => 'Delayed'));
+        EventzGohonzonStatus::create(array('value' => 'Withdrawn'));
+
+        Log::info("[Migration - Seeding] Event Gohonzon Status seeded!");
+
+        EventzGohonzonType::create(array('value' => 'NA'));
+        EventzGohonzonType::create(array('value' => 'Standard'));
+        EventzGohonzonType::create(array('value' => 'Pendent'));
+        EventzGohonzonType::create(array('value' => 'Large'));
+
+        Log::info("[Migration - Seeding] Event Gohonzon Type seeded!");
+
+        EventzLanguage::create(array('value' => 'English', 'studyexam' => '1'));
+        EventzLanguage::create(array('value' => 'Chinese', 'studyexam' => '1'));
+        EventzLanguage::create(array('value' => 'Oral (Cantonese)', 'studyexam' => '1'));
+        EventzLanguage::create(array('value' => 'Oral (Hokkien)', 'studyexam' => '1'));
+        EventzLanguage::create(array('value' => 'Oral (Teochew)', 'studyexam' => '1'));
+        EventzLanguage::create(array('value' => 'Oral (Tamil)', 'studyexam' => '1'));
+        EventzLanguage::create(array('value' => 'Oral (English)', 'studyexam' => '1'));
+        EventzLanguage::create(array('value' => 'Oral (Chinese)', 'studyexam' => '1'));
+        EventzLanguage::create(array('value' => 'English', 'studyexam' => '0'));
+        EventzLanguage::create(array('value' => 'Chinese', 'studyexam' => '0'));
+
+        Log::info("[Migration - Seeding] Event Language seeded!");
+
+        EventzRegistrationStatus::create(array('value' => 'Processing'));
+        EventzRegistrationStatus::create(array('value' => 'Accepted'));
+        EventzRegistrationStatus::create(array('value' => 'Rejected'));
+        EventzRegistrationStatus::create(array('value' => 'Reserved'));
+        EventzRegistrationStatus::create(array('value' => 'Pending'));
+        EventzRegistrationStatus::create(array('value' => 'Withdrawn'));
+        EventzRegistrationStatus::create(array('value' => 'Interested'));
+
+        Log::info("[Migration - Seeding] Event Registration Status seeded!");
+
+        EventzRole::create(array('value' => 'Participant', 'abbv' => 'PART'));
+        EventzRole::create(array('value' => 'Performer', 'abbv' => 'PFR'));
+        EventzRole::create(array('value' => 'Staff Coordinator', 'abbv' => 'SS'));
+        EventzRole::create(array('value' => 'Chairperson', 'abbv' => 'CCM'));
+        EventzRole::create(array('value' => 'Advisor', 'abbv' => 'CCM'));
+        EventzRole::create(array('value' => 'EXCO', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Display IC', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Choreographer', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Assistant Choreographer', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Chief Trainer', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Assistant Chief Trainer', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Block IC', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Assistant Block IC', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Trainer', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Plotter', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Admin', 'abbv' => 'ADM'));
+        EventzRole::create(array('value' => 'Admin IC', 'abbv' => 'ADM'));
+        EventzRole::create(array('value' => 'Admin 2IC', 'abbv' => 'ADM'));
+        EventzRole::create(array('value' => 'Logistic', 'abbv' => 'LOG'));
+        EventzRole::create(array('value' => 'Logistic IC', 'abbv' => 'LOG'));
+        EventzRole::create(array('value' => 'Logistic 2IC', 'abbv' => 'LOG'));
+        EventzRole::create(array('value' => 'Medical', 'abbv' => 'MED'));
+        EventzRole::create(array('value' => 'Medical IC', 'abbv' => 'MED'));
+        EventzRole::create(array('value' => 'Hospitality', 'abbv' => 'HOSP'));
+        EventzRole::create(array('value' => 'Sound', 'abbv' => 'SOU'));
+        EventzRole::create(array('value' => 'Photographer', 'abbv' => 'PHO'));
+        EventzRole::create(array('value' => 'Videographer', 'abbv' => 'VID'));
+        EventzRole::create(array('value' => 'Marching Band', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Item IC', 'abbv' => 'DISP'));
+        EventzRole::create(array('value' => 'Backstage', 'abbv' => 'DISP'));
         
+        Log::info("[Migration - Seeding] Event Role seeded!");
+
+        GroupzDivisionType::create(array('value' => 'MD'));
+        GroupzDivisionType::create(array('value' => 'WD'));
+        GroupzDivisionType::create(array('value' => 'YMD'));
+        GroupzDivisionType::create(array('value' => 'YWD'));
+        GroupzDivisionType::create(array('value' => 'Youth Division'));
+        GroupzDivisionType::create(array('value' => 'Adult Division'));
+        GroupzDivisionType::create(array('value' => '4 Division'));
+
+        Log::info("[Migration - Seeding] Group Division Type seeded!");
+
+        GroupzGroupType::create(array('value' => 'Culture'));
+        GroupzGroupType::create(array('value' => 'Function'));
+        GroupzGroupType::create(array('value' => 'Special'));
+        GroupzGroupType::create(array('value' => 'Comm Svs'));
+
+        Log::info("[Migration - Seeding] Group Type seeded!");
+
+        GroupzMemberStatus::create(array('value' => 'Active'));
+        GroupzMemberStatus::create(array('value' => 'Inactive'));
+        GroupzMemberStatus::create(array('value' => 'Graduated'));
+        GroupzMemberStatus::create(array('value' => 'Withdrawn'));
+        GroupzMemberStatus::create(array('value' => 'Alumni'));
+
+        Log::info("[Migration - Seeding] Group Member Status seeded!");
+
+        GroupzStatus::create(array('value' => 'Active'));
+        GroupzStatus::create(array('value' => 'Creased'));
+
+        Log::info("[Migration - Seeding] Group Status seeded!");
+
         Log::notice("[Migration - Seeding] Default Value successfully seeded!");
     }
 }
