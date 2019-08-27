@@ -84,6 +84,10 @@ This will version 2 using laravel and quasar framework with mariadb.
    cp /var/www/html/defaultpublic/* /var/www/html/public/
    ```
 
+7. As we are using JWT for login & registration, we need to run the following code to generate a key.
+   ```
+   php artisan jwt:secret
+   ```
 
 ## Laravel License
 
