@@ -11,6 +11,7 @@ import Home from '../pages/dashboard/Home'
 import Profile from '../pages/dashboard/Profile'
 import Settings from '../pages/dashboard/Settings'
 import AccessTypes from '../pages/dashboard/access/AccessTypes'
+import AccessTypesEdit from '../pages/dashboard/access/AccessTypesEdit'
 import Status from '../pages/dashboard/access/Status'
 import RoleAccess from '../pages/dashboard/access/RoleAccess'
 import RoleAccessEdit from '../pages/dashboard/access/RoleAccessEdit'
@@ -135,6 +136,22 @@ const routes = [
         path: '/default-table/access-types',
         name: 'default-table-access-types',
         component: AccessTypes,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/default-table/access-types/new',
+        name: 'default-table-access-types-new',
+        component: AccessTypesEdit,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/default-table/access-types/:id',
+        name: 'default-table-access-types-edit',
+        component: AccessTypesEdit,
         meta: {
           requiresAuth: true
         }
