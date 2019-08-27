@@ -30,5 +30,9 @@ Route::prefix('data')->group(function () {
     Route::middleware(['auth:api', 'verified:api'])->group(function() {
         Route::get('default', 'Api\Data\MainController@index');
         Route::get('roles', 'Api\Data\RolesController@index');
+        Route::get('role', 'Api\Data\RolesController@role');
+        Route::post('role', 'Api\Data\RolesController@create');
+        Route::put('role', 'Api\Data\RolesController@update');
+        Route::delete('role', 'Api\Data\RolesController@delete');
     });
 });

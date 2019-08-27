@@ -10,10 +10,10 @@ import NewPassword from '../pages/NewPassword'
 import Home from '../pages/dashboard/Home'
 import Profile from '../pages/dashboard/Profile'
 import Settings from '../pages/dashboard/Settings'
-import Roles from '../pages/dashboard/access/Roles'
 import AccessTypes from '../pages/dashboard/access/AccessTypes'
 import Status from '../pages/dashboard/access/Status'
 import RoleAccess from '../pages/dashboard/access/RoleAccess'
+import RoleAccessEdit from '../pages/dashboard/access/RoleAccessEdit'
 import UserAccess from '../pages/dashboard/access/UserAccess'
 
 const routes = [
@@ -99,6 +99,22 @@ const routes = [
         }
       },
       {
+        path: '/role-access/:id',
+        name: 'role-access-edit',
+        component: RoleAccessEdit,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/role-access/new',
+        name: 'role-access-new',
+        component: RoleAccessEdit,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
         path: '/user-access',
         name: 'user-access',
         component: UserAccess,
@@ -110,14 +126,6 @@ const routes = [
         path: '/default-table/access-types',
         name: 'default-table-access-types',
         component: AccessTypes,
-        meta: {
-          requiresAuth: true
-        }
-      },
-      {
-        path: '/default-table/roles',
-        name: 'default-table-roles',
-        component: Roles,
         meta: {
           requiresAuth: true
         }
