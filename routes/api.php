@@ -38,5 +38,15 @@ Route::prefix('data')->group(function () {
         Route::get('user/info', 'Api\Data\UsersController@info');
         Route::put('user/update', 'Api\Data\UsersController@update');
         Route::delete('user/delete', 'Api\Data\UsersController@delete');
+        Route::get('types', 'Api\Data\TypesController@index');
+        Route::get('type', 'Api\Data\TypesController@type');
+        Route::post('type', 'Api\Data\TypesController@create');
+        Route::put('type', 'Api\Data\TypesController@update');
+        Route::delete('type', 'Api\Data\TypesController@delete');
+        Route::get('statuses', 'Api\Data\StatusesController@index');
+        Route::get('status', 'Api\Data\StatusesController@status');
+        Route::post('status', 'Api\Data\StatusesController@create');
+        Route::put('status', 'Api\Data\StatusesController@update');
+        Route::delete('status', 'Api\Data\StatusesController@delete');
     });
 });
