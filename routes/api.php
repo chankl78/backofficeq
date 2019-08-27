@@ -34,5 +34,9 @@ Route::prefix('data')->group(function () {
         Route::post('role', 'Api\Data\RolesController@create');
         Route::put('role', 'Api\Data\RolesController@update');
         Route::delete('role', 'Api\Data\RolesController@delete');
+        Route::get('user/list', 'Api\Data\UsersController@index');
+        Route::get('user/info', 'Api\Data\UsersController@info');
+        Route::put('user/update', 'Api\Data\UsersController@update');
+        Route::delete('user/delete', 'Api\Data\UsersController@delete');
     });
 });

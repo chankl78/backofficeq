@@ -15,6 +15,7 @@ import Status from '../pages/dashboard/access/Status'
 import RoleAccess from '../pages/dashboard/access/RoleAccess'
 import RoleAccessEdit from '../pages/dashboard/access/RoleAccessEdit'
 import UserAccess from '../pages/dashboard/access/UserAccess'
+import UserAccessEdit from '../pages/dashboard/access/UserAccessEdit'
 
 const routes = [
   {
@@ -118,6 +119,14 @@ const routes = [
         path: '/user-access',
         name: 'user-access',
         component: UserAccess,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/user-access/edit/:id',
+        name: 'user-access-edit',
+        component: UserAccessEdit,
         meta: {
           requiresAuth: true
         }

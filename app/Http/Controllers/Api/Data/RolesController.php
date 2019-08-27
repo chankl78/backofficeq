@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\Api\Data;
 
 use App\Models\AccesszRoles;
+use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class RolesController extends Controller
 {
+    protected $logger;
+
+    public function __construct(BackofficeqLoggerService $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function index()
     {
         $roles = AccesszRoles::select(['id', 'value'])->orderBy('created_at', 'DESC')->get()->all();
@@ -31,13 +39,25 @@ class RolesController extends Controller
         $roleName = $request->get('value');
 
         if (!AccesszRoles::where('value', $roleName)->first()) {
-            $role = AccesszRoles::create(['value' => $roleName]);
+            try {
+                AccesszRoles::create(['value' => $roleName]);
 
-            return response()->json($role, 201);
+                $this->logger->info('[Role create] Role created successfully.');
+                return response()->json([
+                    'message' => 'Role created successfully',
+                ], 201);
+            } catch (\Exception $e) {
+                $this->logger->error('[Role create] ' . $e->getMessage());
+                return response()->json([
+                    'error' => 'Error when create role',
+                ], 500);
+            }
         }
+        $message = sprintf('Role "%s" already exists.', $roleName);
 
+        $this->logger->warning('[Role create] ' . $message);
         return response()->json([
-            'error' => sprintf('Role "%s" already exists.', $roleName)
+            'error' => $message
         ], 409);
     }
 
@@ -48,10 +68,12 @@ class RolesController extends Controller
             $newRoleName = $request->get('value');
             $role = AccesszRoles::where(['id' => $id])->update(['value' => $newRoleName]);
 
+            $this->logger->info('[Role update] Role updated successfully.');
             return response()->json($role, 200);
         } catch (\Exception $e) {
+            $this->logger->error('[Role update] ' . $e->getMessage());
             return response()->json([
-                'error' => $e->getMessage() //'Error when role update',
+                'error' => 'Error when role update',
             ], 409);
         }
     }
@@ -62,13 +84,16 @@ class RolesController extends Controller
             $id = $request->get('id');
             AccesszRoles::find($id)->delete();
 
+            $this->logger->info('[Role delete] Role deleted successfully.');
             return response()->json([
                 'message' => 'Deleted successfully',
             ], 200);
         } catch (\Exception $e) {
+            $this->logger->info('[Role delete] ' . $e->getMessage());
             return response()->json([
                 'error' => 'Error when role delete',
             ], 409);
         }
     }
+
 }
