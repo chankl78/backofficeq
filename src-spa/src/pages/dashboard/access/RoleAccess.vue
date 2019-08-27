@@ -19,14 +19,12 @@
                         </template>
                     </q-input>
                 </template>
-                <template v-slot:bottom>
-                    <q-btn-group>
-                        <q-btn dense color="primary" :disable="loading" label="Add Role" @click="addRole" class="q-px-md"/>
-                        <q-btn dense color="primary" :disable="loading || selected.length == 0" label="Update Role" @click="editRole" class="q-px-md"/>
-                        <q-btn dense color="red" :disable="loading || selected.length == 0" label="Delete Role" @click="removeRole" class="q-px-md"/>
-                    </q-btn-group>
-                </template>
             </q-table>
+            <q-btn-group>
+                <q-btn dense color="primary" :disable="loading" label="Add Role" @click="addRole" class="q-px-md"/>
+                <q-btn dense color="primary" :disable="loading || selected.length == 0" label="Update Role" @click="editRole" class="q-px-md"/>
+                <q-btn dense color="red" :disable="loading || selected.length == 0" label="Delete Role" @click="removeRole" class="q-px-md"/>
+            </q-btn-group>
         </div>
     </q-page>
 </template>

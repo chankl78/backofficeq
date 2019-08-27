@@ -9,7 +9,7 @@ use App\Traits\Encryptable;
 class AccessmRoleAccessRights extends Model
 {
     protected $table = 'Access_m_RoleAccessRights';
-    use Encryptable;
+    use SoftDeletes, Encryptable;
 
     protected $encryptable = ['startdate', 'enddate', 'starttime', 'endtime', 'create', 'read', 'update', 'delete', 'void', 'unvoid', 'print'];
 
