@@ -11,6 +11,7 @@ class AccessMUsersTable extends Migration
         Schema::create('Access_m_User', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('uniquecode');
+            $table->integer('memberid')->default(0);
             $table->binary('name');
             $table->string('username')->index()->unique();
             $table->binary('email');
