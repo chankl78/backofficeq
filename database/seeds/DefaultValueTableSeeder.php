@@ -260,6 +260,11 @@ class DefaultValueTableSeeder extends Seeder
             'value' => 'User',
             'key' => 'DURN'
         ));
+        ConfigurationmDefault::create(array( // Default User Role 
+            'description' => 'Default Email for User to email staff',
+            'value' => 'email@email.com',
+            'key' => 'DHET'
+        ));
 
         Log::info("[Migration - Seeding] Default Values seeded!");
 
