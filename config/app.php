@@ -177,6 +177,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Providers\BackofficeqLoggerServiceProvider::class,
+
+        Spatie\Permission\PermissionServiceProvider::class,
     ],
 
     /*

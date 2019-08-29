@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Api\Data;
 
-use App\Models\AccesszRoles;
+use App\Models\Configuration\Resource;
+use App\Models\Role;
+use App\Models\Permission;
 use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class RolesController extends Controller
 {
@@ -18,15 +21,28 @@ class RolesController extends Controller
 
     public function index()
     {
-        $roles = AccesszRoles::select(['id', 'value'])->orderBy('created_at', 'DESC')->get()->all();
+        $roles = Role::with('resource')->orderBy('created_at', 'DESC')->get();
 
         return response()->json($roles, 200);
     }
 
     public function role(Request $request)
     {
-        if ($role = AccesszRoles::find($request->get('id'))) {
-            return response()->json($role);
+        $permissions = Permission::all();
+        $resources = Resource::select('id', 'resourcegroupcode', 'code', 'resource')->get();
+
+        if ($request->get('id') === 'new') {
+            return response()->json([
+                'role' => false,
+                'permissions' => $permissions,
+                'resources' => $resources,
+            ]);
+        } elseif ($role = Role::with(['permissions', 'resource'])->find($request->get('id'))) {
+            return response()->json([
+                'role' => $role,
+                'permissions' => $permissions,
+                'resources' => $resources,
+            ]);
         } else {
             return response()->json([
                 'error' => 'Role not found'
@@ -37,10 +53,31 @@ class RolesController extends Controller
     public function create(Request $request)
     {
         $roleName = $request->get('value');
+        $permissions = $request->get('permissions');
+        $resource = $request->get('resource');
+        $allRoles = Role::all()->pluck('name')->toArray();
 
-        if (!AccesszRoles::where('value', $roleName)->first()) {
+        if (!in_array($roleName, $allRoles) && is_array($permissions) && count($permissions) > 0) {
             try {
-                AccesszRoles::create(['value' => $roleName]);
+                $role = Role::create([
+                    'name' => str_replace(' ', '-', strtolower($roleName)),
+                    'description' => $roleName
+                ]);
+                $permissions = $request->get('permissions');
+                if (is_array($permissions) && count($permissions) > 0) {
+                    foreach ($request->get('permissions') as $permission) {
+                        $permissions[] = Permission::findByName($permission);
+                    }
+                    $role->syncPermissions($permissions);
+                }
+
+                if (isset($resource['id'])) {
+                    $_resource = Resource::where(['id' => $resource['id']])->first();
+                    if ($_resource) {
+                        $role->resource()->detach();
+                        $role->resource()->attach($_resource->id);
+                    }
+                }
 
                 $this->logger->info('[Role create] Role created successfully.');
                 return response()->json([
@@ -49,7 +86,7 @@ class RolesController extends Controller
             } catch (\Exception $e) {
                 $this->logger->error('[Role create] ' . $e->getMessage());
                 return response()->json([
-                    'error' => 'Error when create role',
+                    'error' => $e->getMessage() , //'Error when create role',
                 ], 500);
             }
         }
@@ -65,15 +102,32 @@ class RolesController extends Controller
     {
         try {
             $id = $request->get('id');
+            $resource = $request->get('resource');
             $newRoleName = $request->get('value');
-            $role = AccesszRoles::where(['id' => $id])->update(['value' => $newRoleName]);
+            $permissions = [];
+            foreach ($request->get('permissions') as $permission) {
+                $permissions[] = Permission::findByName($permission);
+            }
+            $role = Role::with(['permissions', 'resource'])->where(['id' => $id])->first();
+            $role->description = $newRoleName;
+            $role->syncPermissions($permissions);
+
+            if (isset($resource['id'])) {
+                $_resource = Resource::where(['id' => $resource['id']])->first();
+                if ($_resource) {
+                    $role->resource()->detach();
+                    $role->resource()->attach($_resource->id);
+                }
+            }
+
+            $role->save();
 
             $this->logger->info('[Role update] Role updated successfully.');
             return response()->json($role, 200);
         } catch (\Exception $e) {
             $this->logger->error('[Role update] ' . $e->getMessage());
             return response()->json([
-                'error' => 'Error when role update',
+                'error' => $e->getMessage() //'Error when role update',
             ], 409);
         }
     }
@@ -82,7 +136,7 @@ class RolesController extends Controller
     {
         try {
             $id = $request->get('id');
-            AccesszRoles::find($id)->delete();
+            Role::find($id)->delete();
 
             $this->logger->info('[Role delete] Role deleted successfully.');
             return response()->json([

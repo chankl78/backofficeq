@@ -5,12 +5,19 @@ const state = {
   loading: false,
   token: localStorage.getItem('token'),
   roles: [],
-  role: {}
+  role: {},
+  resource: {},
+  permissions: [],
+  resources: [],
+  isEditMode: false
 }
 
 const getters = {
   currentRole: state => state.role || { value: '' },
-  rolesList: state => state.roles
+  rolesList: state => state.roles,
+  permissionList: state => state.permissions,
+  resourcesList: state => state.resources,
+  isEditMode: state => state.isEditMode
 }
 
 const actions = {
@@ -101,6 +108,26 @@ const mutations = {
   LOAD_ROLES_OK (state, data) {
     state.status = 'success'
     state.roles = data.map((item) => ({ ...item, rowSelected: 'false' }))
+  },
+  LOAD_ROLE_OK (state, data) {
+    state.status = 'success'
+    state.role = data.role
+    state.isEditMode = data.role || false
+    state.permissions = data.permissions.map((item) => {
+      return {
+        label: item.name,
+        value: item.name
+      }
+    })
+    let tmp = data.resources.map((item, k) => {
+      return {
+        id: item.id,
+        label: item.resource,
+        value: item.code,
+        description: item.resourcegroupcode
+      }
+    })
+    state.resources = tmp
   },
   DELETE_ROLE_OK (state, id) {
     state.roles = state.roles.filter((el) => {

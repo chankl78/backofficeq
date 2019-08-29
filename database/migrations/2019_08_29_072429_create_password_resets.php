@@ -6,20 +6,27 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreatePasswordResets extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
-        Schema::create('Access_m_PasswordResets', function (Blueprint $table) {
+        Schema::create('password_resets', function (Blueprint $table) {
             $table->string('email')->index();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
-
-        Log::info("[Migration] Table Create Password Resets created!");
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
-        Schema::dropIfExists('Access_m_PasswordResets');
-        Log::warning( "[Migration] Table Create Password Resets deleted!");
+        Schema::dropIfExists('password_resets');
     }
 }

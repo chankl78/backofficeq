@@ -44,11 +44,13 @@ export default {
         rowsNumber: 10
       },
       columns: [
-        { name: 'uniquecode', field: 'uniquecode', label: 'ID', align: 'left', required: true, sortable: true },
+        /* { name: 'uniquecode', field: 'uniquecode', label: 'ID', align: 'left', required: true, sortable: true }, */
         { name: 'name', field: 'name', label: 'Name', align: 'left', required: true, sortable: true },
         { name: 'username', field: 'username', label: 'Username', align: 'left', required: true, sortable: true },
         { name: 'email', field: 'email', label: 'Email', align: 'left', required: true, sortable: true },
         { name: 'email_verified_at', field: 'email_verified_at', label: 'Email Verified At', align: 'left', required: true, sortable: true },
+        { name: 'role', field: 'role', label: 'Role', align: 'left', required: true, sortable: true },
+        { name: 'accessType', field: 'accessType', label: 'Access type', align: 'left', required: true, sortable: true },
         { name: 'status', field: 'status', label: 'Status', align: 'left', required: true, sortable: true }
       ],
       filter: '',

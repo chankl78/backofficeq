@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -46,8 +47,8 @@ class AuthController extends Controller
             $user->username = $request->email;
             $user->password = Hash::make($request->password);
             $user->uniquecode = Str::uuid();
-            $user->roleid = env('LH_ROLEID');
             $user->save();
+            $user->assignRole('user');
 
             event(new Registered($user));
 

@@ -5,12 +5,16 @@ const state = {
   loading: false,
   token: localStorage.getItem('token'),
   users: [],
-  user: {}
+  user: {},
+  availableRoles: [],
+  accessTypeList: []
 }
 
 const getters = {
   currentUser: state => state.user || {},
-  usersList: state => state.users
+  usersList: state => state.users,
+  availableRoles: state => state.availableRoles,
+  accessTypeList: state => state.accessTypeList
 }
 
 const actions = {
@@ -78,14 +82,34 @@ const mutations = {
     state.status = 'loading'
   }),
   ...makeMutations([
-    'LOAD_USER_OK',
     'UPDATE_USER_OK'
   ], (state, data) => {
     state.user = data
   }),
   LOAD_USERS_OK (state, data) {
+    let _data = Object.values(data)
     state.status = 'success'
-    state.users = data.map((item) => ({ ...item, rowSelected: 'false' }))
+    state.users = _data.map((item) => ({
+      ...item,
+      rowSelected: 'false',
+      role: item.roles.shift().description,
+      accessType: item.access_types.length ? item.access_types.shift().description : []
+    }))
+    console.log(state.users)
+  },
+  LOAD_USER_OK (state, data) {
+    state.status = 'success'
+    state.user = data.user
+    state.availableRoles = data.roles.map((item) => ({
+      id: item.id,
+      label: item.description,
+      value: item.name
+    }))
+    state.accessTypeList = data.accessTypeList.map((item) => ({
+      id: item.id,
+      label: item.description,
+      value: item.name
+    }))
   },
   DELETE_USER_OK (state, id) {
     state.users = state.users.filter((el) => {

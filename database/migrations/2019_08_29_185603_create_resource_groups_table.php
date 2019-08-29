@@ -4,16 +4,21 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ConfigurationMResourceGroupTable extends Migration
+class CreateResourceGroupsTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
-        Schema::create('Configuration_m_ResourceGroup', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('resource_groups', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('resourcegroup', 150)->index();
             $table->string('prefix', 10)->nullable();
             $table->string('postfix', 10)->nullable();
             $table->string('code', 10)->unique();
-            $table->string('resourcegroup', 150)->index();
             $table->binary('enabled');
             $table->binary('trial')->nullable();
             $table->binary('trialstartdate')->nullable();
@@ -23,13 +28,15 @@ class ConfigurationMResourceGroupTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
-        Log::info("[Migration] Table Configuration_m_ResourceGroup created!");
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
-        Schema::dropIfExists('Configuration_m_ResourceGroup');
-        Log::warning("[Migration] Table Configuration_m_ResourceGroup deleted!");
+        Schema::dropIfExists('resource_groups');
     }
 }

@@ -4,30 +4,37 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AccessMUsersTable extends Migration
+class CreateUsersTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
-        Schema::create('Access_m_User', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('uniquecode');
             $table->binary('name');
             $table->string('username')->index()->unique();
             $table->binary('email');
             $table->string('password');
-            $table->binary('roleid');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('status', 20)->default('Active');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
         });
-        Log::info("[Migration] Table Access_m_User created!");
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
-        Schema::dropIfExists('Access_m_User');
-        Log::warning("[Migration] Table Access_m_User deleted!");
+        Schema::dropIfExists('users');
     }
 }
