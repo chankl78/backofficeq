@@ -45,8 +45,8 @@ export default {
         rowsNumber: 10
       },
       columns: [
-        { name: 'id', field: 'id', label: 'ID', align: 'left', required: true, sortable: true },
-        { name: 'value', field: 'value', label: 'Role Name', align: 'left', required: true, sortable: true }
+        { name: 'name', field: 'name', label: 'Code', align: 'left', required: true, sortable: true },
+        { name: 'description', field: 'description', label: 'Name', align: 'left', required: true, sortable: true }
       ],
       filter: '',
       selected: []

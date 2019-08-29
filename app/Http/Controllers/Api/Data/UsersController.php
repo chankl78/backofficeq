@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\Data;
 
-use App\Models\AccessmUser;
+use App\Models\AccessType;
+use App\Models\User;
 use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
 {
@@ -18,25 +20,38 @@ class UsersController extends Controller
 
     public function index()
     {
-        $users = AccessmUser::select([
-            'uniquecode',
-            'name',
-            'username',
-            'email',
-            'email_verified_at',
-            'status'
-        ])->orderBy('created_at', 'DESC')->get()->all();
+        $users = User::with(['roles', 'accessTypes'])
+            ->orderBy('created_at', 'DESC')
+            ->get();
+        $users = $users->reject(function ($user) {
+            return $user->hasAnyRole(['system-administrator', 'software-administrator']);
+        });
 
         return response()->json($users, 200);
     }
 
     public function info(Request $request)
     {
-        if ($user = AccessmUser::where(['uniquecode' => $request->get('id')])->first()) {
-            return response()->json($user);
-        } else {
+        try {
+            $roles = Role::all();
+            $accessTypes = AccessType::all();
+            $user = User::with(['roles', 'accessTypes'])
+                ->where(['uniquecode' => $request->get('id')])
+                ->first();
+            if ($user) {
+                return response()->json([
+                    'user' => $user,
+                    'roles' => $roles,
+                    'accessTypeList' => $accessTypes,
+                ]);
+            } else {
+                return response()->json([
+                    'error' => 'User not found'
+                ]);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'error' => 'User not found'
+                'error' => 'Error when load user info'
             ]);
         }
     }
@@ -44,22 +59,33 @@ class UsersController extends Controller
     public function update(Request $request)
     {
         try {
-            $id = $request->get('uniquecode');
-            $data = $request->only([
-                'name',
-                'username',
-                'email',
-                'status'
-            ]);
+            $_user = $request->get('user');
+            $_role = $request->get('role');
+            $_accessType = $request->get('access_type');
+            $user = User::with(['roles', 'accessTypes'])
+                ->where(['uniquecode' => $_user['uniquecode']])
+                ->first();
+            $role = Role::findByName($_role['value']);
+            if ($role) {
+                $user->syncRoles($role);
+            }
+            if (isset($_accessType['id'])) {
+                $accessType = AccessType::where(['id' => $_accessType['id']])->first();
+                if ($accessType) {
+                    $user->accessTypes()->detach();
+                    $user->accessTypes()->attach($accessType->id);
+                }
+            }
+            $user->save();
 
-            $user = AccessmUser::where(['uniquecode' => $id])->update($data);
-
-            $this->logger->info('[User update] User updated successfully.');
-            return response()->json($user, 200);
+            $this->logger->info('[User update] User updated successfully');
+            return response()->json([
+                'message' => 'User updated'
+            ], 200);
         } catch (\Exception $e) {
             $this->logger->error('[User update] ' . $e->getMessage());
             return response()->json([
-                'error' => 'Error when user update',
+                'error' => $e->getMessage(), //'Error when user update',
             ], 409);
         }
     }
@@ -68,7 +94,7 @@ class UsersController extends Controller
     {
         try {
             $id = $request->get('id');
-            AccessmUser::where(['uniquecode' => $id])->delete();
+            User::where(['uniquecode' => $id])->delete();
 
             $this->logger->info('[User delete] Role deleted successfully.');
             return response()->json([

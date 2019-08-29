@@ -27,7 +27,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::prefix('data')->group(function () {
-    Route::middleware(['auth:api', 'verified:api'])->group(function() {
+    Route::middleware(['api', 'auth:api', 'verified:api'])->group(function() {
         Route::get('default', 'Api\Data\MainController@index');
         Route::get('roles', 'Api\Data\RolesController@index');
         Route::get('role', 'Api\Data\RolesController@role');

@@ -38,7 +38,7 @@ class MainController extends Controller
                 'something3' => '345'
             ],
             'menu' => $this->getUserMenu(),
-            'user' => Auth::user()
+            'user' => auth()->user()
         ], 200);
     }
 
@@ -48,7 +48,7 @@ class MainController extends Controller
         $roleMenuAdditions = [];
 
         if ($user->getAuthIdentifier()) {
-            if (auth()->user()->roleid == 'Resource Administrator') {
+            if (auth('api')->user()->hasAnyRole(['system-administrator', 'software-administrator'])) {
                 $access = [
                     'icon' => 'mdi-shield-account',
                     'to' => 'home',
