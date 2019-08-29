@@ -5,12 +5,14 @@ const state = {
   loading: false,
   token: localStorage.getItem('token'),
   types: [],
-  type: {}
+  type: {},
+  isTypeEditMode: false
 }
 
 const getters = {
   currentType: state => state.type || { value: '' },
-  typesList: state => state.types
+  typesList: state => state.types,
+  isTypeEditMode: state => state.isTypeEditMode
 }
 
 const actions = {
@@ -92,7 +94,6 @@ const mutations = {
     state.status = 'loading'
   }),
   ...makeMutations([
-    'LOAD_TYPE_OK',
     'CREATE_TYPE_OK',
     'UPDATE_TYPE_OK'
   ], (state, data) => {
@@ -101,6 +102,11 @@ const mutations = {
   LOAD_TYPES_OK (state, data) {
     state.status = 'success'
     state.types = data.map((item) => ({ ...item, rowSelected: 'false' }))
+  },
+  LOAD_TYPE_OK (state, data) {
+    state.status = 'success'
+    state.type = data.type
+    state.isTypeEditMode = data.type || false
   },
   DELETE_TYPE_OK (state, id) {
     state.types = state.types.filter((el) => {

@@ -36,15 +36,13 @@ export default {
   },
   methods: {
     ...mapActions(['loadStatus', 'createStatus', 'updateStatus']),
-    ...mapGetters(['currentStatus']),
+    ...mapGetters(['currentStatus', 'isStatusEditMode']),
     load () {
-      let id = this.$router.currentRoute.params.id
-      if (id) {
-        this.loadStatus({ id: id }).then((resp) => {
-          this.status = this.currentStatus().value
-          this.editMode = true
-        })
-      }
+      let id = this.$router.currentRoute.params.id || 'new'
+      this.loadStatus({ id: id }).then((resp) => {
+        this.status = this.currentStatus().description
+        this.editMode = this.isStatusEditMode()
+      })
     },
     save () {
       if (this.editMode) {

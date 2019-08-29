@@ -5,12 +5,14 @@ const state = {
   loading: false,
   token: localStorage.getItem('token'),
   statuses: [],
-  status: {}
+  status: {},
+  isStatusEditMode: false
 }
 
 const getters = {
   currentStatus: state => state.status || { value: '' },
-  statusesList: state => state.statuses
+  statusesList: state => state.statuses,
+  isStatusEditMode: state => state.isStatusEditMode
 }
 
 const actions = {
@@ -92,7 +94,6 @@ const mutations = {
     state._status = 'loading'
   }),
   ...makeMutations([
-    'LOAD_STATUS_OK',
     'CREATE_STATUS_OK',
     'UPDATE_STATUS_OK'
   ], (state, data) => {
@@ -102,7 +103,13 @@ const mutations = {
     state._status = 'success'
     state.statuses = data.map((item) => ({ ...item, rowSelected: 'false' }))
   },
+  LOAD_STATUS_OK (state, data) {
+    state._status = 'success'
+    state.status = data.status
+    state.isStatusEditMode = data.status || false
+  },
   DELETE_STATUS_OK (state, id) {
+    state._status = 'success'
     state.statuses = state.statuses.filter((el) => {
       return (el.id !== id)
     })

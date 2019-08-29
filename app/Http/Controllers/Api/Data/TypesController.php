@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Data;
 
-use App\Models\AccesszAccessTypes;
+use App\Models\AccessType;
 use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -18,19 +18,31 @@ class TypesController extends Controller
 
     public function index()
     {
-        $types = AccesszAccessTypes::select(['id', 'value'])->orderBy('created_at', 'DESC')->get()->all();
+        $types = AccessType::select(['id', 'name', 'description'])->orderBy('created_at', 'DESC')->get()->all();
 
         return response()->json($types, 200);
     }
 
     public function type(Request $request)
     {
-        if ($type = AccesszAccessTypes::find($request->get('id'))) {
-            return response()->json($type);
-        } else {
+        try {
+            if ($request->get('id') === 'new') {
+                return response()->json([
+                    'type' => false,
+                ]);
+            } elseif ($type = AccessType::find($request->get('id'))) {
+                return response()->json([
+                    'type' => $type
+                ]);
+            } else {
+                return response()->json([
+                    'error' => 'Type not found'
+                ], 409);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Type not found'
-            ]);
+                'error' => 'Error when loading access type'
+            ], 500);
         }
     }
 
@@ -38,10 +50,13 @@ class TypesController extends Controller
     {
         $typeName = $request->get('value');
 
-        if (!AccesszAccessTypes::where(['value' => $typeName])->first()) {
+        if (!AccessType::where(['description' => $typeName])->exists()) {
             try {
-                AccesszAccessTypes::create(['value' => $typeName]);
-
+                $systemName = $this->createForSystemName($typeName);
+                AccessType::create([
+                    'name' => $systemName,
+                    'description' => $typeName,
+                ]);
                 $this->logger->info('[Type create] Type created successfully.');
                 return response()->json([
                     'message' => 'Type created successfully',
@@ -66,8 +81,19 @@ class TypesController extends Controller
         try {
             $id = $request->get('id');
             $newTypeName = $request->get('value');
-            $type = AccesszAccessTypes::where(['id' => $id])->update(['value' => $newTypeName]);
-
+            if (!AccessType::where(['description' => $newTypeName])->exists()) {
+                $systemName = $this->createForSystemName($newTypeName);
+                $type = AccessType::where(['id' => $id])->update([
+                    'name' => $systemName,
+                    'description' => $newTypeName,
+                ]);
+            } else {
+                $message = sprintf('Access type "%s" already exists', $newTypeName);
+                $this->logger->warning('[Type update] ' . $message);
+                return response()->json([
+                    'error' => $message,
+                ], 409);
+            }
             $this->logger->info('[Type update] Type updated successfully.');
             return response()->json($type, 200);
         } catch (\Exception $e) {
@@ -82,7 +108,7 @@ class TypesController extends Controller
     {
         try {
             $id = $request->get('id');
-            AccesszAccessTypes::find($id)->delete();
+            AccessType::find($id)->delete();
 
             $this->logger->info('[Type delete] Type deleted successfully.');
             return response()->json([
@@ -94,6 +120,20 @@ class TypesController extends Controller
                 'error' => 'Error when type delete',
             ], 409);
         }
+    }
+
+    protected function createForSystemName($name)
+    {
+        $name = str_replace(' ', '-', strtolower($name));
+        if (AccessType::where(['name' => $name])->exists()) {
+            $add = 1;
+            $name = sprintf('%s-%s', $name, $add);
+            while (AccessType::where(['name' => $name])->exists()) {
+                $add++;
+                $name = sprintf('%s-%s', $name, $add);
+            }
+        }
+        return $name;
     }
 
 }

@@ -121,8 +121,7 @@ export default {
           this.$q.notify({
             color: 'positive',
             position: 'top',
-            message: resp.data.message || 'Role created',
-            icon: 'report_problem'
+            message: resp.data.message || 'Role created'
           })
           this.$router.push('/role-access')
         }).catch((error) => {
