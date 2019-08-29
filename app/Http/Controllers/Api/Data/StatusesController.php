@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Data;
 
-use App\Models\AccesszStatus;
+use App\Models\Status;
 use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -18,19 +18,31 @@ class StatusesController extends Controller
 
     public function index()
     {
-        $statuses = AccesszStatus::select(['id', 'value'])->orderBy('created_at', 'DESC')->get()->all();
+        $statuses = Status::select(['id', 'name', 'description'])->orderBy('created_at', 'DESC')->get()->all();
 
         return response()->json($statuses, 200);
     }
 
     public function status(Request $request)
     {
-        if ($status = AccesszStatus::find($request->get('id'))) {
-            return response()->json($status);
-        } else {
+        try {
+            if ($request->get('id') === 'new') {
+                return response()->json([
+                    'status' => false,
+                ]);
+            } elseif ($status = Status::find($request->get('id'))) {
+                return response()->json([
+                    'status' => $status,
+                ]);
+            } else {
+                return response()->json([
+                    'error' => 'Status not found'
+                ]);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Status not found'
-            ]);
+                'error' => 'Error when loading status'
+            ], 500);
         }
     }
 
@@ -38,9 +50,14 @@ class StatusesController extends Controller
     {
         $statusName = $request->get('value');
 
-        if (!AccesszStatus::where(['value' => $statusName])->first()) {
+        if (!Status::where(['description' => $statusName])->first()) {
             try {
-                AccesszStatus::create(['value' => $statusName]);
+                $systemName = $this->createForSystemName($statusName);
+
+                Status::create([
+                    'name' => $systemName,
+                    'description' => $statusName,
+                ]);
 
                 $this->logger->info('[Status create] Status created successfully.');
                 return response()->json([
@@ -66,8 +83,19 @@ class StatusesController extends Controller
         try {
             $id = $request->get('id');
             $newStatusName = $request->get('value');
-            $status = AccesszStatus::where(['id' => $id])->update(['value' => $newStatusName]);
-
+            if (!Status::where(['description' => $newStatusName])->exists()) {
+                $systemName = $this->createForSystemName($newStatusName);
+                $status = Status::where(['id' => $id])->update([
+                    'name' => $systemName,
+                    'description' => $newStatusName
+                ]);
+            } else {
+                $message = sprintf('Status "%s" already exists', $newStatusName);
+                $this->logger->warning('[Type update] ' . $message);
+                return response()->json([
+                    'error' => $message,
+                ], 409);
+            }
             $this->logger->info('[Status update] Status updated successfully.');
             return response()->json($status, 200);
         } catch (\Exception $e) {
@@ -82,7 +110,7 @@ class StatusesController extends Controller
     {
         try {
             $id = $request->get('id');
-            AccesszStatus::find($id)->delete();
+            Status::find($id)->delete();
 
             $this->logger->info('[Status delete] Status deleted successfully.');
             return response()->json([
@@ -94,6 +122,20 @@ class StatusesController extends Controller
                 'error' => 'Error when status delete',
             ], 409);
         }
+    }
+
+    protected function createForSystemName($name)
+    {
+        $name = str_replace(' ', '-', strtolower($name));
+        if (Status::where(['name' => $name])->exists()) {
+            $add = 1;
+            $name = sprintf('%s-%s', $name, $add);
+            while (Status::where(['name' => $name])->exists()) {
+                $add++;
+                $name = sprintf('%s-%s', $name, $add);
+            }
+        }
+        return $name;
     }
 
 }

@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // DefaultValueTableSeeder::class,
+            StatusTableSeeder::class,
             ConfigurationResource::class,
             AccessTypeTableSeeder::class,
             PermissionTableSeeder::class,

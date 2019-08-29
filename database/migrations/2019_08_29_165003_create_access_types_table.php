@@ -15,8 +15,8 @@ class CreateAccessTypesTable extends Migration
     {
         Schema::create('access_types', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 64);
-            $table->string('description')->nullable();
+            $table->string('name');
+            $table->string('description');
             $table->timestamps();
             $table->softDeletes();
         });

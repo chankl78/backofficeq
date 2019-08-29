@@ -36,15 +36,13 @@ export default {
   },
   methods: {
     ...mapActions(['loadType', 'createType', 'updateType']),
-    ...mapGetters(['currentType']),
+    ...mapGetters(['currentType', 'isTypeEditMode']),
     load () {
-      let id = this.$router.currentRoute.params.id
-      if (id) {
-        this.loadType({ id: id }).then((resp) => {
-          this.type = this.currentType().value
-          this.editMode = true
-        })
-      }
+      let id = this.$router.currentRoute.params.id || 'new'
+      this.loadType({ id: id }).then((resp) => {
+        this.type = this.currentType().description
+        this.editMode = this.isTypeEditMode()
+      })
     },
     save () {
       if (this.editMode) {
@@ -52,13 +50,37 @@ export default {
           id: this.currentType().id,
           value: this.type
         }).then((resp) => {
+          this.$q.notify({
+            color: 'positive',
+            position: 'top',
+            message: resp.data.message || 'Access type updated'
+          })
           this.$router.push('/default-table/access-types')
+        }).catch((error) => {
+          this.$q.notify({
+            color: 'negative',
+            position: 'top',
+            message: error.response.data.error || 'Error when access type update',
+            icon: 'report_problem'
+          })
         })
       } else {
         this.createType({
           value: this.type
         }).then((resp) => {
+          this.$q.notify({
+            color: 'positive',
+            position: 'top',
+            message: resp.data.message || 'Access type created'
+          })
           this.$router.push('/default-table/access-types')
+        }).catch((error) => {
+          this.$q.notify({
+            color: 'negative',
+            position: 'top',
+            message: error.response.data.error || 'Error when access type create',
+            icon: 'report_problem'
+          })
         })
       }
     }
