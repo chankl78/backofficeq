@@ -9,6 +9,7 @@
 
 # Laravel
 .env
+.DS_Store
 composer.lock
 /vendor
 /resources/views/vendor
