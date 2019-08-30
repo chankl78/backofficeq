@@ -51,7 +51,7 @@ export default {
         { name: 'email_verified_at', field: 'email_verified_at', label: 'Email Verified At', align: 'left', required: true, sortable: true },
         { name: 'role', field: 'role', label: 'Role', align: 'left', required: true, sortable: true },
         { name: 'accessType', field: 'accessType', label: 'Access type', align: 'left', required: true, sortable: true },
-        { name: 'status', field: 'status', label: 'Status', align: 'left', required: true, sortable: true }
+        { name: '_status', field: '_status', label: 'Status', align: 'left', required: true, sortable: true }
       ],
       filter: '',
       selected: []

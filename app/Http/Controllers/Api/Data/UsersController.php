@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Data;
 
 use App\Models\AccessType;
+use App\Models\Status;
 use App\Models\User;
 use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class UsersController extends Controller
 
     public function index()
     {
-        $users = User::with(['roles', 'accessTypes'])
+        $users = User::with(['roles', 'accessTypes', 'status'])
             ->orderBy('created_at', 'DESC')
             ->get();
         $users = $users->reject(function ($user) {
@@ -35,14 +36,16 @@ class UsersController extends Controller
         try {
             $roles = Role::all();
             $accessTypes = AccessType::all();
-            $user = User::with(['roles', 'accessTypes'])
+            $user = User::with(['roles', 'accessTypes', 'status'])
                 ->where(['uniquecode' => $request->get('id')])
                 ->first();
+            $statusesList = Status::all();
             if ($user) {
                 return response()->json([
                     'user' => $user,
                     'roles' => $roles,
                     'accessTypeList' => $accessTypes,
+                    'statusesList' => $statusesList,
                 ]);
             } else {
                 return response()->json([
@@ -62,12 +65,18 @@ class UsersController extends Controller
             $_user = $request->get('user');
             $_role = $request->get('role');
             $_accessType = $request->get('access_type');
-            $user = User::with(['roles', 'accessTypes'])
+            $_status = $request->get('status');
+            $user = User::with(['roles', 'accessTypes', 'status'])
                 ->where(['uniquecode' => $_user['uniquecode']])
                 ->first();
             $role = Role::findByName($_role['value']);
             if ($role) {
                 $user->syncRoles($role);
+            }
+            $status = Status::where(['id' => $_status['id']])->first();
+            if ($status) {
+                $user->status()->detach();
+                $user->status()->attach($status->id);
             }
             if (isset($_accessType['id'])) {
                 $accessType = AccessType::where(['id' => $_accessType['id']])->first();

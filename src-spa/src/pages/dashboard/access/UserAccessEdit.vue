@@ -33,11 +33,23 @@
                         />
                         <q-select
                             name="status"
-                            v-model="user.status"
-                            :options="statusOptions"
+                            v-model="status"
+                            :options="statusesList"
                             label="Status"
                             class="q-gutter-md q-mr-md"
-                        />
+                        >
+                            <template v-slot:option="scope">
+                                <q-item
+                                    v-bind="scope.itemProps"
+                                    v-on="scope.itemEvents"
+                                >
+                                    <q-item-section>
+                                        <q-item-label v-html="scope.opt.label" />
+                                        <q-item-label caption>( system name: {{ scope.opt.value }} )</q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </template>
+                        </q-select>
                     </div>
                 </div>
                 <div class="row">
@@ -108,9 +120,11 @@ export default {
       ],
       user: {},
       role: {},
+      status: {},
       accessType: {},
       typesList: [],
-      rolesList: []
+      rolesList: [],
+      statusesList: []
     }
   },
   created () {
@@ -118,7 +132,7 @@ export default {
   },
   methods: {
     ...mapActions(['loadUser', 'updateUser']),
-    ...mapGetters(['currentUser', 'availableRoles', 'accessTypeList']),
+    ...mapGetters(['currentUser', 'availableRoles', 'accessTypeList', 'availableStatuses']),
     load () {
       let id = this.$router.currentRoute.params.id
       if (id) {
@@ -142,8 +156,19 @@ export default {
               }
             }
           }
+          if (this.user.status) {
+            let _status = this.user.status.length ? this.user.status[0] : false
+            if (_status) {
+              this.status = {
+                id: _status.id,
+                label: _status.description,
+                value: _status.name
+              }
+            }
+          }
           this.rolesList = this.availableRoles()
           this.typesList = this.accessTypeList()
+          this.statusesList = this.availableStatuses()
         })
       }
     },
@@ -151,7 +176,8 @@ export default {
       this.updateUser({
         user: this.user,
         role: this.role,
-        access_type: this.accessType
+        access_type: this.accessType,
+        status: this.status
       }).then((resp) => {
         this.$q.notify({
           color: 'positive',

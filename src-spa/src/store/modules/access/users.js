@@ -7,14 +7,16 @@ const state = {
   users: [],
   user: {},
   availableRoles: [],
-  accessTypeList: []
+  accessTypeList: [],
+  availableStatuses: []
 }
 
 const getters = {
   currentUser: state => state.user || {},
   usersList: state => state.users,
   availableRoles: state => state.availableRoles,
-  accessTypeList: state => state.accessTypeList
+  accessTypeList: state => state.accessTypeList,
+  availableStatuses: state => state.availableStatuses
 }
 
 const actions = {
@@ -93,9 +95,9 @@ const mutations = {
       ...item,
       rowSelected: 'false',
       role: item.roles.shift().description,
-      accessType: item.access_types.length ? item.access_types.shift().description : []
+      accessType: item.access_types.length ? item.access_types.shift().description : [],
+      _status: item.status.length ? item.status[0].description : ''
     }))
-    console.log(state.users)
   },
   LOAD_USER_OK (state, data) {
     state.status = 'success'
@@ -106,6 +108,11 @@ const mutations = {
       value: item.name
     }))
     state.accessTypeList = data.accessTypeList.map((item) => ({
+      id: item.id,
+      label: item.description,
+      value: item.name
+    }))
+    state.availableStatuses = data.statusesList.map((item) => ({
       id: item.id,
       label: item.description,
       value: item.name
