@@ -44,11 +44,15 @@ class MainController extends Controller
 
     protected function getUserMenu()
     {
-        $user = Auth::user();
+        $user = auth('api')->user();
         $roleMenuAdditions = [];
 
         if ($user->getAuthIdentifier()) {
-            if (auth('api')->user()->hasAnyRole(['system-administrator', 'software-administrator'])) {
+            $access = [];
+            if (
+                $user->hasAnyRole(['system-administrator', 'software-administrator']) ||
+                ($user->hasPermissionTo('read') && $user->hasVerifiedEmail())
+            ) {
                 $access = [
                     'icon' => 'mdi-shield-account',
                     'to' => 'home',
@@ -96,8 +100,21 @@ class MainController extends Controller
                         ]
                     ]
                 ];
-                $roleMenuAdditions = array_merge($roleMenuAdditions, [$access]);
+            } elseif ($user->hasPermissionTo('read') && !$user->hasVerifiedEmail()) {
+                $access = [
+                    'icon' => 'mdi-account-question',
+                    'color' => 'red',
+                    'class' => 'text-negative',
+                    'captionClass' => 'text-negative',
+                    'label' => 'Email is not verified!',
+                    'caption' => '( Click to resend )',
+                    'separator' => true,
+                    'expandable' => false,
+                    'callFunc' => 'resendVerification',
+                    'callFuncParam' => ['email' => $user->email],
+                ];
             }
+            $roleMenuAdditions = array_merge($roleMenuAdditions, [$access]);
         }
         return array_merge($this->defaultMenuItems, $roleMenuAdditions);
     }

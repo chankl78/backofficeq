@@ -27,8 +27,9 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::prefix('data')->group(function () {
-    Route::middleware(['api', 'auth:api', 'verified:api'])->group(function() {
+    Route::middleware(['api', 'auth:api'])->group(function() {
         Route::get('default', 'Api\Data\MainController@index');
+        Route::get('email/resend-verification', 'Api\VerificationController@resend')->name('verification.resend');
         Route::get('roles', 'Api\Data\RolesController@index');
         Route::get('role', 'Api\Data\RolesController@role');
         Route::post('role', 'Api\Data\RolesController@create');

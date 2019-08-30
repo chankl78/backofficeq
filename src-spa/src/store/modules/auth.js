@@ -29,11 +29,15 @@ const actions = {
       })
     })
   },
-  register ({ commit }, user) {
+  register ({ commit, dispatch }, user) {
     return new Promise((resolve, reject) => {
       commit('AUTH_REQUEST')
       axios.post('/api/auth/register', user).then((response) => {
         if (response.status === 200) {
+          dispatch('login', {
+            username: user.email,
+            password: user.password
+          })
           resolve(response)
         }
       }).catch((err) => {

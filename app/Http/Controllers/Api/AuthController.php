@@ -29,7 +29,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:Access_m_User',
+            'email' => 'required|email|unique:users',
             'password'  => 'required|min:3|confirmed',
         ]);
 
@@ -52,7 +52,8 @@ class AuthController extends Controller
 
             event(new Registered($user));
 
-            $this->guard()->login($user);
+            // $this->guard()->login($user);
+            // $token = $this->guard('api')->attempt($request->only('email', 'password'));
 
             $this->logger->info('[Registration] Successfully created a new account.');
 
@@ -64,7 +65,7 @@ class AuthController extends Controller
             $this->logger->warning('[Registration] Unable to register user.');
 
             return response()->json([
-                'status' => '',
+                'status' => 401,
                 'message' => 'Unable to register user.'
             ], 401);
         }
@@ -75,20 +76,12 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
-            if ($this->guard()->user()->hasVerifiedEmail()) {
-                $this->logger->info('[Login] User logged in.');
+            $this->logger->info('[Login] User logged in.');
 
-                return response()->json([
-                    'status' => 'success',
-                    'user' => auth()->user()
-                ], 200)->header('Authorization', $token);
-            } else {
-                $this->logger->warning('[Login] Email address is not verified.');
-
-                return response()->json([
-                    'message' => 'Your email address is not verified.',
-                ], 401);
-            }
+            return response()->json([
+                'status' => 'success',
+                'user' => auth()->user()
+            ], 200)->header('Authorization', $token);
         }
 
         $this->logger->warning('[Login] Bad credentials.');
