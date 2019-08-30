@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\AccessmUser;
+use App\Models\User;
 use App\Services\BackofficeqLoggerService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
@@ -41,7 +41,7 @@ class AuthController extends Controller
         }
 
         try {
-            $user = new AccessmUser();
+            $user = new User();
             $user->name = $request->email;
             $user->email = $request->email;
             $user->username = $request->email;
@@ -112,7 +112,7 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        $user = AccessmUser::find(Auth::user()->id);
+        $user = User::find(Auth::user()->id);
 
         return response()->json([
             'status' => 'success',

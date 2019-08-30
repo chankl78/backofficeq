@@ -1,7 +1,6 @@
 <?php
 namespace App\Services;
 
-use App\Models\AccessmUser;
 use Closure;
 use Illuminate\Auth\Passwords\PasswordBroker as BasePasswordBroker;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
