@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AccessType;
+use App\Models\Status;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -19,6 +20,7 @@ class UserTableSeeder extends Seeder
         $userRole = Role::where(['name' => 'user'])->first();
         $adminAccessType = AccessType::where(['name' => 'admin'])->first();
         $temporaryAccessType = AccessType::where(['name' => 'temporary'])->first();
+        $status = Status::find(1);
 
         $systemAdmin = User::create([
             'name' => env('LH_NAME'),
@@ -30,6 +32,7 @@ class UserTableSeeder extends Seeder
         ]);
         $systemAdmin->assignRole($systemAdminRole);
         $systemAdmin->accessTypes()->attach($adminAccessType->id);
+        $systemAdmin->status()->attach($status->id);
 
         $softwareAdmin = User::create([
             'name' => env('LHG_NAME'),
@@ -41,7 +44,22 @@ class UserTableSeeder extends Seeder
         ]);
         $softwareAdmin->assignRole($softwareAdminRole);
         $softwareAdmin->accessTypes()->attach($adminAccessType->id);
+        $softwareAdmin->status()->attach($status->id);
 
+        for ($i = 1; $i < 12; $i++) {
+            $email = sprintf('user%s@user%s.loc', $i, $i);
+            $user = User::create([
+                'name' => $email,
+                'email' => $email,
+                'username' => $email,
+                'uniquecode' => Str::uuid(),
+                'email_verified_at' => now(),
+                'password' => Hash::make('qweqweqwe'),
+            ]);
+            $user->assignRole($userRole);
+            $user->accessTypes()->attach(AccessType::find(random_int(2, 4))->id);
+            $user->status()->attach(Status::find(random_int(1, 3))->id);
+        }
         $user = User::create([
             'name' => 'user@user.loc',
             'email' => 'user@user.loc',
@@ -52,5 +70,6 @@ class UserTableSeeder extends Seeder
         ]);
         $user->assignRole($userRole);
         $user->accessTypes()->attach($temporaryAccessType->id);
+        $user->status()->attach($status->id);
     }
 }

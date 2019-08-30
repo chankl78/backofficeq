@@ -31,6 +31,11 @@ class User extends AuthenticatableUser implements AuthenticatableContract, CanRe
         return $this->belongsToMany(AccessType::class, 'users_access_types');
     }
 
+    public function status()
+    {
+        return $this->belongsToMany(Status::class, 'users_statuses');
+    }
+
     public function getEmailForPasswordReset()
     {
         return $this->username;
