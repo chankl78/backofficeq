@@ -22,12 +22,17 @@
       show-if-above
     >
       <q-scroll-area class="fit">
-        <q-list v-for="(menuItem, index) in dashboardMenu" :key="index">
-          <q-item v-if="!menuItem.expandable" clickable :to="{ name: menuItem.to }" v-ripple exact>
+        <q-list v-for="(menuItem, index) in menu" :key="index">
+          <q-item v-if="!menuItem.expandable" clickable :to="{ name: menuItem.to }" @click="callFunc(menuItem, index)" v-ripple exact>
             <q-item-section avatar>
-              <q-icon :name="menuItem.icon" />
+              <q-icon :name="menuItem.icon" :color="menuItem.color || 'primary'" />
             </q-item-section>
-            <q-item-section>{{ menuItem.label }}</q-item-section>
+            <q-item-section :class="menuItem.class || ''">
+                <q-item-label lines="1">
+                    {{ menuItem.label }}
+                </q-item-label>
+                <q-item-label caption v-if="menuItem.caption" :class="menuItem.captionClass || ''">{{ menuItem.caption }}</q-item-label>
+            </q-item-section>
           </q-item>
           <q-expansion-item
             v-if="menuItem.expandable"
@@ -103,13 +108,13 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   data () {
     return {
       drawerLeft: true,
-      dashboardMenu: []
+      menu: []
     }
   },
   computed: {
@@ -118,24 +123,57 @@ export default {
     })
   },
   created () {
-    this.loadDashboard().then((resp) => {
-      if (resp.status === 401) {
-        this.$router.push('/login')
-      }
-      this.dashboardMenu = resp.data.menu
-    }).catch((err) => {
-      console.log(err)
-      this.$router.push('/login')
-    })
+    this.load()
   },
   methods: {
     ...mapActions([
       'loadDashboard',
       'logout',
-      'fetchAccessToken'
+      'fetchAccessToken',
+      'resendVerificationEmail'
     ]),
+    ...mapGetters(['dashboardMenu']),
+    load () {
+      this.loadDashboard().then((resp) => {
+        if (resp.status === 401) {
+          this.$router.push('/login')
+        }
+        this.menu = this.dashboardMenu()
+      }).catch((err) => {
+        console.log(err)
+        this.$router.push('/login')
+      })
+    },
     handleLogout () {
       this.logout().then(() => { this.$router.push('/login') })
+    },
+    resendVerification (params = {}, index = null) {
+      if (params.email) {
+        this.resendVerificationEmail(params.email).then((resp) => {
+          this.$q.notify({
+            color: 'positive',
+            position: 'top',
+            message: resp.data.message
+          })
+        }).catch((err) => {
+          this.$q.notify({
+            color: 'negative',
+            position: 'top',
+            message: err.response.data.error || 'Error when resend...',
+            icon: 'report_problem'
+          })
+        })
+      }
+    },
+    callFunc (item, index) {
+      let func = item.callFunc
+      if (item.callFunc) {
+        let params = item.callFuncParam || null
+        let fn = this[func]
+        if (fn) {
+          fn(params, index)
+        }
+      }
     }
   }
 }

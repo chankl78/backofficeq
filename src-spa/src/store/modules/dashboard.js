@@ -8,6 +8,10 @@ const state = {
   dashboard: {}
 }
 
+const getters = {
+  dashboardMenu: state => state.dashboard.menu || []
+}
+
 const actions = {
   loadDashboard ({ commit, dispatch }) {
     commit('LOAD_DASHBOARD')
@@ -16,11 +20,24 @@ const actions = {
       commit('LOAD_DATA')
       axios.get('/api/data/default').then((response) => {
         if (response.status === 200) {
-          commit('LOAD_DASHBOARD_OK', response.data.menu)
+          commit('LOAD_DASHBOARD_OK', response.data)
           resolve(response)
         }
       }).catch((err) => {
         commit('LOAD_DATA_FAIL')
+        reject(err)
+      })
+    })
+  },
+  resendVerificationEmail ({ commit, dispatch }, email) {
+    return new Promise((resolve, reject) => {
+      axios.get('api/data/email/resend-verification').then((response) => {
+        if (response.status === 200) {
+          // dispatch('loadDashboard')
+          resolve(response)
+        }
+      }).catch((err) => {
+        commit('AUTH_ERROR')
         reject(err)
       })
     })
@@ -50,6 +67,7 @@ const mutations = {
 
 export default {
   state,
+  getters,
   actions,
   mutations
 }
