@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\AccessmUser;
+use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class VerificationController extends Controller
     {
         $id = $request->route('id');
         if ($id && $request->hasValidSignature()) {
-            $user = AccessmUser::where('id', $id)->first();
+            $user = User::where('id', $id)->first();
             $user->markEmailAsVerified();
             event(new Verified($user));
             return response()->json([
