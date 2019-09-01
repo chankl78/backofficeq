@@ -57,7 +57,7 @@ export default {
     next(vm => {
       vm.loadStatusesList().then(() => {
         vm.loading = false
-        vm.selectionType = vm.allowed(['update', 'delete']) ? 'single' : 'none'
+        vm.selectionType = vm.allowed(['update', 'delete'], false) ? 'single' : 'none'
       })
     })
   },
