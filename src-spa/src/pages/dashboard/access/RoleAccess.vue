@@ -57,7 +57,7 @@ export default {
     next(vm => {
       vm.loadRolesList().then(() => {
         vm.loading = false
-        vm.selectionType = vm.allowed(['update', 'delete']) ? 'single' : 'none'
+        vm.selectionType = vm.allowed(['update', 'delete'], false) ? 'single' : 'none'
       })
     })
   },
@@ -77,7 +77,7 @@ export default {
       }
     },
     editRole () {
-      if (this.allowed('edit')) {
+      if (this.allowed('update')) {
         this.$router.push({
           name: 'role-access-edit',
           params: { id: this.selected[0].id }
