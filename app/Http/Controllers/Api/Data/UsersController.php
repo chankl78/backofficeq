@@ -69,6 +69,11 @@ class UsersController extends Controller
             $user = User::with(['roles', 'accessTypes', 'status'])
                 ->where(['uniquecode' => $_user['uniquecode']])
                 ->first();
+            $user->update([
+                'username' => $_user['username'],
+                'email' => $_user['email'],
+                'name' => $_user['name']
+            ]);
             $role = Role::findByName($_role['value']);
             if ($role) {
                 $user->syncRoles($role);

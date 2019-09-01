@@ -96,10 +96,10 @@
                         </q-select>
                     </div>
                 </div>
-                <div class="q-mt-md">
-                    <q-btn label="Save" type="submit" color="primary" @click="save"/>
-                    <q-btn label="Cancel" to="/user-access" color="primary" flat class="q-ml-sm" />
-                </div>
+                <q-page-sticky position="bottom-right" :offset="[18, 18]">
+                    <q-btn fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+                    <q-btn fab to="/user-access" icon="mdi-cancel"/>
+                </q-page-sticky>
             </q-form>
         </div>
     </q-page>
@@ -134,7 +134,7 @@ export default {
       if (id) {
         vm.loadUser({ id: id }).then((resp) => {
           vm.havePermissions = true
-          vm.user = vm.currentUser()
+          vm.user = JSON.parse(JSON.stringify(vm.currentUser()))
           if (vm.user.roles) {
             let _role = vm.user.roles[0]
             vm.role = {

@@ -10,12 +10,12 @@
                     lazy-rules
                     :rules="[ val => val && val.length > 0 || 'Please type something']"
                 />
-                <div>
-                    <q-btn label="Save" type="submit" color="primary" @click="save"/>
-                    <q-btn label="Cancel" to="/default-table/statuses" color="primary" flat class="q-ml-sm" />
-                </div>
             </q-form>
         </div>
+        <q-page-sticky position="bottom-right" :offset="[18, 18]">
+            <q-btn fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+            <q-btn fab to="/default-table/statuses" icon="mdi-cancel"/>
+        </q-page-sticky>
     </q-page>
 </template>
 
