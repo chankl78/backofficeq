@@ -2,12 +2,25 @@ import axios from 'axios'
 
 const state = {
   status: '',
-  token: null, // localStorage.getItem('token'),
+  token: null,
   user: {}
 }
 
 const getters = {
-  isLoggedIn: state => !!state.token
+  isLoggedIn: state => !!state.token,
+  userCan: state => (perm, strict = true) => {
+    let permissions = localStorage.getItem('p')
+    if (permissions) {
+      permissions = JSON.parse(atob(permissions))
+      if (typeof perm === 'string') {
+        perm = [perm]
+      }
+      if (Object.prototype.toString.call(permissions) === '[object Array]') {
+        return strict ? perm.every(p => permissions.includes(p)) : perm.some(p => permissions.includes(p))
+      }
+    }
+    return false
+  }
 }
 
 const actions = {
@@ -18,13 +31,16 @@ const actions = {
         if (response.status === 200) {
           const token = response.headers.authorization
           const user = response.data.user
+          const roles = response.data.roles
+          const permissions = response.data.permissions
           localStorage.setItem('token', token)
+          localStorage.setItem('r', btoa(JSON.stringify(roles)))
+          localStorage.setItem('p', btoa(JSON.stringify(permissions)))
           commit('AUTH_SUCCESS', token, user)
           resolve(response)
         }
       }).catch((err) => {
         commit('AUTH_ERROR')
-        localStorage.removeItem('token')
         reject(err)
       })
     })
@@ -95,7 +111,7 @@ const actions = {
   },
   fetchAccessToken ({ commit }) {
     return new Promise((resolve, reject) => {
-      commit('UPDATE_ACCESS_TOKEN', localStorage.getItem('token'))
+      commit('UPDATE_ACCESS_TOKEN')
       resolve(localStorage.getItem('token'))
     })
   }
@@ -112,11 +128,15 @@ const mutations = {
   },
   AUTH_ERROR (state) {
     state.status = 'error'
+    localStorage.removeItem('token')
+    localStorage.removeItem('r')
+    localStorage.removeItem('p')
   },
   AUTH_LOGOUT (state) {
     state.status = ''
     state.token = null
     state.user = {}
+    localStorage.clear()
   },
   AUTH_RESET_PASS_REQUEST (state) {
     state.status = 'loading'
@@ -129,7 +149,7 @@ const mutations = {
     state.user = {}
   },
   UPDATE_ACCESS_TOKEN (state, token) {
-    state.token = token
+    state.token = localStorage.getItem('token')
   }
 }
 

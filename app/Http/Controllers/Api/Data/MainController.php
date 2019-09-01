@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Data;
 
+use App\Models\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,6 +31,7 @@ class MainController extends Controller
 
     public function index()
     {
+        $userId = auth('api')->user();
         return response()->json([
             'status' => '',
             'contents' => [
@@ -38,8 +40,19 @@ class MainController extends Controller
                 'something3' => '345'
             ],
             'menu' => $this->getUserMenu(),
-            'user' => auth()->user()
         ], 200);
+    }
+
+    protected function getUserWithPermissions()
+    {
+        $userId = auth('api')->user()->id;
+        $user = User::with(['roles'])->where(['id' => $userId])->first();
+        $permissions = $user->getPermissionsViaRoles()->pluck('name');
+        return [
+            'user' => $user->only(['name', 'username', 'email']),
+            'roles' => $user->roles()->pluck('name'),
+            'permissions' => $permissions,
+        ];
     }
 
     protected function getUserMenu()

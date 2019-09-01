@@ -5,7 +5,8 @@ const state = {
   loading: false,
   token: localStorage.getItem('token'),
   menuList: [],
-  dashboard: {}
+  dashboard: {},
+  authenticatedUser: {}
 }
 
 const getters = {
@@ -29,11 +30,10 @@ const actions = {
       })
     })
   },
-  resendVerificationEmail ({ commit, dispatch }, email) {
+  resendVerificationEmail ({ commit }, email) {
     return new Promise((resolve, reject) => {
       axios.get('api/data/email/resend-verification').then((response) => {
         if (response.status === 200) {
-          // dispatch('loadDashboard')
           resolve(response)
         }
       }).catch((err) => {
@@ -61,6 +61,7 @@ const mutations = {
   }),
   LOAD_DASHBOARD_OK (state, data) {
     state.dashboard = data
+    state.authenticatedUser = data.user
     state.loading = false
   }
 }

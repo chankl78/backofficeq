@@ -7,7 +7,7 @@
                 row-key="id"
                 :loading="loading"
                 :filter="filter"
-                selection="single"
+                :selection="selectionType"
                 :selected.sync="selected"
             >
                 <template v-slot:top>
@@ -21,9 +21,9 @@
                 </template>
             </q-table>
             <q-btn-group>
-                <q-btn dense color="primary" :disable="loading" label="Add Role" @click="addRole" class="q-px-md"/>
-                <q-btn dense color="primary" :disable="loading || selected.length == 0" label="Update Role" @click="editRole" class="q-px-md"/>
-                <q-btn dense color="red" :disable="loading || selected.length == 0" label="Delete Role" @click="removeRole" class="q-px-md"/>
+                <q-btn v-if="allowed('create')" dense color="primary" :disable="loading" label="Add Role" @click="addRole" class="q-px-md"/>
+                <q-btn v-if="allowed('update')" dense color="primary" :disable="loading || selected.length == 0" label="Update Role" @click="editRole" class="q-px-md"/>
+                <q-btn v-if="allowed('delete')" dense color="red" :disable="loading || selected.length == 0" label="Delete Role" @click="removeRole" class="q-px-md"/>
             </q-btn-group>
         </div>
     </q-page>
@@ -49,51 +49,65 @@ export default {
         { name: 'description', field: 'description', label: 'Name', align: 'left', required: true, sortable: true }
       ],
       filter: '',
-      selected: []
+      selected: [],
+      selectionType: 'none'
     }
   },
-  created () {
-    this.loadRolesList().then(() => {
-      this.loading = false
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.loadRolesList().then(() => {
+        vm.loading = false
+        vm.selectionType = vm.allowed(['update', 'delete']) ? 'single' : 'none'
+      })
     })
+  },
+  computed: {
+    allowed (arr) {
+      return this.userCan(arr)
+    }
   },
   methods: {
     ...mapActions(['loadRolesList', 'deleteRole']),
-    ...mapGetters(['rolesList']),
+    ...mapGetters(['rolesList', 'userCan']),
     addRole () {
-      this.$router.push({
-        name: 'role-access-new'
-      })
+      if (this.allowed('create')) {
+        this.$router.push({
+          name: 'role-access-new'
+        })
+      }
     },
     editRole () {
-      this.$router.push({
-        name: 'role-access-edit',
-        params: { id: this.selected[0].id }
-      })
-      console.log(this.selected[0].id)
+      if (this.allowed('edit')) {
+        this.$router.push({
+          name: 'role-access-edit',
+          params: { id: this.selected[0].id }
+        })
+      }
     },
     removeRole () {
-      this.$q.dialog({
-        title: 'Delete Role',
-        message: 'Are you sure?',
-        cancel: true,
-        persistent: true
-      }).onOk(data => {
-        this.deleteRole(this.selected[0].id).then((response) => {
-          this.$q.notify({
-            color: 'positive',
-            position: 'top',
-            message: response.data.message
-          })
-        }).catch((error) => {
-          this.$q.notify({
-            color: 'negative',
-            position: 'top',
-            message: error.response.data.error || 'Loading failed',
-            icon: 'report_problem'
+      if (this.allowed('delete')) {
+        this.$q.dialog({
+          title: 'Delete Role',
+          message: 'Are you sure?',
+          cancel: true,
+          persistent: true
+        }).onOk(data => {
+          this.deleteRole(this.selected[0].id).then((response) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: response.data.message
+            })
+          }).catch((error) => {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.error || 'Loading failed',
+              icon: 'report_problem'
+            })
           })
         })
-      })
+      }
     }
   }
 }

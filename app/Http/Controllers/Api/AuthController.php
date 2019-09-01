@@ -78,9 +78,15 @@ class AuthController extends Controller
         if ($token = $this->guard()->attempt($credentials)) {
             $this->logger->info('[Login] User logged in.');
 
+            $userId = auth('api')->user()->id;
+            $user = User::with(['roles'])->where(['id' => $userId])->first();
+            $permissions = $user->getPermissionsViaRoles()->pluck('name');
+
             return response()->json([
                 'status' => 'success',
-                'user' => auth()->user()
+                'user' => $user,
+                'roles' => $user->roles()->pluck('name'),
+                'permissions' => $permissions,
             ], 200)->header('Authorization', $token);
         }
 

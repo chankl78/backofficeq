@@ -1,6 +1,6 @@
 <template>
     <q-page padding>
-        <div class="q-pa-md q-gutter-sm">
+        <div class="q-pa-md q-gutter-sm" v-if="havePermissions">
             <h4>Edit user</h4>
             <q-form ref="roleForm" class="q-pa-md">
                 <div class="row">
@@ -124,54 +124,65 @@ export default {
       accessType: {},
       typesList: [],
       rolesList: [],
-      statusesList: []
+      statusesList: [],
+      havePermissions: false
     }
   },
-  created () {
-    this.load()
-  },
-  methods: {
-    ...mapActions(['loadUser', 'updateUser']),
-    ...mapGetters(['currentUser', 'availableRoles', 'accessTypeList', 'availableStatuses']),
-    load () {
-      let id = this.$router.currentRoute.params.id
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      let id = vm.$router.currentRoute.params.id
       if (id) {
-        this.loadUser({ id: id }).then((resp) => {
-          this.user = this.currentUser()
-          if (this.user.roles) {
-            let _role = this.user.roles[0]
-            this.role = {
+        vm.loadUser({ id: id }).then((resp) => {
+          vm.havePermissions = true
+          vm.user = vm.currentUser()
+          if (vm.user.roles) {
+            let _role = vm.user.roles[0]
+            vm.role = {
               id: _role.id,
               label: _role.description,
               value: _role.name
             }
           }
-          if (this.user.access_types) {
-            let _type = this.user.access_types.length ? this.user.access_types[0] : false
+          if (vm.user.access_types) {
+            let _type = vm.user.access_types.length ? vm.user.access_types[0] : false
             if (_type) {
-              this.accessType = {
+              vm.accessType = {
                 id: _type.id,
                 label: _type.description,
                 value: _type.name
               }
             }
           }
-          if (this.user.status) {
-            let _status = this.user.status.length ? this.user.status[0] : false
+          if (vm.user.status) {
+            let _status = vm.user.status.length ? vm.user.status[0] : false
             if (_status) {
-              this.status = {
+              vm.status = {
                 id: _status.id,
                 label: _status.description,
                 value: _status.name
               }
             }
           }
-          this.rolesList = this.availableRoles()
-          this.typesList = this.accessTypeList()
-          this.statusesList = this.availableStatuses()
+          vm.rolesList = vm.availableRoles()
+          vm.typesList = vm.accessTypeList()
+          vm.statusesList = vm.availableStatuses()
+        }).catch((error) => {
+          vm.$q.notify({
+            color: 'negative',
+            position: 'top',
+            message: error.response.data.error || 'Error when access type update',
+            icon: 'report_problem'
+          })
+          next(from)
         })
+      } else {
+        next(from)
       }
-    },
+    })
+  },
+  methods: {
+    ...mapActions(['loadUser', 'updateUser']),
+    ...mapGetters(['currentUser', 'availableRoles', 'accessTypeList', 'availableStatuses']),
     save () {
       this.updateUser({
         user: this.user,

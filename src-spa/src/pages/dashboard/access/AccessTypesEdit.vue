@@ -1,6 +1,6 @@
 <template>
-    <q-page padding>
-        <div class="q-pa-md q-gutter-sm">
+    <q-page padding onload="">
+        <div class="q-pa-md q-gutter-sm" v-if="havePermissions">
             <h4>{{ this.editMode ? 'Edit access type' : 'Create access type'}}</h4>
             <q-form ref="typeForm" class="q-pa-md" style="max-width: 400px">
                 <q-input
@@ -28,22 +28,31 @@ export default {
     return {
       loading: false,
       type: '',
-      editMode: false
+      editMode: false,
+      havePermissions: false
     }
   },
-  created () {
-    this.load()
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      let id = vm.$router.currentRoute.params.id || 'new'
+      vm.loadType({ id: id }).then((resp) => {
+        vm.type = vm.currentType().description
+        vm.editMode = vm.isTypeEditMode()
+        vm.havePermissions = true
+      }).catch((error) => {
+        next(from)
+        vm.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: error.response.data.error || 'Error when access type update',
+          icon: 'report_problem'
+        })
+      })
+    })
   },
   methods: {
     ...mapActions(['loadType', 'createType', 'updateType']),
     ...mapGetters(['currentType', 'isTypeEditMode']),
-    load () {
-      let id = this.$router.currentRoute.params.id || 'new'
-      this.loadType({ id: id }).then((resp) => {
-        this.type = this.currentType().description
-        this.editMode = this.isTypeEditMode()
-      })
-    },
     save () {
       if (this.editMode) {
         this.updateType({
@@ -63,6 +72,7 @@ export default {
             message: error.response.data.error || 'Error when access type update',
             icon: 'report_problem'
           })
+          this.$router.push('/default-table/access-types')
         })
       } else {
         this.createType({
@@ -81,6 +91,7 @@ export default {
             message: error.response.data.error || 'Error when access type create',
             icon: 'report_problem'
           })
+          this.$router.push('/default-table/access-types')
         })
       }
     }
