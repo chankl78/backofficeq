@@ -9,7 +9,7 @@
           <q-avatar>
             <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
           </q-avatar>
-          Title
+          {{ resourceTitle }}
         </q-toolbar-title>
         <q-btn stretch flat label="Logout" @click.prevent="handleLogout" />
       </q-toolbar>
@@ -120,7 +120,10 @@ export default {
   computed: {
     ...mapState({
       user: state => state.user
-    })
+    }),
+    resourceTitle () {
+      return this.$route.meta.title
+    }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
