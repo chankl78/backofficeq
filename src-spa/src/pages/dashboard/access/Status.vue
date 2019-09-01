@@ -7,7 +7,7 @@
                 row-key="id"
                 :loading="loading"
                 :filter="filter"
-                selection="single"
+                :selection="selectionType"
                 :selected.sync="selected"
             >
                 <template v-slot:top>
@@ -21,9 +21,9 @@
                 </template>
             </q-table>
             <q-btn-group>
-                <q-btn dense color="primary" :disable="loading" label="Add Status" @click="addStatus" class="q-px-md"/>
-                <q-btn dense color="primary" :disable="loading || selected.length == 0" label="Update Status" @click="editStatus" class="q-px-md"/>
-                <q-btn dense color="red" :disable="loading || selected.length == 0" label="Delete Status" @click="removeStatus" class="q-px-md"/>
+                <q-btn v-if="allowed('create')" dense color="primary" :disable="loading" label="Add Status" @click="addStatus" class="q-px-md"/>
+                <q-btn v-if="allowed('update')" dense color="primary" :disable="loading || selected.length == 0" label="Update Status" @click="editStatus" class="q-px-md"/>
+                <q-btn v-if="allowed('delete')" dense color="red" :disable="loading || selected.length == 0" label="Delete Status" @click="removeStatus" class="q-px-md"/>
             </q-btn-group>
         </div>
     </q-page>
@@ -49,53 +49,67 @@ export default {
         { name: 'description', field: 'description', label: 'Status Name', align: 'left', required: true, sortable: true }
       ],
       filter: '',
-      selected: []
+      selected: [],
+      selectionType: 'none'
     }
   },
-  created () {
-    this.loadStatusesList().then(() => {
-      this.loading = false
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.loadStatusesList().then(() => {
+        vm.loading = false
+        vm.selectionType = vm.allowed(['update', 'delete']) ? 'single' : 'none'
+      })
     })
+  },
+  computed: {
+    allowed (arr) {
+      return this.userCan(arr)
+    }
   },
   methods: {
     ...mapActions(['loadStatusesList', 'deleteStatus']),
-    ...mapGetters(['statusesList']),
+    ...mapGetters(['statusesList', 'userCan']),
     addStatus () {
-      this.$router.push({
-        name: 'default-table-statuses-new'
-      })
+      if (this.allowed('create')) {
+        this.$router.push({
+          name: 'default-table-statuses-new'
+        })
+      }
     },
     editStatus () {
-      this.$router.push({
-        name: 'default-table-statuses-edit',
-        params: { id: this.selected[0].id }
-      })
-      console.log(this.selected[0].id)
+      if (this.allowed('update')) {
+        this.$router.push({
+          name: 'default-table-statuses-edit',
+          params: { id: this.selected[0].id }
+        })
+      }
     },
     removeStatus () {
-      this.$q.dialog({
-        title: 'Delete Status',
-        message: 'Are you sure?',
-        cancel: true,
-        persistent: true
-      }).onOk(data => {
-        this.deleteStatus(this.selected[0].id).then((response) => {
-          this.$q.notify({
-            color: 'positive',
-            position: 'top',
-            message: response.data.message
+      if (this.allowed('delete')) {
+        this.$q.dialog({
+          title: 'Delete Status',
+          message: 'Are you sure?',
+          cancel: true,
+          persistent: true
+        }).onOk(data => {
+          this.deleteStatus(this.selected[0].id).then((response) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: response.data.message
+            })
+            this.selected = []
+          }).catch((error) => {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.error || 'Loading failed',
+              icon: 'report_problem'
+            })
+            this.selected = []
           })
-          this.selected = []
-        }).catch((error) => {
-          this.$q.notify({
-            color: 'negative',
-            position: 'top',
-            message: error.response.data.error || 'Loading failed',
-            icon: 'report_problem'
-          })
-          this.selected = []
         })
-      })
+      }
     }
   }
 }

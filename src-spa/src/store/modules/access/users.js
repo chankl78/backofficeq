@@ -112,7 +112,7 @@ const mutations = {
       label: item.description,
       value: item.name
     }))
-    state.availableStatuses = data.statusesList.map((item) => ({
+    state.statusesList = data.statusesList.map((item) => ({
       id: item.id,
       label: item.description,
       value: item.name

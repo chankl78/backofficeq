@@ -122,8 +122,17 @@ export default {
       user: state => state.user
     })
   },
-  created () {
-    this.load()
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.loadDashboard().then((resp) => {
+        if (resp.status === 401) {
+          vm.$router.push('/login')
+        }
+        vm.menu = vm.dashboardMenu()
+      }).catch(() => {
+        vm.$router.push('/login')
+      })
+    })
   },
   methods: {
     ...mapActions([
@@ -133,17 +142,6 @@ export default {
       'resendVerificationEmail'
     ]),
     ...mapGetters(['dashboardMenu']),
-    load () {
-      this.loadDashboard().then((resp) => {
-        if (resp.status === 401) {
-          this.$router.push('/login')
-        }
-        this.menu = this.dashboardMenu()
-      }).catch((err) => {
-        console.log(err)
-        this.$router.push('/login')
-      })
-    },
     handleLogout () {
       this.logout().then(() => { this.$router.push('/login') })
     },

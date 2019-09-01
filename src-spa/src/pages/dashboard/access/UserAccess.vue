@@ -7,7 +7,7 @@
                 row-key="uniquecode"
                 :loading="loading"
                 :filter="filter"
-                selection="single"
+                :selection="selectionType"
                 :selected.sync="selected"
             >
                 <template v-slot:top>
@@ -21,8 +21,8 @@
                 </template>
             </q-table>
             <q-btn-group>
-                <q-btn dense color="primary" :disable="loading || selected.length == 0" label="Edit User" @click="editUser" class="q-px-md"/>
-                <q-btn dense color="red" :disable="loading || selected.length == 0" label="Delete User" @click="removeUser" class="q-px-md"/>
+                <q-btn v-if="allowed('update')" dense color="primary" :disable="loading || selected.length == 0" label="Edit User" @click="editUser" class="q-px-md"/>
+                <q-btn v-if="allowed('delete')" dense color="red" :disable="loading || selected.length == 0" label="Delete User" @click="removeUser" class="q-px-md"/>
             </q-btn-group>
         </div>
     </q-page>
@@ -54,45 +54,58 @@ export default {
         { name: '_status', field: '_status', label: 'Status', align: 'left', required: true, sortable: true }
       ],
       filter: '',
-      selected: []
+      selected: [],
+      selectionType: 'none'
     }
   },
-  created () {
-    this.loadUsersList().then(() => {
-      this.loading = false
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.loadUsersList().then(() => {
+        vm.loading = false
+        vm.selectionType = vm.allowed(['update', 'delete']) ? 'single' : 'none'
+      })
     })
+  },
+  computed: {
+    allowed (arr) {
+      return this.userCan(arr)
+    }
   },
   methods: {
     ...mapActions(['loadUsersList', 'deleteUser']),
-    ...mapGetters(['usersList']),
+    ...mapGetters(['usersList', 'userCan']),
     editUser () {
-      this.$router.push({
-        name: 'user-access-edit',
-        params: { id: this.selected[0].uniquecode }
-      })
+      if (this.allowed('update')) {
+        this.$router.push({
+          name: 'user-access-edit',
+          params: { id: this.selected[0].uniquecode }
+        })
+      }
     },
     removeUser () {
-      this.$q.dialog({
-        title: 'Delete User',
-        message: 'Are you sure?',
-        cancel: true,
-        persistent: true
-      }).onOk(data => {
-        this.deleteUser(this.selected[0].uniquecode).then((response) => {
-          this.$q.notify({
-            color: 'positive',
-            position: 'top',
-            message: response.data.message
-          })
-        }).catch((error) => {
-          this.$q.notify({
-            color: 'negative',
-            position: 'top',
-            message: error.response.data.error || 'Loading failed',
-            icon: 'report_problem'
+      if (this.allowed('delete')) {
+        this.$q.dialog({
+          title: 'Delete User',
+          message: 'Are you sure?',
+          cancel: true,
+          persistent: true
+        }).onOk(data => {
+          this.deleteUser(this.selected[0].uniquecode).then((response) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: response.data.message
+            })
+          }).catch((error) => {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.error || 'Loading failed',
+              icon: 'report_problem'
+            })
           })
         })
-      })
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
     <q-page padding>
-        <div class="q-pa-md q-gutter-sm">
+        <div class="q-pa-md q-gutter-sm" v-if="havePermissions">
             <h4>{{ this.isEditMode() ? 'Edit role' : 'Create role'}}</h4>
             <q-form ref="roleForm" class="q-pa-md">
                 <div class="row">
@@ -70,38 +70,46 @@ export default {
       resources: [],
       permissions: [],
       selectedPermissions: [],
-      editMode: false
+      editMode: false,
+      havePermissions: false
     }
   },
-  created () {
-    this.load()
-  },
-  methods: {
-    ...mapActions(['loadRole', 'createRole', 'updateRole']),
-    ...mapGetters(['currentRole', 'permissionList', 'resourcesList', 'isEditMode']),
-    load () {
-      let id = this.$router.currentRoute.params.id || 'new'
-      this.loadRole({ id: id }).then((resp) => {
-        this.permissions = this.permissionList()
-        this.resources = this.resourcesList()
-        let _resource = this.currentRole().resource.length ? this.currentRole().resource[0] : false
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      let id = vm.$router.currentRoute.params.id || 'new'
+      vm.loadRole({ id: id }).then((resp) => {
+        vm.havePermissions = true
+        vm.permissions = vm.permissionList()
+        vm.resources = vm.resourcesList()
+        let _resource = vm.currentRole().resource.length ? vm.currentRole().resource[0] : false
         if (_resource) {
-          this.resource = {
+          vm.resource = {
             id: _resource.id,
             label: _resource.resource,
             value: _resource.code,
             description: _resource.resourcegroupcode
           }
         }
-        console.log(this.resource)
         if (id !== 'new') {
-          this.role = this.currentRole().description
-          this.selectedPermissions = this.currentRole().permissions.map((role) => {
+          vm.role = vm.currentRole().description
+          vm.selectedPermissions = vm.currentRole().permissions.map((role) => {
             return role.name
           })
         }
+      }).catch((error) => {
+        next(from)
+        vm.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: error.response.data.error || 'Error when access type update',
+          icon: 'report_problem'
+        })
       })
-    },
+    })
+  },
+  methods: {
+    ...mapActions(['loadRole', 'createRole', 'updateRole']),
+    ...mapGetters(['currentRole', 'permissionList', 'resourcesList', 'isEditMode']),
     save () {
       if (this.isEditMode()) {
         this.updateRole({
@@ -110,7 +118,19 @@ export default {
           permissions: this.selectedPermissions,
           resource: this.resource
         }).then((resp) => {
+          this.$q.notify({
+            color: 'positive',
+            position: 'top',
+            message: resp.data.message || 'Role created'
+          })
           this.$router.push('/role-access')
+        }).catch((error) => {
+          this.$q.notify({
+            color: 'negative',
+            position: 'top',
+            message: error.response.data.error || 'Loading failed',
+            icon: 'report_problem'
+          })
         })
       } else {
         this.createRole({
