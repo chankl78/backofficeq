@@ -20,10 +20,10 @@
                     </q-input>
                 </template>
             </q-table>
-            <q-btn-group>
-                <q-btn v-if="allowed('update')" dense color="primary" :disable="loading || selected.length == 0" label="Edit User" @click="editUser" class="q-px-md"/>
-                <q-btn v-if="allowed('delete')" dense color="red" :disable="loading || selected.length == 0" label="Delete User" @click="removeUser" class="q-px-md"/>
-            </q-btn-group>
+            <q-page-sticky position="bottom-right" :offset="[18, 18]">
+                <q-btn v-if="allowed('update')" fab color="primary" :disable="loading || selected.length == 0" icon="mdi-pencil" @click="editUser" class="q-mr-sm"/>
+                <q-btn v-if="allowed('delete')" fab color="red" :disable="loading || selected.length == 0" icon="mdi-delete" @click="removeUser"/>
+            </q-page-sticky>
         </div>
     </q-page>
 </template>

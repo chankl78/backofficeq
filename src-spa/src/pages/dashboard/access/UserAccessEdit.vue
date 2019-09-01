@@ -1,7 +1,10 @@
 <template>
     <q-page padding>
         <div class="q-pa-md q-gutter-sm" v-if="havePermissions">
-            <h4>Edit user</h4>
+            <h4>
+                Edit user
+                <q-btn icon-right="send" label="Reset password" @click="handleForgotPassword" class="float-right"/>
+            </h4>
             <q-form ref="roleForm" class="q-pa-md">
                 <div class="row">
                     <div class="col-lg-6 col-xs-12">
@@ -79,7 +82,7 @@
                             name="accessType"
                             v-model="accessType"
                             :options="typesList"
-                            label="Role"
+                            label="Access Type"
                             class="q-gutter-md q-mr-md"
                         >
                             <template v-slot:option="scope">
@@ -96,10 +99,38 @@
                         </q-select>
                     </div>
                 </div>
-                <div class="q-mt-md">
-                    <q-btn label="Save" type="submit" color="primary" @click="save"/>
-                    <q-btn label="Cancel" to="/user-access" color="primary" flat class="q-ml-sm" />
-                </div>
+                <q-markup-table separator="cell" flat bordered class="q-mt-md">
+                    <thead>
+                        <tr>
+                            <th colspan="2">
+                                <div class="row no-wrap items-center">
+                                    <h5>Active roles and access types</h5>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- -->
+                    </tbody>
+                </q-markup-table>
+                <q-markup-table separator="cell" flat bordered class="q-mt-md">
+                    <thead>
+                        <tr>
+                            <th colspan="2">
+                                <div class="row no-wrap items-center">
+                                    <h5>Active modules</h5>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- -->
+                    </tbody>
+                </q-markup-table>
+                <q-page-sticky position="bottom-right" :offset="[18, 18]">
+                    <q-btn fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+                    <q-btn fab to="/user-access" icon="mdi-cancel"/>
+                </q-page-sticky>
             </q-form>
         </div>
     </q-page>
@@ -134,7 +165,7 @@ export default {
       if (id) {
         vm.loadUser({ id: id }).then((resp) => {
           vm.havePermissions = true
-          vm.user = vm.currentUser()
+          vm.user = JSON.parse(JSON.stringify(vm.currentUser()))
           if (vm.user.roles) {
             let _role = vm.user.roles[0]
             vm.role = {
@@ -181,8 +212,39 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['loadUser', 'updateUser']),
+    ...mapActions(['loadUser', 'updateUser', 'forgotPassword']),
     ...mapGetters(['currentUser', 'availableRoles', 'accessTypeList', 'availableStatuses']),
+    handleForgotPassword () {
+      let email = this.user.email
+      this.forgotPassword(email)
+        .then((resp) => {
+          this.$q.notify({
+            color: 'positive',
+            position: 'top',
+            message: 'Password reset link sent'
+          })
+        })
+        .catch((error) => {
+          if (error.response.status === 402) {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.message,
+              icon: 'report_problem'
+            })
+          } else {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: [
+                error.response.data.message,
+                error.response.data.errors.email
+              ].join('. '),
+              icon: 'report_problem'
+            })
+          }
+        })
+    },
     save () {
       this.updateUser({
         user: this.user,

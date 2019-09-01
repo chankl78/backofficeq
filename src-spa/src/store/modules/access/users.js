@@ -48,6 +48,7 @@ const actions = {
     commit('UPDATE_USER')
     return new Promise((resolve, reject) => {
       axios.put('api/data/user/update', data).then((response) => {
+        console.log(data)
         commit('UPDATE_USER_OK', response.data)
         resolve(response)
       }).catch((err) => {

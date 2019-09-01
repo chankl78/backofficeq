@@ -20,11 +20,11 @@
                     </q-input>
                 </template>
             </q-table>
-            <q-btn-group>
-                <q-btn v-if="allowed('create')" dense color="primary" :disable="loading" label="Add Type" @click="addType" class="q-px-md"/>
-                <q-btn v-if="allowed('update')" dense color="primary" :disable="loading || selected.length == 0" label="Update Type" @click="editType" class="q-px-md"/>
-                <q-btn v-if="allowed('delete')" dense color="red" :disable="loading || selected.length == 0" label="Delete Type" @click="removeType" class="q-px-md"/>
-            </q-btn-group>
+            <q-page-sticky position="bottom-right" :offset="[18, 18]">
+                <q-btn v-if="allowed('create')" fab color="primary" :disable="loading" icon="mdi-plus" @click="addType" class="q-mr-sm"/>
+                <q-btn v-if="allowed('update')" fab color="primary" :disable="loading || selected.length == 0" icon="mdi-pencil" @click="editType" class="q-mr-sm"/>
+                <q-btn v-if="allowed('delete')" fab color="red" :disable="loading || selected.length == 0" icon="mdi-delete" @click="removeType"/>
+            </q-page-sticky>
         </div>
     </q-page>
 </template>

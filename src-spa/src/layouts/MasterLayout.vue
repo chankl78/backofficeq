@@ -9,7 +9,7 @@
           <q-avatar>
             <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
           </q-avatar>
-          Title
+          {{ resourceTitle }}
         </q-toolbar-title>
         <q-btn stretch flat label="Logout" @click.prevent="handleLogout" />
       </q-toolbar>
@@ -93,14 +93,18 @@
       <router-view />
     </q-page-container>
 
-    <q-footer reveal elevated class="bg-grey-8 text-white">
-      <q-toolbar>
+    <q-footer reveal elevated class="row bg-grey-8 text-white">
+      <q-toolbar class="col-4">
         <q-toolbar-title>
           <q-avatar>
             <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
           </q-avatar>
           SSASoft - Backoffice
         </q-toolbar-title>
+      </q-toolbar>
+      <q-toolbar class="col-8" ref="footerToolbar">
+        <q-space/>
+        <template v-slot:footer></template>
       </q-toolbar>
     </q-footer>
 
@@ -120,7 +124,10 @@ export default {
   computed: {
     ...mapState({
       user: state => state.user
-    })
+    }),
+    resourceTitle () {
+      return this.$route.meta.title
+    }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {

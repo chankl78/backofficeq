@@ -74,6 +74,7 @@ const routes = [
         name: 'home',
         component: Home,
         meta: {
+          title: 'Home',
           requiresAuth: true
         }
       },
@@ -82,6 +83,7 @@ const routes = [
         name: 'profile',
         component: Profile,
         meta: {
+          title: 'Profile',
           requiresAuth: true
         }
       },
@@ -90,6 +92,7 @@ const routes = [
         name: 'settings',
         component: Settings,
         meta: {
+          title: 'Settings',
           requiresAuth: true
         }
       },
@@ -98,6 +101,7 @@ const routes = [
         name: 'role-access',
         component: RoleAccess,
         meta: {
+          title: 'Roles list',
           requiresAuth: true
         }
       },
@@ -106,6 +110,7 @@ const routes = [
         name: 'role-access-edit',
         component: RoleAccessEdit,
         meta: {
+          title: 'Edit role',
           requiresAuth: true
         }
       },
@@ -114,6 +119,7 @@ const routes = [
         name: 'role-access-new',
         component: RoleAccessEdit,
         meta: {
+          title: 'Create role',
           requiresAuth: true
         }
       },
@@ -122,6 +128,7 @@ const routes = [
         name: 'user-access',
         component: UserAccess,
         meta: {
+          title: 'User permissions',
           requiresAuth: true
         }
       },
@@ -130,6 +137,7 @@ const routes = [
         name: 'user-access-edit',
         component: UserAccessEdit,
         meta: {
+          title: 'Edit user permissions',
           requiresAuth: true
         }
       },
@@ -138,6 +146,7 @@ const routes = [
         name: 'default-table-access-types',
         component: AccessTypes,
         meta: {
+          title: 'Access types list',
           requiresAuth: true
         }
       },
@@ -146,6 +155,7 @@ const routes = [
         name: 'default-table-access-types-new',
         component: AccessTypesEdit,
         meta: {
+          title: 'Create access type',
           requiresAuth: true
         }
       },
@@ -154,6 +164,7 @@ const routes = [
         name: 'default-table-access-types-edit',
         component: AccessTypesEdit,
         meta: {
+          title: 'Edit access type',
           requiresAuth: true
         }
       },
@@ -162,6 +173,7 @@ const routes = [
         name: 'default-table-statuses',
         component: Status,
         meta: {
+          title: 'User statuses list',
           requiresAuth: true
         }
       },
@@ -170,6 +182,7 @@ const routes = [
         name: 'default-table-statuses-new',
         component: StatusEdit,
         meta: {
+          title: 'Create user status',
           requiresAuth: true
         }
       },
@@ -178,6 +191,7 @@ const routes = [
         name: 'default-table-statuses-edit',
         component: StatusEdit,
         meta: {
+          title: 'Edit user status',
           requiresAuth: true
         }
       }
