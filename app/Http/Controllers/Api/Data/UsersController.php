@@ -34,7 +34,7 @@ class UsersController extends Controller
     public function info(Request $request)
     {
         try {
-            $roles = Role::all();
+            $roles = Role::with('permissions')->get();
             $accessTypes = AccessType::all();
             $user = User::with(['roles', 'accessTypes', 'status'])
                 ->where(['uniquecode' => $request->get('id')])
@@ -74,7 +74,7 @@ class UsersController extends Controller
                 'email' => $_user['email'],
                 'name' => $_user['name']
             ]);
-            $role = Role::findByName($_role['value']);
+            $role = Role::whereIn('id', collect($_role)->pluck('id'))->get()->pluck('name');
             if ($role) {
                 $user->syncRoles($role);
             }

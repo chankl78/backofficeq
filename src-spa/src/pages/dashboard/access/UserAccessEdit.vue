@@ -61,6 +61,7 @@
                             name="role"
                             v-model="role"
                             :options="rolesList"
+                            multiple
                             label="Role"
                             class="q-gutter-md q-mr-md"
                         >
@@ -101,16 +102,23 @@
                 </div>
                 <q-markup-table separator="cell" flat bordered class="q-mt-md">
                     <thead>
-                        <tr>
+                        <tr class="bg-blue-grey-1">
                             <th colspan="2">
                                 <div class="row no-wrap items-center">
-                                    <h5>Active roles and access types</h5>
+                                    <p class="q-table__title">Active roles and permissions</p>
                                 </div>
                             </th>
                         </tr>
+                        <tr>
+                            <th>Role</th>
+                            <th>Permissions</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <!-- -->
+                        <tr v-for="(r, i) in role" :key="i">
+                            <td>{{ r.label }}</td>
+                            <td>{{ r.permissions.map(p => p.name).join(', ') }}</td>
+                        </tr>
                     </tbody>
                 </q-markup-table>
                 <q-markup-table separator="cell" flat bordered class="q-mt-md">
@@ -118,7 +126,7 @@
                         <tr>
                             <th colspan="2">
                                 <div class="row no-wrap items-center">
-                                    <h5>Active modules</h5>
+                                    <p class="q-table__title">Active modules</p>
                                 </div>
                             </th>
                         </tr>
@@ -155,6 +163,7 @@ export default {
       accessType: {},
       typesList: [],
       rolesList: [],
+      activeRolesWithPermissions: [],
       statusesList: [],
       havePermissions: false
     }
@@ -167,12 +176,11 @@ export default {
           vm.havePermissions = true
           vm.user = JSON.parse(JSON.stringify(vm.currentUser()))
           if (vm.user.roles) {
-            let _role = vm.user.roles[0]
-            vm.role = {
+            vm.role = vm.user.roles.map((_role) => ({
               id: _role.id,
               label: _role.description,
               value: _role.name
-            }
+            }))
           }
           if (vm.user.access_types) {
             let _type = vm.user.access_types.length ? vm.user.access_types[0] : false
@@ -197,6 +205,9 @@ export default {
           vm.rolesList = vm.availableRoles()
           vm.typesList = vm.accessTypeList()
           vm.statusesList = vm.availableStatuses()
+          let activeRoles = vm.user.roles.map(r => r.id)
+          vm.activeRolesWithPermissions = vm.availableRoles().filter(r => activeRoles.includes(r.id))
+          vm.role = vm.activeRolesWithPermissions
         }).catch((error) => {
           vm.$q.notify({
             color: 'negative',

@@ -95,7 +95,7 @@ const mutations = {
     state.users = _data.map((item) => ({
       ...item,
       rowSelected: 'false',
-      role: item.roles.shift().description,
+      role: item.roles.map(r => r.description),
       accessType: item.access_types.length ? item.access_types.shift().description : [],
       _status: item.status.length ? item.status[0].description : ''
     }))
@@ -106,7 +106,8 @@ const mutations = {
     state.availableRoles = data.roles.map((item) => ({
       id: item.id,
       label: item.description,
-      value: item.name
+      value: item.name,
+      permissions: item.permissions.map((p) => ({ id: p.id, name: p.name }))
     }))
     state.accessTypeList = data.accessTypeList.map((item) => ({
       id: item.id,
