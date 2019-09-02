@@ -7,8 +7,7 @@
                 row-key="uniquecode"
                 :loading="loading"
                 :filter="filter"
-                :selection="selectionType"
-                :selected.sync="selected"
+                selected.sync="selected"
             >
                 <template v-slot:top>
                     <div class="col-2 q-table__title">Users List</div>
@@ -19,11 +18,20 @@
                         </template>
                     </q-input>
                 </template>
+                <template v-slot:body="props">
+                    <q-tr :props="props" @click.native="editUser(props.row)" class="cursor-pointer">
+                        <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+                        <q-td key="username" :props="props">{{ props.row.username }}</q-td>
+                        <q-td key="email" :props="props">{{ props.row.email }}</q-td>
+                        <q-td key="email_verified_at" :props="props">{{ props.row.email_verified_at }}</q-td>
+                        <q-td key="role" :props="props">{{ props.row.role.join(', ') }}</q-td>
+                        <q-td key="accessType" :props="props">{{ props.row.accessType }}</q-td>
+                        <q-td key="_status" :props="props">{{ props.row._status }}</q-td>
+                        <q-td key="created_at" :props="props">{{ props.row.created_at }}</q-td>
+                        <q-td key="updated_at" :props="props">{{ props.row.updated_at }}</q-td>
+                    </q-tr>
+                </template>
             </q-table>
-            <q-page-sticky position="bottom-right" :offset="[18, 18]">
-                <q-btn v-if="allowed('update')" fab color="primary" :disable="loading || selected.length == 0" icon="mdi-pencil" @click="editUser" class="q-mr-sm"/>
-                <q-btn v-if="allowed('delete')" fab color="red" :disable="loading || selected.length == 0" icon="mdi-delete" @click="removeUser"/>
-            </q-page-sticky>
         </div>
     </q-page>
 </template>
@@ -48,12 +56,13 @@ export default {
         { name: 'username', field: 'username', label: 'Username', align: 'left', required: true, sortable: true },
         { name: 'email', field: 'email', label: 'Email', align: 'left', required: true, sortable: true },
         { name: 'email_verified_at', field: 'email_verified_at', label: 'Email Verified At', align: 'left', required: true, sortable: true },
-        { name: 'role', field: 'role', label: 'Role', align: 'left', required: true, sortable: true },
+        { name: 'role', field: 'role', label: 'Roles', align: 'left', required: true, sortable: true },
         { name: 'accessType', field: 'accessType', label: 'Access type', align: 'left', required: true, sortable: true },
         { name: '_status', field: '_status', label: 'Status', align: 'left', required: true, sortable: true },
         { name: 'created_at', field: 'created_at', label: 'Created At', align: 'left', required: true, sortable: true },
         { name: 'updated_at', field: 'updated_at', label: 'Updated At', align: 'left', required: true, sortable: true }
       ],
+      visibleColumns: ['name', 'username', 'email', 'email_verified_at', 'role', 'accessType', '_status', 'created_at', 'updated_at'],
       filter: '',
       selected: [],
       selectionType: 'none'
@@ -73,38 +82,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loadUsersList', 'deleteUser']),
+    ...mapActions(['loadUsersList']),
     ...mapGetters(['usersList', 'userCan']),
-    editUser () {
+    editUser (user) {
       if (this.allowed('update')) {
         this.$router.push({
           name: 'user-access-edit',
-          params: { id: this.selected[0].uniquecode }
-        })
-      }
-    },
-    removeUser () {
-      if (this.allowed('delete')) {
-        this.$q.dialog({
-          title: 'Delete User',
-          message: 'Are you sure?',
-          cancel: true,
-          persistent: true
-        }).onOk(data => {
-          this.deleteUser(this.selected[0].uniquecode).then((response) => {
-            this.$q.notify({
-              color: 'positive',
-              position: 'top',
-              message: response.data.message
-            })
-          }).catch((error) => {
-            this.$q.notify({
-              color: 'negative',
-              position: 'top',
-              message: error.response.data.error || 'Loading failed',
-              icon: 'report_problem'
-            })
-          })
+          params: { id: user.uniquecode }
         })
       }
     }

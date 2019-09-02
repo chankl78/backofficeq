@@ -136,7 +136,8 @@
                     </tbody>
                 </q-markup-table>
                 <q-page-sticky position="bottom-right" :offset="[18, 18]">
-                    <q-btn fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+                    <q-btn v-if="allowed('update')" fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+                    <q-btn v-if="allowed('delete')" fab color="red" icon="mdi-delete" @click="removeUser" class="q-mr-sm"/>
                     <q-btn fab to="/user-access" icon="mdi-cancel"/>
                 </q-page-sticky>
             </q-form>
@@ -222,62 +223,97 @@ export default {
       }
     })
   },
+  computed: {
+    allowed (arr) {
+      return this.userCan(arr)
+    }
+  },
   methods: {
-    ...mapActions(['loadUser', 'updateUser', 'forgotPassword']),
-    ...mapGetters(['currentUser', 'availableRoles', 'accessTypeList', 'availableStatuses']),
+    ...mapActions(['loadUser', 'updateUser', 'deleteUser', 'forgotPassword']),
+    ...mapGetters(['currentUser', 'availableRoles', 'accessTypeList', 'availableStatuses', 'userCan']),
     handleForgotPassword () {
-      let email = this.user.email
-      this.forgotPassword(email)
-        .then((resp) => {
+      if (this.allowed('update')) {
+        let email = this.user.email
+        this.forgotPassword(email)
+          .then((resp) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: 'Password reset link sent'
+            })
+          })
+          .catch((error) => {
+            if (error.response.status === 402) {
+              this.$q.notify({
+                color: 'negative',
+                position: 'top',
+                message: error.response.data.message,
+                icon: 'report_problem'
+              })
+            } else {
+              this.$q.notify({
+                color: 'negative',
+                position: 'top',
+                message: [
+                  error.response.data.message,
+                  error.response.data.errors.email
+                ].join('. '),
+                icon: 'report_problem'
+              })
+            }
+          })
+      }
+    },
+    save () {
+      if (this.allowed('update')) {
+        this.updateUser({
+          user: this.user,
+          role: this.role,
+          access_type: this.accessType,
+          status: this.status
+        }).then((resp) => {
           this.$q.notify({
             color: 'positive',
             position: 'top',
-            message: 'Password reset link sent'
+            message: resp.data.message || 'Role created',
+            icon: 'report_problem'
+          })
+          this.$router.push('/user-access')
+        }).catch((error) => {
+          this.$q.notify({
+            color: 'negative',
+            position: 'top',
+            message: error.response.data.error || 'Loading failed',
+            icon: 'report_problem'
           })
         })
-        .catch((error) => {
-          if (error.response.status === 402) {
-            this.$q.notify({
-              color: 'negative',
-              position: 'top',
-              message: error.response.data.message,
-              icon: 'report_problem'
-            })
-          } else {
-            this.$q.notify({
-              color: 'negative',
-              position: 'top',
-              message: [
-                error.response.data.message,
-                error.response.data.errors.email
-              ].join('. '),
-              icon: 'report_problem'
-            })
-          }
-        })
+      }
     },
-    save () {
-      this.updateUser({
-        user: this.user,
-        role: this.role,
-        access_type: this.accessType,
-        status: this.status
-      }).then((resp) => {
-        this.$q.notify({
-          color: 'positive',
-          position: 'top',
-          message: resp.data.message || 'Role created',
-          icon: 'report_problem'
+    removeUser () {
+      if (this.allowed('delete')) {
+        this.$q.dialog({
+          title: 'Delete User',
+          message: 'Are you sure?',
+          cancel: true,
+          persistent: true
+        }).onOk(data => {
+          this.deleteUser(this.user.uniquecode).then((response) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: response.data.message
+            })
+            this.$router.push('/user-access')
+          }).catch((error) => {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.error || 'Loading failed',
+              icon: 'report_problem'
+            })
+          })
         })
-        this.$router.push('/user-access')
-      }).catch((error) => {
-        this.$q.notify({
-          color: 'negative',
-          position: 'top',
-          message: error.response.data.error || 'Loading failed',
-          icon: 'report_problem'
-        })
-      })
+      }
     }
   }
 }

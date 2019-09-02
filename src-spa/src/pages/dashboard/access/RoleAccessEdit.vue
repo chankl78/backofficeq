@@ -50,7 +50,8 @@
             </q-form>
         </div>
         <q-page-sticky position="bottom-right" :offset="[18, 18]">
-            <q-btn fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+            <q-btn v-if="allowed('update')" fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+            <q-btn v-if="allowed('delete')" fab color="red" icon="mdi-delete" @click="removeRole" class="q-mr-sm"/>
             <q-btn fab to="/role-access" icon="mdi-cancel"/>
         </q-page-sticky>
     </q-page>
@@ -100,15 +101,20 @@ export default {
         vm.$q.notify({
           color: 'negative',
           position: 'top',
-          message: error.response.data.error || 'Error when access type update',
+          message: error || 'Error when access type update',
           icon: 'report_problem'
         })
       })
     })
   },
+  computed: {
+    allowed (arr) {
+      return this.userCan(arr)
+    }
+  },
   methods: {
-    ...mapActions(['loadRole', 'createRole', 'updateRole']),
-    ...mapGetters(['currentRole', 'permissionList', 'resourcesList', 'isEditMode']),
+    ...mapActions(['loadRole', 'createRole', 'updateRole', 'deleteRole']),
+    ...mapGetters(['currentRole', 'permissionList', 'resourcesList', 'isEditMode', 'userCan']),
     save () {
       if (this.isEditMode()) {
         this.updateRole({
@@ -122,7 +128,7 @@ export default {
             position: 'top',
             message: resp.data.message || 'Role created'
           })
-          this.$router.push('/role-access')
+          this.$router.push({ name: 'role-access' })
         }).catch((error) => {
           this.$q.notify({
             color: 'negative',
@@ -142,13 +148,39 @@ export default {
             position: 'top',
             message: resp.data.message || 'Role created'
           })
-          this.$router.push('/role-access')
+          this.$router.push({ name: 'role-access' })
         }).catch((error) => {
           this.$q.notify({
             color: 'negative',
             position: 'top',
             message: error.response.data.error || 'Loading failed',
             icon: 'report_problem'
+          })
+        })
+      }
+    },
+    removeRole () {
+      if (this.allowed('delete')) {
+        this.$q.dialog({
+          title: 'Delete Role',
+          message: 'Are you sure?',
+          cancel: true,
+          persistent: true
+        }).onOk(data => {
+          this.deleteRole(this.currentRole().id).then((response) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: response.data.message
+            })
+            this.$router.push({ name: 'role-access' })
+          }).catch((error) => {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.error || 'Loading failed',
+              icon: 'report_problem'
+            })
           })
         })
       }

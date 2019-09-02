@@ -13,7 +13,8 @@
             </q-form>
         </div>
         <q-page-sticky position="bottom-right" :offset="[18, 18]">
-            <q-btn fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+            <q-btn v-if="allowed('update')" fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+            <q-btn v-if="allowed('delete') && editMode" fab color="red" icon="mdi-delete" @click="removeStatus" class="q-mr-sm"/>
             <q-btn fab to="/default-table/statuses" icon="mdi-cancel"/>
         </q-page-sticky>
     </q-page>
@@ -50,9 +51,14 @@ export default {
       })
     })
   },
+  computed: {
+    allowed (arr) {
+      return this.userCan(arr)
+    }
+  },
   methods: {
-    ...mapActions(['loadStatus', 'createStatus', 'updateStatus']),
-    ...mapGetters(['currentStatus', 'isStatusEditMode']),
+    ...mapActions(['loadStatus', 'createStatus', 'updateStatus', 'deleteStatus']),
+    ...mapGetters(['currentStatus', 'isStatusEditMode', 'userCan']),
     save () {
       if (this.editMode) {
         this.updateStatus({
@@ -64,7 +70,7 @@ export default {
             position: 'top',
             message: resp.data.message || 'Role created'
           })
-          this.$router.push('/default-table/statuses')
+          this.$router.push({ name: 'default-table-statuses' })
         }).catch((error) => {
           this.$q.notify({
             color: 'negative',
@@ -82,13 +88,39 @@ export default {
             position: 'top',
             message: resp.data.message || 'Role created'
           })
-          this.$router.push('/default-table/statuses')
+          this.$router.push({ name: 'default-table-statuses' })
         }).catch((error) => {
           this.$q.notify({
             color: 'negative',
             position: 'top',
             message: error.response.data.error || 'Loading failed',
             icon: 'report_problem'
+          })
+        })
+      }
+    },
+    removeStatus () {
+      if (this.allowed('delete')) {
+        this.$q.dialog({
+          title: 'Delete Status',
+          message: 'Are you sure?',
+          cancel: true,
+          persistent: true
+        }).onOk(data => {
+          this.deleteStatus(this.status.id).then((response) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: response.data.message
+            })
+            this.$router.push({ name: 'default-table-statuses' })
+          }).catch((error) => {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.error || 'Loading failed',
+              icon: 'report_problem'
+            })
           })
         })
       }

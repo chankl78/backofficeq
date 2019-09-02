@@ -7,7 +7,6 @@
                 row-key="id"
                 :loading="loading"
                 :filter="filter"
-                :selection="selectionType"
                 :selected.sync="selected"
             >
                 <template v-slot:top>
@@ -19,11 +18,15 @@
                         </template>
                     </q-input>
                 </template>
+                <template v-slot:body="props">
+                    <q-tr :props="props" @click.native="editStatus(props.row)" class="cursor-pointer">
+                        <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+                        <q-td key="description" :props="props">{{ props.row.description }}</q-td>
+                    </q-tr>
+                </template>
             </q-table>
             <q-page-sticky position="bottom-right" :offset="[18, 18]">
-                <q-btn v-if="allowed('create')" fab color="primary" :disable="loading" icon="mdi-plus" @click="addStatus" class="q-mr-sm"/>
-                <q-btn v-if="allowed('update')" fab color="primary" :disable="loading || selected.length == 0" icon="mdi-pencil" @click="editStatus" class="q-mr-sm"/>
-                <q-btn v-if="allowed('delete')" fab color="red" :disable="loading || selected.length == 0" icon="mdi-delete" @click="removeStatus"/>
+                <q-btn v-if="allowed('create')" fab color="primary" :disable="loading" icon="mdi-plus" @click="addStatus"/>
             </q-page-sticky>
         </div>
     </q-page>
@@ -67,7 +70,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loadStatusesList', 'deleteStatus']),
+    ...mapActions(['loadStatusesList']),
     ...mapGetters(['statusesList', 'userCan']),
     addStatus () {
       if (this.allowed('create')) {
@@ -76,38 +79,11 @@ export default {
         })
       }
     },
-    editStatus () {
+    editStatus (status) {
       if (this.allowed('update')) {
         this.$router.push({
           name: 'default-table-statuses-edit',
-          params: { id: this.selected[0].id }
-        })
-      }
-    },
-    removeStatus () {
-      if (this.allowed('delete')) {
-        this.$q.dialog({
-          title: 'Delete Status',
-          message: 'Are you sure?',
-          cancel: true,
-          persistent: true
-        }).onOk(data => {
-          this.deleteStatus(this.selected[0].id).then((response) => {
-            this.$q.notify({
-              color: 'positive',
-              position: 'top',
-              message: response.data.message
-            })
-            this.selected = []
-          }).catch((error) => {
-            this.$q.notify({
-              color: 'negative',
-              position: 'top',
-              message: error.response.data.error || 'Loading failed',
-              icon: 'report_problem'
-            })
-            this.selected = []
-          })
+          params: { id: status.id }
         })
       }
     }
