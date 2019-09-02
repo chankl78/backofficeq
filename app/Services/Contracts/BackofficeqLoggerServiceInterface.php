@@ -32,13 +32,14 @@ abstract class BackofficeqLoggerServiceInterface
     public function __construct(Agent $agent)
     {
         $this->agent = $agent;
+        $this->userId = auth('api')->user() ? auth('api')->user()->id : 0;
     }
 
-    abstract public function info(string $message, string $description = '', string $status = 'Success');
+    abstract public function info(string $message, $userId = 0, string $status = 'Success');
 
-    abstract public function warning(string $message, string $description = '', string $status = 'Warning');
+    abstract public function warning(string $message, $userId = 0, string $status = 'Warning');
 
-    abstract public function error(string $message, string $description = '', string $status = 'Error');
+    abstract public function error(string $message, $userId = 0, string $status = 'Error');
 
     protected function getAgentMessages(string $message)
     {
@@ -54,11 +55,11 @@ abstract class BackofficeqLoggerServiceInterface
         return implode(' - ', $log);
     }
 
-    protected function storeDbLog(string $description = '', string $status = '')
+    protected function storeDbLog(string $description = '', $userId = 0, string $status = '')
     {
         LogsmLogs::storelogs(
             Str::uuid(),
-            (Auth::user() ? Auth::user()->id : 0),
+            ($userId === 0 ? $this->userId : intval($userId)),
             $this->logType,
             $this->resourceId,
             $this->resourceCode,

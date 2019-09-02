@@ -64,15 +64,13 @@ export default {
       ],
       visibleColumns: ['name', 'username', 'email', 'email_verified_at', 'role', 'accessType', '_status', 'created_at', 'updated_at'],
       filter: '',
-      selected: [],
-      selectionType: 'none'
+      selected: []
     }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       vm.loadUsersList().then(() => {
         vm.loading = false
-        vm.selectionType = vm.allowed(['update', 'delete'], false) ? 'single' : 'none'
       })
     })
   },

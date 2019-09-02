@@ -52,15 +52,13 @@ export default {
         { name: 'description', field: 'description', label: 'Status Name', align: 'left', required: true, sortable: true }
       ],
       filter: '',
-      selected: [],
-      selectionType: 'none'
+      selected: []
     }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       vm.loadStatusesList().then(() => {
         vm.loading = false
-        vm.selectionType = vm.allowed(['update', 'delete'], false) ? 'single' : 'none'
       })
     })
   },

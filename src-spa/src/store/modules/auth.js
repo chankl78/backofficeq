@@ -64,10 +64,13 @@ const actions = {
   },
   logout ({ commit }) {
     return new Promise((resolve, reject) => {
-      commit('AUTH_LOGOUT')
-      localStorage.removeItem('token')
-      delete axios.defaults.headers.common['Authorization']
-      resolve()
+      axios.post('/api/auth/logout').then((response) => {
+        commit('AUTH_LOGOUT')
+        resolve()
+      }).catch((err) => {
+        commit('AUTH_LOGOUT')
+        reject(err)
+      })
     })
   },
   forgotPassword ({ commit }, email) {
@@ -78,7 +81,7 @@ const actions = {
           resolve(response)
         }
       }).catch((err) => {
-        commit('AUTH_ERROR')
+        commit('AUTH_ERROR', false)
         reject(err)
       })
     })
@@ -126,17 +129,18 @@ const mutations = {
     state.token = token
     state.user = user
   },
-  AUTH_ERROR (state) {
+  AUTH_ERROR (state, clean = true) {
     state.status = 'error'
-    localStorage.removeItem('token')
-    localStorage.removeItem('r')
-    localStorage.removeItem('p')
+    if (clean === true) {
+      localStorage.clear()
+    }
   },
   AUTH_LOGOUT (state) {
     state.status = ''
     state.token = null
     state.user = {}
     localStorage.clear()
+    delete axios.defaults.headers.common['Authorization']
   },
   AUTH_RESET_PASS_REQUEST (state) {
     state.status = 'loading'
