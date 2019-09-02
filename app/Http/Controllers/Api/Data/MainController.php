@@ -63,13 +63,13 @@ class MainController extends Controller
         if ($user->getAuthIdentifier()) {
             $access = [];
             if (
-                $user->hasAnyRole(['system-administrator', 'software-administrator']) ||
-                ($user->hasPermissionTo('read') && $user->hasVerifiedEmail())
+                $user->hasAnyRole(['system-administrator', 'software-administrator']) &&
+                $user->hasVerifiedEmail()
             ) {
                 $access = [
                     'icon' => 'mdi-shield-account',
                     'to' => 'home',
-                    'label' => 'Access Rights',
+                    'label' => 'Access Rights ',
                     'separator' => true,
                     'expandable' => true,
                     'children' => [
@@ -127,7 +127,9 @@ class MainController extends Controller
                     'callFuncParam' => ['email' => $user->email],
                 ];
             }
-            $roleMenuAdditions = array_merge($roleMenuAdditions, [$access]);
+            if (count($access) > 0) {
+                $roleMenuAdditions = array_merge($roleMenuAdditions, [$access]);
+            }
         }
         return array_merge($this->defaultMenuItems, $roleMenuAdditions);
     }

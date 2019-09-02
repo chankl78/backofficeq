@@ -22,7 +22,7 @@ class User extends AuthenticatableUser implements AuthenticatableContract, CanRe
     use HasRoles, Authenticatable, CanResetPassword, Notifiable, Encryptable;
 
     protected $encryptable = ['name', 'email'];
-    protected $fillable = ['name', 'email', 'password', 'uniquecode', 'username', 'roleid'];
+    protected $fillable = ['name', 'email', 'phone', 'mobile', 'password', 'uniquecode', 'username', 'roleid'];
     protected $hidden = ['password', 'remember_token'];
     protected $casts = ['email_verified_at' => 'datetime'];
 

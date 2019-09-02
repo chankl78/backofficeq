@@ -88,9 +88,11 @@ class AuthController extends Controller
                 'roles' => $user->roles()->pluck('name'),
                 'permissions' => $permissions,
             ], 200)->header('Authorization', $token);
+        } else {
+            $user = User::where(['username' => $credentials['username']])->first();
+            $userId = $user->id ? intval($user->id) : 0;
+            $this->logger->warning('[Login] Bad credentials.', $userId);
         }
-
-        $this->logger->warning('[Login] Bad credentials.');
 
         return response()->json([
             'message' => 'Bad credentials',
@@ -99,9 +101,11 @@ class AuthController extends Controller
 
     public function logout()
     {
-        $this->guard()->logout();
+        $userId = auth('api')->user()->id;
 
-        $this->logger->info('[Logout] User logged out.');
+        $this->logger->info('[Logout] User logged out.', $userId);
+
+        $this->guard()->logout();
 
         return response()->json([
             'status' => 'success',

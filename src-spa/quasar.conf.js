@@ -70,7 +70,8 @@ module.exports = function (ctx) {
         'QCheckbox',
         'QSelect',
         'QOptionGroup',
-        'QSpinnerGears'
+        'QSpinnerGears',
+        'QInfiniteScroll'
       ],
 
       directives: [

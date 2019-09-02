@@ -35,11 +35,13 @@ class StatusesController extends Controller
                     'status' => $status,
                 ]);
             } else {
+                $this->logger->warning('[Access status load]', 'Status not found');
                 return response()->json([
                     'error' => 'Status not found'
                 ]);
             }
         } catch (\Exception $e) {
+            $this->logger->error('[Access status load]', 'Error when loading status');
             return response()->json([
                 'error' => 'Error when loading status'
             ], 500);
