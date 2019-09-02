@@ -13,7 +13,7 @@ const state = {
 }
 
 const getters = {
-  currentRole: state => state.role || { value: '' },
+  currentRole: state => state.role || { value: '', resource: [] },
   rolesList: state => state.roles,
   permissionList: state => state.permissions,
   resourcesList: state => state.resources,

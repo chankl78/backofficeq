@@ -13,7 +13,8 @@
             </q-form>
         </div>
         <q-page-sticky position="bottom-right" :offset="[18, 18]">
-            <q-btn fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+            <q-btn v-if="allowed('update')" fab color="primary" icon="mdi-check" @click="save" class="q-mr-sm"/>
+            <q-btn v-if="allowed('delete')" fab color="red" icon="mdi-delete" @click="removeType" class="q-mr-sm"/>
             <q-btn fab to="/default-table/access-types" icon="mdi-cancel"/>
         </q-page-sticky>
     </q-page>
@@ -50,48 +51,83 @@ export default {
       })
     })
   },
+  computed: {
+    allowed (arr) {
+      return this.userCan(arr)
+    }
+  },
   methods: {
-    ...mapActions(['loadType', 'createType', 'updateType']),
-    ...mapGetters(['currentType', 'isTypeEditMode']),
+    ...mapActions(['loadType', 'createType', 'updateType', 'deleteType']),
+    ...mapGetters(['currentType', 'isTypeEditMode', 'userCan']),
     save () {
       if (this.editMode) {
-        this.updateType({
-          id: this.currentType().id,
-          value: this.type
-        }).then((resp) => {
-          this.$q.notify({
-            color: 'positive',
-            position: 'top',
-            message: resp.data.message || 'Access type updated'
+        if (this.allowed('update')) {
+          this.updateType({
+            id: this.currentType().id,
+            value: this.type
+          }).then((resp) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: resp.data.message || 'Access type updated'
+            })
+            this.$router.push({ name: 'default-table-access-types' })
+          }).catch((error) => {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.error || 'Error when access type update',
+              icon: 'report_problem'
+            })
+            this.$router.push({ name: 'default-table-access-types' })
           })
-          this.$router.push('/default-table/access-types')
-        }).catch((error) => {
-          this.$q.notify({
-            color: 'negative',
-            position: 'top',
-            message: error.response.data.error || 'Error when access type update',
-            icon: 'report_problem'
-          })
-          this.$router.push('/default-table/access-types')
-        })
+        }
       } else {
-        this.createType({
-          value: this.type
-        }).then((resp) => {
-          this.$q.notify({
-            color: 'positive',
-            position: 'top',
-            message: resp.data.message || 'Access type created'
+        if (this.allowed('create')) {
+          this.createType({
+            value: this.type
+          }).then((resp) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: resp.data.message || 'Access type created'
+            })
+            this.$router.push({ name: 'default-table-access-types' })
+          }).catch((error) => {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.error || 'Error when access type create',
+              icon: 'report_problem'
+            })
+            this.$router.push({ name: 'default-table-access-types' })
           })
-          this.$router.push('/default-table/access-types')
-        }).catch((error) => {
-          this.$q.notify({
-            color: 'negative',
-            position: 'top',
-            message: error.response.data.error || 'Error when access type create',
-            icon: 'report_problem'
+        }
+      }
+    },
+    removeType () {
+      if (this.allowed('delete')) {
+        this.$q.dialog({
+          title: 'Delete Type',
+          message: 'Are you sure?',
+          cancel: true,
+          persistent: true
+        }).onOk(data => {
+          this.deleteType(this.currentType().id).then((response) => {
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: response.data.message
+            })
+            this.$router.push({ name: 'default-table-access-types' })
+          }).catch((error) => {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: error.response.data.error || 'Loading failed',
+              icon: 'report_problem'
+            })
           })
-          this.$router.push('/default-table/access-types')
         })
       }
     }

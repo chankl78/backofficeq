@@ -7,7 +7,6 @@
                 row-key="id"
                 :loading="loading"
                 :filter="filter"
-                :selection="selectionType"
                 :selected.sync="selected"
             >
                 <template v-slot:top>
@@ -19,11 +18,15 @@
                         </template>
                     </q-input>
                 </template>
+                <template v-slot:body="props">
+                    <q-tr :props="props" @click.native="editRole(props.row)" class="cursor-pointer">
+                        <q-td key="name" :props="props">{{ props.row.name }}</q-td>
+                        <q-td key="description" :props="props">{{ props.row.description }}</q-td>
+                    </q-tr>
+                </template>
             </q-table>
             <q-page-sticky position="bottom-right" :offset="[18, 18]">
-                <q-btn v-if="allowed('create')" fab color="primary" :disable="loading" icon="mdi-plus" @click="addRole" class="q-mr-sm"/>
-                <q-btn v-if="allowed('update')" fab color="primary" :disable="loading || selected.length == 0" icon="mdi-pencil" @click="editRole" class="q-mr-sm"/>
-                <q-btn v-if="allowed('delete')" fab color="red" :disable="loading || selected.length == 0" icon="mdi-delete" @click="removeRole"/>
+                <q-btn v-if="allowed('create')" fab color="primary" :disable="loading" icon="mdi-plus" @click="addRole"/>
             </q-page-sticky>
         </div>
     </q-page>
@@ -76,36 +79,11 @@ export default {
         })
       }
     },
-    editRole () {
+    editRole (role) {
       if (this.allowed('update')) {
         this.$router.push({
           name: 'role-access-edit',
-          params: { id: this.selected[0].id }
-        })
-      }
-    },
-    removeRole () {
-      if (this.allowed('delete')) {
-        this.$q.dialog({
-          title: 'Delete Role',
-          message: 'Are you sure?',
-          cancel: true,
-          persistent: true
-        }).onOk(data => {
-          this.deleteRole(this.selected[0].id).then((response) => {
-            this.$q.notify({
-              color: 'positive',
-              position: 'top',
-              message: response.data.message
-            })
-          }).catch((error) => {
-            this.$q.notify({
-              color: 'negative',
-              position: 'top',
-              message: error.response.data.error || 'Loading failed',
-              icon: 'report_problem'
-            })
-          })
+          params: { id: role.id }
         })
       }
     }

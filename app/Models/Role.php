@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role as BaseRole;
 
 class Role extends BaseRole
 {
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'guard_name'];
 
     public function resource()
     {

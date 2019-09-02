@@ -61,7 +61,8 @@ class RolesController extends Controller
             try {
                 $role = Role::create([
                     'name' => str_replace(' ', '-', strtolower($roleName)),
-                    'description' => $roleName
+                    'description' => $roleName,
+                    'guard_name' => 'api',
                 ]);
                 $permissions = $request->get('permissions');
                 if (is_array($permissions) && count($permissions) > 0) {

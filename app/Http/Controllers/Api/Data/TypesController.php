@@ -64,7 +64,7 @@ class TypesController extends Controller
             } catch (\Exception $e) {
                 $this->logger->error('[Type create] ' . $e->getMessage());
                 return response()->json([
-                    'error' => 'Error when create type',
+                    'error' => $e->getMessage() //'Error when create type',
                 ], 500);
             }
         }
