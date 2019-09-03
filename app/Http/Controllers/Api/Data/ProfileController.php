@@ -4,11 +4,18 @@ namespace App\Http\Controllers\Api\Data;
 
 use App\Models\LogsmLogs;
 use App\Models\User;
+use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ProfileController extends Controller
 {
+    protected $logger;
+
+    public function __construct(BackofficeqLoggerService $logger)
+    {
+        $this->logger = $logger;
+    }
 
     public function details(Request $request)
     {
@@ -33,11 +40,14 @@ class ProfileController extends Controller
                 $data = $request->only(['name', 'email', 'phone', 'mobile']);
                 $user->update($data);
 
+                $this->logger->info('[Profile update] Profile updated successfully.', $_user->id);
+
                 return response()->json([
                     'message' => 'Profile updated',
                     'user' => $user,
                 ]);
             } catch (\Exception $e) {
+                $this->logger->warning('[Profile update] Error on profile update.', $_user->id);
                 return response()->json([
                     'error' => 'Error on profile update',
                 ], 500);

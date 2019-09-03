@@ -1,9 +1,10 @@
 import { makeMutations } from '../helpers'
+import { Cookies } from 'quasar'
 import axios from 'axios'
 
 const state = {
   loading: false,
-  token: localStorage.getItem('token'),
+  token: Cookies.get('token') || null,
   menuList: [],
   dashboard: {},
   authenticatedUser: {}

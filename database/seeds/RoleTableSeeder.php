@@ -42,8 +42,13 @@ class RoleTableSeeder extends Seeder
                 'description' => $role,
             ]);
             $role->givePermissionTo($permissions);
-            $resource = $resources->random();
-            $role->resource()->attach($resource->id);
+            $_resources = [];
+            foreach ($resources as $i => $resource) {
+                if ($i % random_int(1, 100) === 0) {
+                    $_resources[] = $resource->id;
+                }
+            }
+            $role->resource()->attach($_resources);
         }
     }
 }

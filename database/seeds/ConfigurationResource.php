@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Configuration\Resource;
+use App\Models\Permission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 
@@ -366,8 +367,17 @@ class ConfigurationResource extends Seeder
             ],
         ];
 
+        $permissions = Permission::all();
+
         foreach ($resources as $resource) {
-            Resource::create($resource);
+            $_permissions = [];
+            $resource = Resource::create($resource);
+            foreach ($permissions as $i => $permission) {
+                if ($i % random_int(1, 5) === 0) {
+                    $_permissions[] = $permission->id;
+                }
+            }
+            $resource->permissions()->sync($_permissions);
         }
 
         Log::info("[Migration - Seeding] Modules seeded!");

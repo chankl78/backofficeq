@@ -37,7 +37,7 @@ class RolesController extends Controller
                 'permissions' => $permissions,
                 'resources' => $resources,
             ]);
-        } elseif ($role = Role::with(['permissions', 'resource'])->find($request->get('id'))) {
+        } elseif ($role = Role::with(['permissions', 'resource.permissions', 'resource'])->find($request->get('id'))) {
             return response()->json([
                 'role' => $role,
                 'permissions' => $permissions,
@@ -72,15 +72,10 @@ class RolesController extends Controller
                     $role->syncPermissions($permissions);
                 }
 
-                if (isset($resource['id'])) {
-                    $_resource = Resource::where(['id' => $resource['id']])->first();
-                    if ($_resource) {
-                        $role->resource()->detach();
-                        $role->resource()->attach($_resource->id);
-                    }
-                }
+                $this->attachResourcePermissions($resource, $role);
 
                 $this->logger->info('[Role create] Role created successfully.');
+
                 return response()->json([
                     'message' => 'Role created successfully',
                 ], 201);
@@ -109,24 +104,17 @@ class RolesController extends Controller
             foreach ($request->get('permissions') as $permission) {
                 $permissions[] = Permission::findByName($permission);
             }
-            $role = Role::with(['permissions', 'resource'])->where(['id' => $id])->first();
+            $role = Role::with(['permissions', 'resource.permissions', 'resource'])->where(['id' => $id])->first();
             $role->description = $newRoleName;
             $role->syncPermissions($permissions);
-
-            if (isset($resource['id'])) {
-                $_resource = Resource::where(['id' => $resource['id']])->first();
-                if ($_resource) {
-                    $role->resource()->detach();
-                    $role->resource()->attach($_resource->id);
-                }
-            }
-
-            $role->save();
+            $this->attachResourcePermissions($resource, $role);
 
             $this->logger->info('[Role update] Role updated successfully.');
+
             return response()->json($role, 200);
         } catch (\Exception $e) {
             $this->logger->error('[Role update] ' . $e->getMessage());
+
             return response()->json([
                 'error' => $e->getMessage() //'Error when role update',
             ], 409);
@@ -145,9 +133,26 @@ class RolesController extends Controller
             ], 200);
         } catch (\Exception $e) {
             $this->logger->info('[Role delete] ' . $e->getMessage());
+
             return response()->json([
                 'error' => 'Error when role delete',
             ], 409);
+        }
+    }
+
+    protected function attachResourcePermissions($resource, $role)
+    {
+        if ($resource && is_array($resource)) {
+            $resList = collect($resource)->pluck('id');
+            $_resources = Resource::with('permissions')->whereIn('id', $resList)->get();
+            foreach ($_resources as $_resource) {
+                $_permissions = collect($resource)->firstWhere('id', $_resource->id)['permissions'];
+                $_permNames = collect($_permissions)->pluck('value');
+                $_permList = Permission::whereIn('name', $_permNames)->get('id')->pluck('id');
+                $_resource->permissions()->sync($_permList);
+                $_resource->save();
+            }
+            $role->resource()->sync($resList);
         }
     }
 
