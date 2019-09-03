@@ -7,7 +7,7 @@
             </h4>
             <q-form ref="roleForm" class="q-pa-md">
                 <div class="row">
-                    <div class="col-lg-6 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <q-input
                             name="name"
                             v-model="user.name"
@@ -25,7 +25,7 @@
                             :rules="[ val => val && val.length > 0 || 'Please type something']"
                         />
                     </div>
-                    <div class="col-lg-6 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <q-input
                             name="email"
                             v-model="user.email"
@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-6 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <q-select
                             name="role"
                             v-model="role"
@@ -78,7 +78,7 @@
                             </template>
                         </q-select>
                     </div>
-                    <div class="col-lg-6 col-xs-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <q-select
                             name="accessType"
                             v-model="accessType"

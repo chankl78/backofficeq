@@ -13,10 +13,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // DefaultValueTableSeeder::class,
+            PermissionTableSeeder::class,
             StatusTableSeeder::class,
             ConfigurationResource::class,
             AccessTypeTableSeeder::class,
-            PermissionTableSeeder::class,
             RoleTableSeeder::class,
             UserTableSeeder::class,
         ]);

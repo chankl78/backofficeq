@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Cookies } from 'quasar'
 
 const state = {
   status: '',
@@ -9,9 +10,8 @@ const state = {
 const getters = {
   isLoggedIn: state => !!state.token,
   userCan: state => (perm, strict = true) => {
-    let permissions = localStorage.getItem('p')
-    if (permissions) {
-      permissions = JSON.parse(atob(permissions))
+    if (Cookies.has('p')) {
+      let permissions = JSON.parse(atob(Cookies.get('p')))
       if (typeof perm === 'string') {
         perm = [perm]
       }
@@ -33,9 +33,9 @@ const actions = {
           const user = response.data.user
           const roles = response.data.roles
           const permissions = response.data.permissions
-          localStorage.setItem('token', token)
-          localStorage.setItem('r', btoa(JSON.stringify(roles)))
-          localStorage.setItem('p', btoa(JSON.stringify(permissions)))
+          Cookies.set('token', token)
+          Cookies.set('r', btoa(JSON.stringify(roles)))
+          Cookies.set('p', btoa(JSON.stringify(permissions)))
           commit('AUTH_SUCCESS', token, user)
           resolve(response)
         }
@@ -115,7 +115,7 @@ const actions = {
   fetchAccessToken ({ commit }) {
     return new Promise((resolve, reject) => {
       commit('UPDATE_ACCESS_TOKEN')
-      resolve(localStorage.getItem('token'))
+      resolve()
     })
   }
 }
@@ -132,14 +132,18 @@ const mutations = {
   AUTH_ERROR (state, clean = true) {
     state.status = 'error'
     if (clean === true) {
-      localStorage.clear()
+      Cookies.remove('token')
+      Cookies.remove('r')
+      Cookies.remove('p')
     }
   },
   AUTH_LOGOUT (state) {
     state.status = ''
     state.token = null
     state.user = {}
-    localStorage.clear()
+    Cookies.remove('token')
+    Cookies.remove('r')
+    Cookies.remove('p')
     delete axios.defaults.headers.common['Authorization']
   },
   AUTH_RESET_PASS_REQUEST (state) {
@@ -153,7 +157,7 @@ const mutations = {
     state.user = {}
   },
   UPDATE_ACCESS_TOKEN (state, token) {
-    state.token = localStorage.getItem('token')
+    state.token = Cookies.get('token')
   }
 }
 

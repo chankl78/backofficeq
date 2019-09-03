@@ -1,12 +1,12 @@
 import axios from 'axios'
+import { Cookies } from 'quasar'
 import store from '../store'
 
 export default async ({ Vue }) => {
   Vue.prototype.$axios = axios
 
-  const token = localStorage.getItem('token')
-  if (token) {
-    Vue.prototype.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+  if (Cookies.has('token')) {
+    Vue.prototype.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + Cookies.get('token')
   }
 
   const baseURL = process.env.api
@@ -15,7 +15,9 @@ export default async ({ Vue }) => {
     Vue.prototype.$axios.defaults.baseURL = baseURL
   }
   Vue.prototype.$axios.interceptors.request.use(config => {
-    config.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token')
+    if (Cookies.has('token')) {
+      config.headers['Authorization'] = 'Bearer ' + Cookies.get('token')
+    }
     return config
   })
   Vue.prototype.$axios.interceptors.response.use(undefined, function (err) {
