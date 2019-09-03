@@ -14,4 +14,9 @@ class Role extends BaseRole
     {
         return $this->belongsToMany(Resource::class, 'roles_resources');
     }
+
+    public function resources()
+    {
+        return $this->belongsToMany(Resource::class, 'roles_resources');
+    }
 }

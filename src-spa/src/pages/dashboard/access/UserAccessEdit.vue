@@ -220,6 +220,7 @@ export default {
           vm.rolesList = vm.availableRoles()
           vm.typesList = vm.accessTypeList()
           vm.statusesList = vm.availableStatuses()
+          // vm.userModulesList = vm.modulesList()
           let activeRoles = vm.user.roles.map(r => r.id)
           vm.activeRolesWithPermissions = vm.availableRoles().filter(r => activeRoles.includes(r.id))
           vm.role = vm.activeRolesWithPermissions

@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api\Data;
 
 use App\Models\AccessType;
-use App\Models\Configuration\Resource;
+use App\Models\Role;
 use App\Models\Status;
 use App\Models\User;
 use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
 {
