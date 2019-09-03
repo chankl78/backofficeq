@@ -64,6 +64,7 @@
                             multiple
                             label="Role"
                             class="q-gutter-md q-mr-md"
+                            @input="intersectModules"
                         >
                             <template v-slot:option="scope">
                                 <q-item
@@ -124,15 +125,28 @@
                 <q-markup-table separator="cell" flat bordered class="q-mt-md">
                     <thead>
                         <tr>
-                            <th colspan="2">
+                            <th colspan="5">
                                 <div class="row no-wrap items-center">
                                     <p class="q-table__title">Active modules</p>
                                 </div>
                             </th>
                         </tr>
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Group Code</th>
+                            <th>Permissions</th>
+                            <th>Updated At</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <!-- -->
+                        <tr v-for="(mod, i) in userModulesList" :key="i">
+                            <td>{{ mod.resource }}</td>
+                            <td>{{ mod.code }}</td>
+                            <td>{{ mod.resourcegroupcode }}</td>
+                            <td>{{ (mod.permissions.map((p) => p.name)).join(', ') }}</td>
+                            <td>{{ mod.updated_at }}</td>
+                        </tr>
                     </tbody>
                 </q-markup-table>
                 <q-page-sticky position="bottom-right" :offset="[18, 18]">
@@ -209,6 +223,7 @@ export default {
           let activeRoles = vm.user.roles.map(r => r.id)
           vm.activeRolesWithPermissions = vm.availableRoles().filter(r => activeRoles.includes(r.id))
           vm.role = vm.activeRolesWithPermissions
+          vm.userModulesList = vm.role.flatMap((r) => r.resources)
         }).catch((error) => {
           vm.$q.notify({
             color: 'negative',
@@ -230,7 +245,10 @@ export default {
   },
   methods: {
     ...mapActions(['loadUser', 'updateUser', 'deleteUser', 'forgotPassword']),
-    ...mapGetters(['currentUser', 'availableRoles', 'accessTypeList', 'availableStatuses', 'userCan']),
+    ...mapGetters(['currentUser', 'availableRoles', 'accessTypeList', 'availableStatuses', 'modulesList', 'userCan']),
+    intersectModules () {
+      this.userModulesList = this.role.flatMap((r) => r.resources)
+    },
     handleForgotPassword () {
       if (this.allowed('update')) {
         let email = this.user.email

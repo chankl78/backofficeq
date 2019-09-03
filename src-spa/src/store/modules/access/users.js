@@ -9,6 +9,7 @@ const state = {
   user: {},
   availableRoles: [],
   accessTypeList: [],
+  modulesList: [],
   availableStatuses: []
 }
 
@@ -17,6 +18,7 @@ const getters = {
   usersList: state => state.users,
   availableRoles: state => state.availableRoles,
   accessTypeList: state => state.accessTypeList,
+  modulesList: state => state.modulesList,
   availableStatuses: state => state.availableStatuses
 }
 
@@ -108,7 +110,8 @@ const mutations = {
       id: item.id,
       label: item.description,
       value: item.name,
-      permissions: item.permissions.map((p) => ({ id: p.id, name: p.name }))
+      permissions: item.permissions.map((p) => ({ id: p.id, name: p.name })),
+      resources: item.resources
     }))
     state.accessTypeList = data.accessTypeList.map((item) => ({
       id: item.id,
@@ -120,6 +123,7 @@ const mutations = {
       label: item.description,
       value: item.name
     }))
+    state.modulesList = data.modules
   },
   DELETE_USER_OK (state, id) {
     state.users = state.users.filter((el) => {
