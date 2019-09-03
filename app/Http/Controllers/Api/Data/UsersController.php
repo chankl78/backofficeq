@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api\Data;
 
 use App\Models\AccessType;
+use App\Models\Role;
 use App\Models\Status;
 use App\Models\User;
 use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
 {
@@ -34,16 +34,20 @@ class UsersController extends Controller
     public function info(Request $request)
     {
         try {
-            $roles = Role::with('permissions')->get();
+            $roles = Role::with('permissions', 'resources', 'resources.permissions')->get();
             $accessTypes = AccessType::all();
+            $statusesList = Status::all();
             $user = User::with(['roles', 'accessTypes', 'status'])
                 ->where(['uniquecode' => $request->get('id')])
                 ->first();
-            $statusesList = Status::all();
+            $modules = Role::with(['resources', 'resources.permissions'])
+                ->whereIn('id', $user->roles()->pluck('id'))
+                ->first();
             if ($user) {
                 return response()->json([
                     'user' => $user,
                     'roles' => $roles,
+                    'modules' => $modules->resources,
                     'accessTypeList' => $accessTypes,
                     'statusesList' => $statusesList,
                 ]);
@@ -54,7 +58,7 @@ class UsersController extends Controller
             }
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error when load user info'
+                'error' => $e->getMessage() //'Error when load user info'
             ]);
         }
     }
