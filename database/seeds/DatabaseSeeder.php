@@ -11,10 +11,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Model::unguard();
-        
         $this->call([
-            // DefaultValueTableSeeder::class,
+            //DefaultValueTableSeeder::class,
             PermissionTableSeeder::class,
             StatusTableSeeder::class,
             ConfigurationResource::class,
