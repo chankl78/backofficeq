@@ -12,9 +12,13 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            DefaultValueTableSeeder::class,
-            MemberszOrgChartSeeder::class,
-            MemberszPositionSeeder::class,
+            // DefaultValueTableSeeder::class,
+            PermissionTableSeeder::class,
+            StatusTableSeeder::class,
+            ConfigurationResource::class,
+            AccessTypeTableSeeder::class,
+            RoleTableSeeder::class,
+            UserTableSeeder::class,
         ]);
     }
 }

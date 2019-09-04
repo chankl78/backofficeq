@@ -1,0 +1,43 @@
+<template>
+  <q-page class="flex flex-center">
+    <div class="q-pa-md full-width" style="max-width: 400px">
+      <div class="row">
+        <div class="col"><h4>{{ resultMessage }}</h4></div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <q-btn label=" Login " color="primary" class="full-width q-mt-md" @click.prevent="login" >
+            <q-icon name="mdi-account" />
+          </q-btn>
+        </div>
+      </div>
+    </div>
+  </q-page>
+</template>
+
+<script>
+import { mapActions } from 'vuex'
+
+export default {
+  name: 'VerifyEmail',
+  data () {
+    return {
+      resultMessage: ''
+    }
+  },
+  mounted () {
+    const verifyUrl = this.$route.query.queryURL
+    this.verifyEmail(verifyUrl).then((resp) => {
+      this.resultMessage = resp.data.message
+    }).catch((err) => {
+      this.resultMessage = err.response.data.message
+    })
+  },
+  methods: {
+    ...mapActions(['verifyEmail']),
+    login () {
+      this.$router.push('/login')
+    }
+  }
+}
+</script>

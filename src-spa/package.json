@@ -15,7 +15,9 @@
     "@quasar/extras": "^1.0.0",
     "@vue/cli": "^3.10.0",
     "axios": "^0.18.1",
+    "core-js": "^2.6.9",
     "quasar": "^1.0.5",
+    "vee-validate": "^2.2.15",
     "vue-i18n": "^8.0.0",
     "vue-router": "^3.1.2"
   },
