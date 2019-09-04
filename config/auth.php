@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'api',
         'passwords' => 'users',
     ],
 
@@ -36,13 +36,13 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        /*'web' => [
             'driver' => 'session',
             'provider' => 'users',
-        ],
+        ],*/
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'jwt',
             'provider' => 'users',
             'hash' => false,
         ],
@@ -68,8 +68,8 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\AccessmUser::class,
-            'table' => 'Access_m_Users',
+            'model' => App\Models\User::class, //App\Models\AccessmUser::class,
+            'table' => 'users', //'Access_m_Users',
         ],
     ],
 
@@ -91,7 +91,7 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => 'Access_m_PasswordResets',
+            'table' => 'password_resets', //'Access_m_PasswordResets',
             'expire' => 180,
         ],
     ],

@@ -7,7 +7,8 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     boot: [
       'i18n',
-      'axios'
+      'axios',
+      'vee'
     ],
 
     css: [
@@ -16,7 +17,8 @@ module.exports = function (ctx) {
 
     extras: [
       // 'ionicons-v4',
-      'mdi-v3'
+      'mdi-v3',
+      'material-icons'
     ],
 
     framework: {
@@ -37,6 +39,7 @@ module.exports = function (ctx) {
         'QToolbar',
         'QToolbarTitle',
         'QBtn',
+        'QBtnGroup',
         'QIcon',
         'QList',
         'QItem',
@@ -46,7 +49,29 @@ module.exports = function (ctx) {
         'QInput',
         'QBanner',
         'QDialog',
-        'QAvatar'
+        'QAvatar',
+        'QPageSticky',
+        'QPageScroller',
+        'QScrollArea',
+        'QSeparator',
+        'QExpansionItem',
+        'QMarkupTable',
+        'QTable',
+        'QTh',
+        'QTr',
+        'QTd',
+        'QSpace',
+        'QPopupEdit',
+        'QBreadcrumbs',
+        'QBreadcrumbsEl',
+        'QCard',
+        'QCardSection',
+        'QCardActions',
+        'QCheckbox',
+        'QSelect',
+        'QOptionGroup',
+        'QSpinnerGears',
+        'QInfiniteScroll'
       ],
 
       directives: [
@@ -56,7 +81,9 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'Dialog',
+        'Cookies'
       ]
     },
 
@@ -84,8 +111,8 @@ module.exports = function (ctx) {
       env: {
         api: JSON.stringify(
           ctx.dev
-            ? 'http://localhost/api' // local dev env
-            : 'http://prod.tld/api' // production end-point
+            ? 'http://localhost' // local dev env
+            : 'https://stagebackoffice.worldsoft.com.sg' // production end-point
         )
       }
     },

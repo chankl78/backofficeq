@@ -1,25 +1,27 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-// import example from './module-example'
+import auth from './modules/auth'
+import dashboard from './modules/dashboard'
+import profile from './modules/profile'
+import roles from './modules/access/roles'
+import users from './modules/access/users'
+import types from './modules/access/types'
+import statuses from './modules/access/statuses'
 
 Vue.use(Vuex)
 
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation
- */
+const Store = new Vuex.Store({
+  modules: {
+    auth,
+    dashboard,
+    profile,
+    roles,
+    users,
+    types,
+    statuses
+  },
+  strict: process.env.DEV
+})
 
-export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    modules: {
-      // example
-    },
-
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: process.env.DEV
-  })
-
-  return Store
-}
+export default Store
