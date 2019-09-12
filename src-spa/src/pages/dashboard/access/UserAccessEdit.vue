@@ -124,7 +124,7 @@
                 </q-markup-table>
                 <q-markup-table separator="cell" flat bordered class="q-mt-md">
                     <thead>
-                        <tr>
+                        <tr class="bg-blue-grey-1">
                             <th colspan="5">
                                 <div class="row no-wrap items-center">
                                     <p class="q-table__title">Active modules</p>

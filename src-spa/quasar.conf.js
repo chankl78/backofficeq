@@ -71,7 +71,8 @@ module.exports = function (ctx) {
         'QSelect',
         'QOptionGroup',
         'QSpinnerGears',
-        'QInfiniteScroll'
+        'QInfiniteScroll',
+        'QChip'
       ],
 
       directives: [

@@ -19,6 +19,8 @@ import RoleAccessEdit from '../pages/dashboard/access/RoleAccessEdit'
 import UserAccess from '../pages/dashboard/access/UserAccess'
 import UserAccessEdit from '../pages/dashboard/access/UserAccessEdit'
 
+import EventList from '../pages/dashboard/event/Event'
+
 const routes = [
   {
     path: '/login',
@@ -93,6 +95,15 @@ const routes = [
         component: Settings,
         meta: {
           title: 'Settings',
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/events/list',
+        name: 'events-list',
+        component: EventList,
+        meta: {
+          title: 'Events list',
           requiresAuth: true
         }
       },

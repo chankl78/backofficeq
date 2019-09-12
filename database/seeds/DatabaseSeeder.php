@@ -12,7 +12,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            //DefaultValueTableSeeder::class,
+            // DefaultValueTableSeeder::class,
+            EventTableSeeder::class,
+
             PermissionTableSeeder::class,
             StatusTableSeeder::class,
             ConfigurationResource::class,

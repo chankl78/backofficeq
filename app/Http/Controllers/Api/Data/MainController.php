@@ -62,6 +62,7 @@ class MainController extends Controller
 
         if ($user->getAuthIdentifier()) {
             $access = [];
+            $events = [];
             if (
                 $user->hasAnyRole(['system-administrator', 'software-administrator']) &&
                 $user->hasVerifiedEmail()
@@ -113,6 +114,21 @@ class MainController extends Controller
                         ]
                     ]
                 ];
+                $events = [
+                    'icon' => 'mdi-calendar-text',
+                    'label' => 'Events',
+                    'separator' => true,
+                    'expandable' => true,
+                    'children' => [
+                        [
+                            'to' => 'events-list',
+                            'label' => 'List',
+                            'separator' => false,
+                            'expandable' => false,
+                            'level' => 1,
+                        ]
+                    ]
+                ];
             } elseif ($user->hasPermissionTo('read') && !$user->hasVerifiedEmail()) {
                 $access = [
                     'icon' => 'mdi-account-question',
@@ -128,7 +144,7 @@ class MainController extends Controller
                 ];
             }
             if (count($access) > 0) {
-                $roleMenuAdditions = array_merge($roleMenuAdditions, [$access]);
+                $roleMenuAdditions = array_merge($roleMenuAdditions, [$events, $access]);
             }
         }
         return array_merge($this->defaultMenuItems, $roleMenuAdditions);

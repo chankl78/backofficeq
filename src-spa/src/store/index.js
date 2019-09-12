@@ -8,6 +8,7 @@ import roles from './modules/access/roles'
 import users from './modules/access/users'
 import types from './modules/access/types'
 import statuses from './modules/access/statuses'
+import eventsList from './modules/event/eventsList'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ const Store = new Vuex.Store({
     roles,
     users,
     types,
-    statuses
+    statuses,
+    eventsList
   },
   strict: process.env.DEV
 })
