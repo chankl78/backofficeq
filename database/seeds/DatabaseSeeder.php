@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // DefaultValueTableSeeder::class,
+            EventTableSeeder::class,
             PermissionTableSeeder::class,
             StatusTableSeeder::class,
             ConfigurationResource::class,
