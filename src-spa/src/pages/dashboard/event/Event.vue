@@ -19,10 +19,10 @@
                     </q-input>
                 </template>
                 <template v-slot:body="props">
-                    <q-tr :props="props" @click.native="editRole(props.row)" class="cursor-pointer">
+                    <q-tr :props="props" @click.native="editEvent(props.row)" class="cursor-pointer">
                         <q-td key="eventdate" :props="props">{{ props.row.eventdate }}</q-td>
                         <q-td key="event_type" :props="props">{{ props.row.event_type }}</q-td>
-                        <q-td key="description" :props="props">{{ props.row.description }}</q-td>
+                        <q-td key="name" :props="props">{{ props.row.name }}</q-td>
                         <q-td key="location" :props="props">{{ props.row.location }}</q-td>
                         <q-td key="status" :props="props">
                             <q-chip v-if="props.row.status === 'Active'" dense color="green" text-color="white">
@@ -66,7 +66,7 @@ export default {
       columns: [
         { name: 'eventdate', field: 'eventdate', label: 'Date', align: 'left', required: true, sortable: true },
         { name: 'event_type', field: 'event_type', label: 'Event Type', align: 'left', required: true, sortable: true },
-        { name: 'description', field: 'description', label: 'Name', align: 'left', required: true, sortable: true },
+        { name: 'name', field: 'name', label: 'Name', align: 'left', required: true, sortable: true },
         { name: 'location', field: 'location', label: 'Location', align: 'left', required: true, sortable: true },
         { name: 'status', field: 'status', label: 'Status', align: 'left', required: true, sortable: true }
       ],
@@ -91,6 +91,12 @@ export default {
     ...mapGetters(['eventsList', 'userCan']),
     addEvent () {
       // tmp
+    },
+    editEvent (row) {
+      this.$router.push({
+        name: 'event-details',
+        params: { id: row.uniquecode }
+      })
     }
   }
 }

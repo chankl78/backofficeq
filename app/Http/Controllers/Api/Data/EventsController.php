@@ -22,4 +22,19 @@ class EventsController extends Controller
 
         return response()->json($events, 200);
     }
+
+    public function details(Request $request, $id)
+    {
+        try {
+            $event = Event::with(['eventType', 'participants'])->where(['uniquecode' => $id])->first();
+
+            return response()->json([
+                'event' => $event
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
