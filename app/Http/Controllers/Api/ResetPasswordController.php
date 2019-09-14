@@ -12,13 +12,12 @@ class ResetPasswordController extends Controller
 {
     use ResetsPasswords;
 
-    protected $logger;
     protected $password;
 
     public function __construct(BackofficeqLoggerService $logger)
     {
+        parent::__construct($logger);
         $this->middleware('guest');
-        $this->logger = $logger;
         $this->password = str_random(10);
     }
 
