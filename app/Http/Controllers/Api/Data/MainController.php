@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Api\Data;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class MainController extends Controller
 {

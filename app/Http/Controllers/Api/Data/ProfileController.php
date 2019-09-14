@@ -4,19 +4,11 @@ namespace App\Http\Controllers\Api\Data;
 
 use App\Models\LogsmLogs;
 use App\Models\User;
-use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ProfileController extends Controller
 {
-    protected $logger;
-
-    public function __construct(BackofficeqLoggerService $logger)
-    {
-        $this->logger = $logger;
-    }
-
     public function details(Request $request)
     {
         if ($_user = auth('api')->user()) {

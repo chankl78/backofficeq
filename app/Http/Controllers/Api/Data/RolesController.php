@@ -5,20 +5,11 @@ namespace App\Http\Controllers\Api\Data;
 use App\Models\Configuration\Resource;
 use App\Models\Role;
 use App\Models\Permission;
-use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
 class RolesController extends Controller
 {
-    protected $logger;
-
-    public function __construct(BackofficeqLoggerService $logger)
-    {
-        $this->logger = $logger;
-    }
-
     public function index()
     {
         $roles = Role::with('resource')->orderBy('created_at', 'DESC')->get();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\BackofficeqLoggerService;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
@@ -14,8 +15,9 @@ class VerificationController extends Controller
 
     protected $redirectTo = '/';
 
-    public function __construct()
+    public function __construct(BackofficeqLoggerService $logger)
     {
+        parent::__construct($logger);
         $this->middleware('signed')->only('verify');
     }
 
