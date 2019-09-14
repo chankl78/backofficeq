@@ -23,4 +23,9 @@ class Event extends Model
     {
         return $this->belongsToMany(EventType::class, 'events_event_types');
     }
+
+    public function participants()
+    {
+        return $this->belongsToMany(Participant::class, 'event_participants');
+    }
 }

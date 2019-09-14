@@ -17,6 +17,7 @@ class CreateEventsTable extends Migration
             $table->bigIncrements('id');
             $table->uuid('uniquecode')->unique();
             $table->date('eventdate')->index();
+            $table->string('name', 150);
             $table->text('description')->nullable();
             $table->string('status', 20)->default('Active');
             $table->boolean('pdpanric', 1)->default(0);

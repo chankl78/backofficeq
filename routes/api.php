@@ -56,6 +56,7 @@ Route::prefix('data')->group(function () {
         });
         Route::group(['middleware' => ['role:system-administrator|software-administrator']], function() {
             Route::get('events', 'Api\Data\EventsController@index');
+            Route::get('event/{id}', 'Api\Data\EventsController@details');
         });
     });
 });

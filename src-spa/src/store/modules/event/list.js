@@ -1,11 +1,8 @@
-import { makeMutations } from '../../helpers'
-// import { Cookies } from 'quasar'
 import axios from 'axios'
 
 const state = {
   loading: false,
-  events: [],
-  event: {}
+  events: []
 }
 
 const getters = {
@@ -28,15 +25,9 @@ const actions = {
 }
 
 const mutations = {
-  ...makeMutations([
-    'LOAD_EVENTS',
-    'LOAD_EVENT',
-    'CREATE_EVENT',
-    'UPDATE_EVENT',
-    'DELETE_EVENT'
-  ], (state) => {
+  LOAD_EVENTS (state) {
     state.status = 'loading'
-  }),
+  },
   LOAD_EVENTS_OK (state, data) {
     state.status = 'success'
     state.events = data.map((item) => ({
@@ -49,15 +40,9 @@ const mutations = {
     state.status = 'success'
     state.event = data.event
   },
-  ...makeMutations([
-    'LOAD_EVENTS_FAIL',
-    'LOAD_EVENT_FAIL',
-    'CREATE_EVENT_FAIL',
-    'UPDATE_EVENT_FAIL',
-    'DELETE_EVENT_FAIL'
-  ], (state) => {
+  LOAD_EVENTS_FAIL (state) {
     state.status = 'fail'
-  })
+  }
 }
 
 export default {

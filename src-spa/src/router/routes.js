@@ -20,6 +20,7 @@ import UserAccess from '../pages/dashboard/access/UserAccess'
 import UserAccessEdit from '../pages/dashboard/access/UserAccessEdit'
 
 import EventList from '../pages/dashboard/event/Event'
+import EventEdit from '../pages/dashboard/event/EventEdit'
 
 const routes = [
   {
@@ -104,6 +105,15 @@ const routes = [
         component: EventList,
         meta: {
           title: 'Events list',
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/event/:id/details',
+        name: 'event-details',
+        component: EventEdit,
+        meta: {
+          title: 'Event Details',
           requiresAuth: true
         }
       },
