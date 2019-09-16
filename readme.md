@@ -82,7 +82,7 @@ This will version 2 using laravel and quasar framework with mariadb.
 6. Because Laravel needs index.php to works, so need to re-copy the file over from another folder.
    ```
    cp /var/www/html/defaultpublic/* /var/www/html/public/
-   ```
+   ``` 
 
 
 ## Laravel License
