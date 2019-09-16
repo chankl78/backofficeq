@@ -9,19 +9,10 @@ class Participant extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'rhq',
-        'zone',
-        'gender',
-        'age',
-        'nric',
-        'chapter',
-        'district',
-        'position',
-        'division',
-        'role'
-    ];
+    public function member()
+    {
+        return $this->belongsTo(MemberSSA::class);
+    }
 
     public function events()
     {

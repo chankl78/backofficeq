@@ -10,6 +10,7 @@ import types from './modules/access/types'
 import statuses from './modules/access/statuses'
 import eventsList from './modules/event/list'
 import eventDetails from './modules/event/details'
+import participantDetails from './modules/event/participant'
 
 Vue.use(Vuex)
 
@@ -23,7 +24,8 @@ const Store = new Vuex.Store({
     types,
     statuses,
     eventsList,
-    eventDetails
+    eventDetails,
+    participantDetails
   },
   strict: process.env.DEV
 })

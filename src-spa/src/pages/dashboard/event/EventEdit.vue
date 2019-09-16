@@ -28,42 +28,52 @@
                         animated
                         transition-prev="jump-up"
                         transition-next="jump-up"
-                        @before-transition="loadPanel"
+                        :before-transition="loadPanel"
                     >
                         <q-tab-panel name="info">
-                            <div class="text-h4 q-mb-md">{{ event.name }}</div>
-                            <div class="text-h5 q-mb-md">Participants</div>
-                            <q-table
-                                title="Participants"
-                                :filter="filter"
-                                :data="event.participants"
-                                :columns="participantsTable"
-                                row-key="name"
-                                :visible-columns="participantsTableVisibleColumns"
-                            >
-                                <template v-slot:top="props">
-                                    <q-btn flat dense color="primary" :disable="loading" label="Add Participant" @click="addParticipant" />
-                                    <q-space />
-                                    <q-select
-                                        v-model="participantsTableVisibleColumns"
-                                        multiple
-                                        dense
-                                        options-dense
-                                        :display-value="$q.lang.table.columns"
-                                        emit-value
-                                        map-options
-                                        :options="participantsTable"
-                                        option-value="name"
-                                        style="min-width: 150px"
-                                        class="q-mr-md"
-                                    />
-                                    <q-input dense debounce="300" color="primary" v-model="filter">
-                                        <template v-slot:append>
-                                            <q-icon name="search" />
-                                        </template>
-                                    </q-input>
-                                </template>
-                            </q-table>
+                            <q-card class="relative-position card-example">
+                                <q-card-section>
+                                    <div class="text-h4 q-mb-md">{{ event.name }}</div>
+                                    <div class="text-h5 q-mb-md">Participants</div>
+                                </q-card-section>
+                                <q-table
+                                    title="Participants"
+                                    :loading="loading"
+                                    :filter="filter"
+                                    :data="participants"
+                                    :columns="participantsTable"
+                                    row-key="name"
+                                    :visible-columns="participantsTableVisibleColumns"
+                                >
+                                    <template v-if="loading === false" v-slot:top="props">
+                                        <q-btn flat dense color="primary" :disable="loading" label="Add Participant" @click="addParticipant" />
+                                        <q-space />
+                                        <q-select
+                                            v-model="participantsTableVisibleColumns"
+                                            multiple
+                                            dense
+                                            options-dense
+                                            :display-value="$q.lang.table.columns"
+                                            emit-value
+                                            map-options
+                                            :options="participantsTable"
+                                            option-value="name"
+                                            style="min-width: 150px"
+                                            class="q-mr-md"
+                                        />
+                                        <q-input dense debounce="300" color="primary" v-model="filter">
+                                            <template v-slot:append>
+                                                <q-icon name="search" />
+                                            </template>
+                                        </q-input>
+                                    </template>
+                                    <template v-if="loading === false" v-slot:body="props">
+                                        <q-tr :props="props" class="cursor-pointer" @click.native="participantDetails(props.row)">
+                                            <q-td :align="val.align" v-for="(val, key) in computedColumns" :key="key">{{ props.row[val.name] }}</q-td>
+                                        </q-tr>
+                                    </template>
+                                </q-table>
+                            </q-card>
                         </q-tab-panel>
                         <q-tab-panel name="card">
                             <div class="text-h4 q-mb-md">Card</div>
@@ -125,6 +135,7 @@ export default {
       participantsTable: [
         { name: 'created_at', align: 'left', label: 'Created At', field: 'created_at', sortable: true },
         { name: 'name', align: 'left', label: 'Name', field: 'name', sortable: true },
+        { name: 'chinese_name', align: 'center', label: 'Chinese Name', field: 'chinese_name', sortable: true },
         { name: 'rhq', align: 'center', label: 'RHQ', field: 'rhq', sortable: true },
         { name: 'division', align: 'center', label: 'Div', field: 'division', sortable: true },
         { name: 'gender', align: 'center', label: 'Gender', field: 'gender', sortable: true },
@@ -135,16 +146,13 @@ export default {
         { name: 'position', align: 'center', label: 'Position', field: 'position', sortable: true },
         { name: 'chapter', align: 'center', label: 'Chapter', field: 'chapter', sortable: true }
       ],
-      participantsTableVisibleColumns: ['created_at', 'name', 'rhq', 'division', 'age']
+      participantsTableVisibleColumns: ['created_at', 'name', 'rhq', 'zone', 'age']
     }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      vm.loadEvent(to.params).then((response) => {
-        vm.loading = false
-        vm.event = response.data.event
-        vm.participants = response.data.event.participants
-      })
+      vm.loading = true
+      vm.loadPanel('info', '')
     })
   },
   computed: {
@@ -156,18 +164,38 @@ export default {
         return this.currentEvent()
       },
       set (value) {
-        // this.value = value
+        this.value = value
       }
+    },
+    computedColumns () {
+      return this.participantsTable.filter((c) => this.participantsTableVisibleColumns.includes(c.name))
     }
   },
   methods: {
     ...mapActions(['loadEvent', 'deleteEvent']),
     ...mapGetters(['currentEvent', 'userCan']),
     loadPanel (next, prev) {
-      // tmp
+      switch (next) {
+        case 'info':
+        default:
+          this.loadEvent(this.$route.params).then((response) => {
+            this.loading = false
+            this.event = response.event
+            this.participants = response.participants
+            console.log(this.participants[0])
+          })
+      }
     },
     addParticipant () {
       // tmp
+    },
+    participantDetails (item) {
+      this.$router.push({
+        name: 'participant-details',
+        params: {
+          id: item.uniquecode
+        }
+      })
     }
   }
 }

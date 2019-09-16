@@ -16,19 +16,16 @@ class CreateParticipantsTable extends Migration
         Schema::create('participants', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('uniquecode')->unique();
-            $table->string('name');
-            $table->string('rhq', 2)->nullable();
-            $table->string('zone', 4)->nullable();
-            $table->char('gender')->nullable();
-            $table->unsignedInteger('age')->nullable();
-            $table->string('chapter', 4)->nullable();
-            $table->string('district', 2)->nullable();
-            $table->string('position', 10)->nullable();
-            $table->string('division', 3)->nullable();
-            $table->string('role', 150)->nullable();
-            $table->binary('nric')->nullable();
+            $table->unsignedBigInteger('member_id')->nullable();
+            $table->unsignedBigInteger('person_id')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('member_id')
+                ->references('id')
+                ->on('members_ssa')
+                ->onDelete('cascade');
         });
     }
 
