@@ -18,8 +18,13 @@ class EventsController extends Controller
     public function details(Request $request, $id)
     {
         try {
-            $event = Event::with(['eventType', 'participants'])->where(['uniquecode' => $id])->first();
-
+            $event = Event::with([
+                'eventType',
+                'participants',
+                'participants.member',
+                'participants.member.orgInfo',
+                'participants.member.orgInfo.orgChart'
+            ])->where(['uniquecode' => $id])->first();
             return response()->json([
                 'event' => $event
             ], 200);

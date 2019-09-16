@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // DefaultValueTableSeeder::class,
+            OrgChartSeeder::class,
+            MemberSSASeeder::class,
             EventTableSeeder::class,
 
             PermissionTableSeeder::class,

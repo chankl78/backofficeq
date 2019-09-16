@@ -21,6 +21,7 @@ import UserAccessEdit from '../pages/dashboard/access/UserAccessEdit'
 
 import EventList from '../pages/dashboard/event/Event'
 import EventEdit from '../pages/dashboard/event/EventEdit'
+import Participant from '../pages/dashboard/event/Participant'
 
 const routes = [
   {
@@ -114,6 +115,15 @@ const routes = [
         component: EventEdit,
         meta: {
           title: 'Event Details',
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/participant/:id/details',
+        name: 'participant-details',
+        component: Participant,
+        meta: {
+          title: 'Participant Details',
           requiresAuth: true
         }
       },
