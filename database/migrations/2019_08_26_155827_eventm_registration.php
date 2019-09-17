@@ -139,12 +139,12 @@ class EventmRegistration extends Migration
 			$table->softDeletes();
         });
         
-        Log::info("[Migration] Table Event_m_EventRegistration created!");
+        Log::info("[Migration] Table Event_m_Registration created!");
     }
 
     public function down()
     {
-        Schema::dropIfExists('Event_m_EventRegistration');
-        Log::warning("[Migration] Table Event_m_EventRegistration deleted!");
+        Schema::dropIfExists('Event_m_Registration');
+        Log::warning("[Migration] Table Event_m_Registration deleted!");
     }
 }

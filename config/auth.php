@@ -68,8 +68,8 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class, //App\Models\AccessmUser::class,
-            'table' => 'users', //'Access_m_Users',
+            'model' => App\Models\AccessmUser::class,
+            'table' => 'Access_m_Users',
         ],
     ],
 
@@ -91,7 +91,7 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => 'password_resets', //'Access_m_PasswordResets',
+            'table' => 'Access_m_PasswordResets',
             'expire' => 180,
         ],
     ],

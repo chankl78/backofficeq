@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class GroupmMemberPosition extends Model
+{
+    protected $table = 'Group_m_MemberPosition';
+}
