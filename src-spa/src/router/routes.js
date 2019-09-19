@@ -19,6 +19,10 @@ import RoleAccessEdit from '../pages/dashboard/access/RoleAccessEdit'
 import UserAccess from '../pages/dashboard/access/UserAccess'
 import UserAccessEdit from '../pages/dashboard/access/UserAccessEdit'
 
+import EventList from '../pages/dashboard/event/Event'
+import EventEdit from '../pages/dashboard/event/EventEdit'
+import Participant from '../pages/dashboard/event/Participant'
+
 const routes = [
   {
     path: '/login',
@@ -93,6 +97,33 @@ const routes = [
         component: Settings,
         meta: {
           title: 'Settings',
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/events/list',
+        name: 'events-list',
+        component: EventList,
+        meta: {
+          title: 'Events list',
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/event/:id/details',
+        name: 'event-details',
+        component: EventEdit,
+        meta: {
+          title: 'Event Details',
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/participant/:id/details',
+        name: 'participant-details',
+        component: Participant,
+        meta: {
+          title: 'Participant Details',
           requiresAuth: true
         }
       },
