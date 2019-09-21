@@ -3,19 +3,11 @@
 namespace App\Http\Controllers\Api\Data;
 
 use App\Models\AccessType;
-use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class TypesController extends Controller
 {
-    protected $logger;
-
-    public function __construct(BackofficeqLoggerService $logger)
-    {
-        $this->logger = $logger;
-    }
-
     public function index()
     {
         $types = AccessType::select(['id', 'name', 'description'])->orderBy('created_at', 'DESC')->get()->all();

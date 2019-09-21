@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\Data;
 
-//use App\Models\Event\Event;
 use App\Models\Event_m_Event;
 use App\Models\Event_m_Registration;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 

@@ -3,19 +3,11 @@
 namespace App\Http\Controllers\Api\Data;
 
 use App\Models\Status;
-use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class StatusesController extends Controller
 {
-    protected $logger;
-
-    public function __construct(BackofficeqLoggerService $logger)
-    {
-        $this->logger = $logger;
-    }
-
     public function index()
     {
         $statuses = Status::select(['id', 'name', 'description'])->orderBy('created_at', 'DESC')->get()->all();

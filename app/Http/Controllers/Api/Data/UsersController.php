@@ -6,19 +6,11 @@ use App\Models\AccessType;
 use App\Models\Role;
 use App\Models\Status;
 use App\Models\User;
-use App\Services\BackofficeqLoggerService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class UsersController extends Controller
 {
-    protected $logger;
-
-    public function __construct(BackofficeqLoggerService $logger)
-    {
-        $this->logger = $logger;
-    }
-
     public function index()
     {
         $users = User::with(['roles', 'accessTypes', 'status'])

@@ -11,6 +11,7 @@ class Nric
         }
         return false;
     }
+
     public static function checksum($nric)
     {
         $nric = strtoupper($nric);
@@ -35,6 +36,7 @@ class Nric
             }
         }
     }
+
     public static function generateFakeNric($limit = 1, $prefixes = ['S','T','F','G'])
     {
         for ($i = 0; $i < $limit; ++$i) {
@@ -44,6 +46,7 @@ class Nric
             $number = sprintf('%1$05d', mt_rand(80000, 99999));
             $prefix = $prefixes[mt_rand(0, count($prefixes) - 1)];
             $check = self::checksum($prefix . $year . $number);
+
             yield $prefix . $year . $number . $check;
         }
     }
