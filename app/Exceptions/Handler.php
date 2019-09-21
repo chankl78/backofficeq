@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof UnauthorizedException) {
             return response()->json([
-                'error' => $exception->getMessage()
+                'error' => $exception->getMessage() . '!!!!!!!!!!!!'
             ], 403)->sendHeaders($exception->getHeaders());
         }
         return parent::render($request, $exception);

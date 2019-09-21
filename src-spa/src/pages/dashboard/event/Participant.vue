@@ -43,25 +43,25 @@
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Name</q-item-label>
-                                                <q-item-label lines="2">{{ participant.name }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().name }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Chinese Name</q-item-label>
-                                                <q-item-label lines="2">{{ participant.chinese_name }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().chinesename }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Date of birth</q-item-label>
-                                                <q-item-label lines="2">{{ participant.birth_date }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().dateofbirth }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Gender</q-item-label>
-                                                <q-item-label lines="2">{{ participant.gender }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().gender }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                     </q-list>
@@ -71,25 +71,25 @@
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Nationality</q-item-label>
-                                                <q-item-label lines="2">{{ participant.nationality }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().nationality }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Country of birth</q-item-label>
-                                                <q-item-label lines="2">{{ participant.birth_country }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().countryofbirth }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Race</q-item-label>
-                                                <q-item-label lines="2">{{ participant.race }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().race }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Occupation</q-item-label>
-                                                <q-item-label lines="2">{{ participant.occupation }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().occupation }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                     </q-list>
@@ -113,25 +113,25 @@
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Nric</q-item-label>
-                                                <q-item-label lines="2">{{ participant.nric }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().nric }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Email</q-item-label>
-                                                <q-item-label lines="2">{{ participant.email }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().email }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Phone</q-item-label>
-                                                <q-item-label lines="2">{{ participant.tel }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().tel }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Mobile</q-item-label>
-                                                <q-item-label lines="2">{{ participant.mobile }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().mobile }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                     </q-list>
@@ -140,26 +140,140 @@
                                     <q-list>
                                         <q-item>
                                             <q-item-section>
-                                                <q-item-label caption>Building name</q-item-label>
-                                                <q-item-label lines="2">{{ participant.address.building }}</q-item-label>
+                                                <q-item-label caption>Address</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().address }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
-                                                <q-item-label caption>Address</q-item-label>
-                                                <q-item-label lines="2">{{ participant.address.address }}</q-item-label>
+                                                <q-item-label caption>Building name</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().buildingname }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Unit No.</q-item-label>
-                                                <q-item-label lines="2">{{ participant.address.unit }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().unitno }}</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                         <q-item>
                                             <q-item-section>
                                                 <q-item-label caption>Postal code</q-item-label>
-                                                <q-item-label lines="2">{{ participant.address.postal_code }}</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().postalcode }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                    </q-list>
+                                </q-card-section>
+                            </q-card>
+                        </q-tab-panel>
+                        <q-tab-panel name="org_detail">
+                            <q-card class="relative-position row">
+                                <q-card-section class="col-12">
+                                    <div class="text-h4 q-mb-md">Organisation Detail</div>
+                                </q-card-section>
+                                <q-card-section class="col-md-6 col-sm-12">
+                                    <q-list>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>RHQ</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().rhq }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Zone</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().zone }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Chapter</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().chapter }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                    </q-list>
+                                </q-card-section>
+                                <q-card-section class="col-md-6 col-sm-12">
+                                    <q-list>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>District</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().district }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Position</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().position }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Position Level</q-item-label>
+                                                <q-item-label lines="2">--</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                    </q-list>
+                                </q-card-section>
+                            </q-card>
+                        </q-tab-panel>
+                        <q-tab-panel name="reg_detail">
+                            <q-card class="relative-position row">
+                                <q-card-section class="col-12">
+                                    <div class="text-h4 q-mb-md">Registration Detail</div>
+                                </q-card-section>
+                                <q-card-section class="col-md-6 col-sm-12">
+                                    <q-list>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Role</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().role }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Item</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().item }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>SSA Group</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().ssagroup }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Contact Group</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().contactgroup }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                    </q-list>
+                                </q-card-section>
+                                <q-card-section class="col-md-6 col-sm-12">
+                                    <q-list>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>SSA Group All</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().ssagroupall }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Audition Code</q-item-label>
+                                                <q-item-label lines="2">{{ currentMember().auditioncode }}</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Group Code Prefix & Group Code</q-item-label>
+                                                <q-item-label lines="2">--</q-item-label>
+                                            </q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item-label caption>Registration Status</q-item-label>
+                                                <q-item-label lines="2">--</q-item-label>
                                             </q-item-section>
                                         </q-item>
                                     </q-list>
@@ -181,12 +295,16 @@ export default {
   data () {
     return {
       splitterModel: 20,
-      tab: 'info'
+      tab: 'info',
+      participant: {},
+      member: {}
     }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       vm.loadParticipant(to.params).then((resp) => {
+        vm.participant = resp.participant
+        vm.member = resp.member
         vm.loading = false
       })
     })
@@ -194,14 +312,11 @@ export default {
   computed: {
     allowed (arr) {
       return this.userCan(arr)
-    },
-    participant () {
-      return this.currentParticipant().member
     }
   },
   methods: {
     ...mapActions(['loadParticipant']),
-    ...mapGetters(['currentParticipant', 'userCan'])
+    ...mapGetters(['currentMember', 'userCan'])
   }
 }
 </script>

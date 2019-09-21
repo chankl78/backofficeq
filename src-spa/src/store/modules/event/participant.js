@@ -7,17 +7,19 @@ const state = {
 }
 
 const getters = {
-  currentParticipant: state => state.participant
+  currentMember: state => state.participant
 }
 
 const actions = {
   loadParticipant ({ commit }, params = {}) {
     commit('LOAD_PARTICIPANT')
-    console.log(params)
     return new Promise((resolve, reject) => {
       axios.get('/api/data/participants/' + params.id).then((response) => {
         commit('LOAD_PARTICIPANT_OK', response.data)
-        resolve(state.participant)
+        resolve({
+          participant: state.participant,
+          member: state.member
+        })
       }).catch((err) => {
         commit('LOAD_PARTICIPANT_FAIL')
         reject(err)

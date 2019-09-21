@@ -1,6 +1,7 @@
 <?php
 namespace App\Helpers;
-class Nric
+
+class NricHelper
 {
     public static function validate($nric)
     {
@@ -24,20 +25,21 @@ class Nric
             if ($prefix == 'T' || $prefix == 'G') {
                 $number += 4;
             }
+            #var_dump('Sum of ' . $nric . ' is ' . $number);
             $mod = $number % 11;
-            $hash = [
-                ['J', 'Z', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'],
-                ['X', 'W', 'U', 'T', 'R', 'Q', 'P', 'N', 'M', 'L', 'K']
-            ];
-            if (in_array($prefix, ['S', 'T'])) {
+            $hash = array(
+                array('J', 'Z', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'),
+                array('X', 'W', 'U', 'T', 'R', 'Q', 'P', 'N', 'M', 'L', 'K')
+            );
+            if (in_array($prefix, array('S', 'T'))) {
                 return $hash[0][$mod];
-            } elseif (in_array($prefix, ['F', 'G'])) {
+            } elseif (in_array($prefix, array('F', 'G'))) {
                 return $hash[1][$mod];
             }
         }
     }
 
-    public static function generateFakeNric($limit = 1, $prefixes = ['S','T','F','G'])
+    public static function generateFakeNric($limit = 1, $prefixes = array('S','T','F','G'))
     {
         for ($i = 0; $i < $limit; ++$i) {
             $year = sprintf('%1$02d', mt_rand(0, 99));
@@ -46,7 +48,6 @@ class Nric
             $number = sprintf('%1$05d', mt_rand(80000, 99999));
             $prefix = $prefixes[mt_rand(0, count($prefixes) - 1)];
             $check = self::checksum($prefix . $year . $number);
-
             yield $prefix . $year . $number . $check;
         }
     }

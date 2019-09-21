@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
             AccessTypeTableSeeder::class,
             RoleTableSeeder::class,
             UserTableSeeder::class,
+
+            // EVENTS OLD TABLES SEEDS
+            OldTablesSeeder::class,
         ]);
     }
 }

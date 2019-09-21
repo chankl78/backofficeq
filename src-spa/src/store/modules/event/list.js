@@ -30,9 +30,9 @@ const mutations = {
   },
   LOAD_EVENTS_OK (state, data) {
     state.status = 'success'
-    state.events = data.map((item) => ({
+    state.events = data.records.map((item) => ({
       ...item,
-      event_type: item.event_type[0].value || 'not set',
+      // event_type: item.event_type[0].value || 'not set',
       rowSelected: 'false'
     }))
   },

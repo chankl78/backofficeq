@@ -1,6 +1,15 @@
 <template>
     <q-page padding>
         <div class="q-pa-md q-gutter-sm">
+            <q-banner dense inline-actions class="shadow-1">
+                <template v-slot:avatar>
+                    <q-icon name="mdi-checkbox-marked-circle-outline" class="q-ma-lg-md" color="teal-8" />
+                </template>
+                <div class="text-h4 q-mt-md-lg q-mb-md-lg">{{ event.description }}</div>
+                <template v-slot:action>
+                    <q-btn flat color="negative" label="Delete event" />
+                </template>
+            </q-banner>
             <q-splitter v-model="splitterModel">
                 <template v-slot:before>
                     <q-tabs
@@ -8,18 +17,18 @@
                         vertical
                         class="text-teal"
                     >
-                        <q-tab name="info" icon="mdi-view-dashboard-outline" label="Info" />
-                        <q-tab name="card" icon="mdi-card-text-outline" label="Card" />
-                        <q-tab name="attendance" icon="mdi-bullhorn-outline" label="Attendance" />
-                        <q-tab name="statistic" icon="mdi-chart-bar-stacked" label="Statistic" />
-                        <q-tab name="eventitem" icon="mdi-calendar-check-outline" label="Event Item" />
-                        <q-tab name="eventgroup" icon="mdi-account-group-outline" label="Groups" />
-                        <q-tab name="eventshow" icon="mdi-calendar-clock" label="Show Dates" />
+                        <q-tab name="info" :class="tab === 'info' ? 'bg-teal-1' : ''" icon="mdi-view-dashboard-outline" label="Info" />
+                        <q-tab name="card" :class="tab === 'card' ? 'bg-teal-1' : ''" icon="mdi-card-text-outline" label="Card" />
+                        <q-tab name="attendance" :class="tab === 'attendance' ? 'bg-teal-1' : ''" icon="mdi-bullhorn-outline" label="Attendance" />
+                        <q-tab name="statistic" :class="tab === 'statistic' ? 'bg-teal-1' : ''" icon="mdi-chart-bar-stacked" label="Statistic" />
+                        <q-tab name="eventitem" :class="tab === 'eventitem' ? 'bg-teal-1' : ''" icon="mdi-calendar-check-outline" label="Event Item" />
+                        <q-tab name="eventgroup" :class="tab === 'eventgroup' ? 'bg-teal-1' : ''" icon="mdi-account-group-outline" label="Groups" />
+                        <q-tab name="eventshow" :class="tab === 'eventshow' ? 'bg-teal-1' : ''" icon="mdi-calendar-clock" label="Show Dates" />
                         <!-- if REEV05R -->
-                        <q-tab name="reports" icon="mdi-clipboard-text-outline" label="Reports" />
+                        <q-tab name="reports" :class="tab === 'reports' ? 'bg-teal-1' : ''" icon="mdi-clipboard-text-outline" label="Reports" />
                         <!-- if REEV01R -->
-                        <q-tab name="logs" icon="mdi-alert-box-outline" label="Logs" />
-                        <q-tab name="access" icon="mdi-key-outline" label="Access" />
+                        <q-tab name="logs" :class="tab === 'logs' ? 'bg-teal-1' : ''" icon="mdi-alert-box-outline" label="Logs" />
+                        <q-tab name="access" :class="tab === 'access' ? 'bg-teal-1' : ''" icon="mdi-key-outline" label="Access" />
                     </q-tabs>
                 </template>
                 <template v-slot:after>
@@ -33,8 +42,7 @@
                         <q-tab-panel name="info">
                             <q-card class="relative-position card-example">
                                 <q-card-section>
-                                    <div class="text-h4 q-mb-md">{{ event.name }}</div>
-                                    <div class="text-h5 q-mb-md">Participants</div>
+                                    <div class="text-h4 q-mb-md">Participants</div>
                                 </q-card-section>
                                 <q-table
                                     title="Participants"
