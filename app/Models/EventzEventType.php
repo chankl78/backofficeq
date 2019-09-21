@@ -10,7 +10,7 @@ class EventzEventType extends Model {
     protected $table = 'Event_z_EventType';
     use SoftDeletes;
 
-    public function scopeRole($query)
+    public static function scopeRole($query)
     {
         /*if (AccessfCheck::getCheckSYS(Auth::user()->roleid))
         {

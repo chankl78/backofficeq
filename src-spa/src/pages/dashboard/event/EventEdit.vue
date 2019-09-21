@@ -5,7 +5,7 @@
                 <template v-slot:avatar>
                     <q-icon name="mdi-checkbox-marked-circle-outline" class="q-ma-lg-md" color="teal-8" />
                 </template>
-                <div class="text-h4 q-mt-md-lg q-mb-md-lg">{{ event.name }}</div>
+                <div class="text-h4 q-mt-md-lg q-mb-md-lg">{{ event.description }}</div>
                 <template v-slot:action>
                     <q-btn flat color="negative" label="Delete event" />
                 </template>

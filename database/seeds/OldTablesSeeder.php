@@ -1,11 +1,13 @@
 <?php
 
-use App\Helpers\NricHelper;
+use App\Helpers\Nric;
 use App\Models\AttendancezStatus;
 use App\Models\AttendancezType;
 use App\Models\ConfigurationmBranch;
 use App\Models\ConfigurationmDefault;
 use App\Models\ConfigurationmLicense;
+use App\Models\Event_m_Event;
+use App\Models\Event_m_Registration;
 use App\Models\EventzEventType;
 use App\Models\EventzLanguage;
 use App\Models\EventzRegistrationStatus;
@@ -13,13 +15,16 @@ use App\Models\EventzRole;
 use App\Models\GroupzGroupType;
 use App\Models\GroupzMemberStatus;
 use App\Models\GroupzStatus;
+use App\Models\Members_m_SSA;
 use App\Models\MembersmSSA;
 use App\Models\MemberszOrgChart;
 use App\Models\MemberszPosition;
 use App\Models\MemberszStatus;
+use App\Models\User;
 use App\Models\VehiclemVehicle;
 use App\Models\VehiclezBookingStatus;
 use App\Models\VehiclezMaintenanceType;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Crypt;
 
@@ -326,77 +331,64 @@ class OldTablesSeeder extends Seeder
         GroupzMemberStatus::create(array('value' => 'Withdrawn'));
         GroupzMemberStatus::create(array('value' => 'Alumni'));
 
-        //////////////////////////////////////////MEMBERS//////////////////////////////////////////
-        $this->removeSeedEntries();
-        $totalNumberToAdd = 1;
+        $faker = Factory::create();
+        $fakerZh = Factory::create('zh_CN');
 
-        for ($i=1;$i<=$totalNumberToAdd;++$i)
-        {
-            # Generate a random NRIC
-            $nric = NricHelper::generateFakeNric(1)->current();
-            echo "Creating " . $nric . PHP_EOL;
-            # Personid is 1000000 + index, for testing data.
-            $personid = 1000000 + $i;
-            # Searchcode is the first three digits of the NRIC
-            $searchcode = substr($nric, 1, 3);
-            # Uniquecode is the date string
-            # NRIC is the NRIC as blob
-            # Name is TestMemberData . index
-            $name = 'TestMemberData' . $i;
-            # Create and save the member to database
-            $post = new MembersmSSA;
-            $post->personid = $personid;
-            $post->nric = $nric;
-            $post->name = $name;
-            $post->uniquecode = date('dmY') . $i . date('His');
-            $post->searchcode = $searchcode;
-            $post->introducermobile = 'BLANK';
-            # Add random RZCD
-            $org = MemberszOrgChart::orderbyRaw("RAND()")->limit(1)->get();
-            $post->rhq = $org[0]['rhqabbv'];
-            $post->zone = $org[0]['zoneabbv'];
-            $post->chapter = $org[0]['chapabbv'];
-            $post->district = $org[0]['district'];
+        for ($i = 0; $i < 50; $i++) {
+            $event = Event_m_Event::create([
+                'eventdate' => $faker->date('Y-m-d'),
+                'location' => '',
+                'description' => $faker->realText(30),
+                'eventtype' => EventzEventType::all()->random()->first()->value,
+                //'divisiontype' => '',
+                'createby' => User::all()->random()->first()->id,
+                'uniquecode' => $faker->uuid,
+            ]);
+            for ($e = 0; $e < $faker->numberBetween(10, 20); $e++) {
+                $gender = $faker->randomElement(['M', 'F']);
+                $nric = Nric::generateFakeNric(1)->current();
+                //$position = MemberszPosition::all()->random()->first();
+                $org = MemberszOrgChart::all()->random()->first();
 
-            # Add random position
-            $position = MemberszPosition::orderbyRaw("RAND()")->limit(1)->get();
-            $post->position = isset($position[0]) ? $position[0]['code'] : '';
-
-            # Add division and gender
-            $gender = ['F','M'];
-            $post->gender = $gender[mt_rand(0, count($gender)-1)];
-            if ($post->gender == 'F') {
-                $division = ['YW','WD'];
-                $post->division = $division[mt_rand(0,count($division)-1)];
-            } else {
-                $division = ['YM','MD'];
-                $post->division = $division[mt_rand(0,count($division)-1)];
+                try {
+                    $member = Members_m_SSA::create([
+                        'uniquecode' => $faker->uuid,
+                        'searchcode' => substr($nric, 1, 3),
+                        'name' => $faker->name($gender === 'M' ? 'male' : 'female'),
+                        'chinesename' => $fakerZh->name($gender === 'M' ? 'male' : 'female'),
+                        'dateofbirth' => $faker->dateTimeBetween('-50 years', '-25 years'),
+                        'classification' => '',
+                        'gender' => $gender,
+                        'rhq' => $org->rhq,
+                        'zone' => $org->zone,
+                        'chapter' => $org->chapter,
+                        'district' => $org->district,
+                        'division' => $gender === 'M' ? $faker->randomElement(['YM', 'MD']) : $faker->randomElement(['YW', 'WD']),
+                        'position' => '',
+                        'tel' => $faker->phoneNumber,
+                        'mobile' => $faker->phoneNumber,
+                        'email' => $faker->email,
+                        'address' => $faker->streetName,
+                        'nric' => $nric,
+                        'buildingname' => $faker->streetSuffix,
+                        'unitno' => $faker->buildingNumber,
+                        'postalcode' => $faker->postcode,
+                        'introducermobile' => 'BLANK',
+                        'emergencytel' => $faker->phoneNumber,
+                        'emergencymobile' => $faker->phoneNumber,
+                    ]);
+                    for ($r = 0; $r < $faker->numberBetween(2, 5); $r++) {
+                        $registration = Event_m_Registration::create([
+                            'uniquecode' => $faker->uuid,
+                            'introducermobile' => 'NIL',
+                        ]);
+                        $event->registrations()->save($registration);
+                        $member->registrations()->save($registration);
+                    }
+                } catch (Exception $e) {
+                    dd($e->getMessage());
+                }
             }
-
-            $post->dateofbirth = '1999-12-31';
-            $post->tel = $this->getRandomPhoneNumber('6');
-            $post->mobile = $this->getRandomPhoneNumber('9');
-            $post->email = 'email@.' . str_random(10) . '.com';
-            $post->address = str_random(10);
-            $post->buildingname = str_random(10);
-            $post->unitno = str_random(10);
-            $post->postalcode = rand(100000,999999);
-
-            $post->emergencytel = $this->getRandomPhoneNumber('6');
-            $post->emergencymobile = $this->getRandomPhoneNumber('9');
-            $post->introducermobile = 'NIL';
-            $post->save();
         }
-        Eloquent::reguard();
-    }
-
-    private function getRandomPhoneNumber($prefix) {
-        return $prefix . sprintf('%07d', rand(0,9999999));
-    }
-
-    public function removeSeedEntries()
-    {
-        MembersmSSA::where('name','like', 'TestMemberData%')->forceDelete();
-        MembersmSSA::where('name','like', 'TestMemberData%')->delete();
     }
 }

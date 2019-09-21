@@ -43,25 +43,25 @@ const mutations = {
   LOAD_EVENT_OK (state, data) {
     state.status = 'success'
     state.event = data.event
-    state.participants = data.event.participants.map((p) => {
-      let member = p.member ? p.member : false
-      let orgInfo = member.org_info ? member.org_info : false
-      let orgChart = orgInfo.org_chart && orgInfo.org_chart.length ? orgInfo.org_chart[0] : false
+    state.participants = data.event.registrations.map((p) => {
+      let member = p.member
       return {
-        uniquecode: p.uniquecode,
+        uniquecode: member.uniquecode,
         created_at: p.created_at,
-        name: member.name || '',
-        chinese_name: member.chinese_name || '',
-        age: moment(Date.now()).diff(member.birth_date, 'year'),
-        event_item: '',
-        audition_code: '',
-        group_code: '',
-        rhq: orgChart.rhq || '',
-        zone: orgChart.zone || '',
-        chapter: orgChart.chapter || '',
-        district: orgChart.district || '',
-        division: orgInfo.division || '',
-        position: orgInfo.position || ''
+        name: member.name || '-',
+        chinese_name: member.chinesename || '-',
+        age: moment(Date.now()).diff(member.dateofbirth, 'year'),
+        event_item: '-',
+        audition_code: '-',
+        group_code: '-',
+        rhq: member.rhq || '-',
+        zone: member.zone || '-',
+        chapter: member.chapter || '-',
+        district: member.district || '-',
+        division: member.division || '-',
+        position: member.position || '-',
+        gender: member.gender || '-',
+        nric: member.nric || '-'
       }
     })
   },

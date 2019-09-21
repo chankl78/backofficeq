@@ -7,7 +7,7 @@ const state = {
 }
 
 const getters = {
-  currentMember: state => state.participant.member
+  currentMember: state => state.participant
 }
 
 const actions = {
