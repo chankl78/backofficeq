@@ -2,29 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\BackofficeqLoggerService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
     use SendsPasswordResetEmails;
-
-    protected $logger;
-
-    public function __construct(BackofficeqLoggerService $logger)
-    {
-        $this->logger = $logger;
-    }
 
     public function register(Request $request)
     {

@@ -13,12 +13,10 @@ class ForgotPasswordController extends Controller
 {
     use SendsPasswordResetEmails;
 
-    protected $logger;
-
     public function __construct(BackofficeqLoggerService $logger)
     {
+        parent::__construct($logger);
         $this->middleware('guest');
-        $this->logger = $logger;
     }
 
     public function sendResetLinkEmail(Request $request)
