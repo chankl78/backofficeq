@@ -80,7 +80,7 @@
                                                         <template v-slot:append>
                                                             <q-icon name="event" class="cursor-pointer">
                                                                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                                                                    <q-date mask="YYYY-MM-DD" @input="() => $refs.qDateProxy.hide()" />
+                                                                    <q-date mask="YYYY-MM-DD" v-model="tempData.eventdate" @input="() => $refs.qDateProxy.hide()" />
                                                                 </q-popup-proxy>
                                                             </q-icon>
                                                         </template>
