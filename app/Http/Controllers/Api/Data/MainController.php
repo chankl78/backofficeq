@@ -117,16 +117,8 @@ class MainController extends Controller
                     'icon' => 'mdi-calendar-text',
                     'label' => 'Events',
                     'separator' => true,
-                    'expandable' => true,
-                    'children' => [
-                        [
-                            'to' => 'events-list',
-                            'label' => 'List',
-                            'separator' => false,
-                            'expandable' => false,
-                            'level' => 1,
-                        ]
-                    ]
+                    'to' => 'events-list',
+                    'expandable' => false,
                 ];
             } elseif ($user->hasPermissionTo('read') && !$user->hasVerifiedEmail()) {
                 $access = [

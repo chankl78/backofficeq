@@ -6,9 +6,6 @@
                     <q-icon name="mdi-checkbox-marked-circle-outline" class="q-ma-lg-md" color="teal-8" />
                 </template>
                 <div class="text-h4 q-mt-md-lg q-mb-md-lg">{{ event.description }}</div>
-                <template v-slot:action>
-                    <q-btn flat color="negative" label="Delete event" />
-                </template>
             </q-banner>
             <q-splitter v-model="splitterModel">
                 <template v-slot:before>
@@ -18,7 +15,7 @@
                         class="text-teal"
                     >
                         <q-tab name="info" :class="tab === 'info' ? 'bg-teal-1' : ''" icon="mdi-view-dashboard-outline" label="Info" />
-                        <q-tab name="card" :class="tab === 'card' ? 'bg-teal-1' : ''" icon="mdi-card-text-outline" label="Card" />
+                        <q-tab name="participants" :class="tab === 'participants' ? 'bg-teal-1' : ''" icon="mdi-account-group-outline" label="Participants" />
                         <q-tab name="attendance" :class="tab === 'attendance' ? 'bg-teal-1' : ''" icon="mdi-bullhorn-outline" label="Attendance" />
                         <q-tab name="statistic" :class="tab === 'statistic' ? 'bg-teal-1' : ''" icon="mdi-chart-bar-stacked" label="Statistic" />
                         <q-tab name="eventitem" :class="tab === 'eventitem' ? 'bg-teal-1' : ''" icon="mdi-calendar-check-outline" label="Event Item" />
@@ -37,15 +34,77 @@
                         animated
                         transition-prev="jump-up"
                         transition-next="jump-up"
-                        :before-transition="loadPanel"
+                        @before-transition="loadPanel"
                     >
                         <q-tab-panel name="info">
+                            <q-card class="relative-position card-example">
+                                <q-card-section>
+                                    <div class="text-h4 q-mb-md">Event details</div>
+                                </q-card-section>
+                                <q-card-section class="col-sm-12">
+                                    <form name="info" ref="info">
+                                        <q-list>
+                                            <q-item>
+                                                <q-item-section>
+                                                    <q-item-label caption>Name</q-item-label>
+                                                    <q-item-label v-if="!isEditMode" lines="2">{{ event.description }}</q-item-label>
+                                                    <q-input v-if="isEditMode" name="description" type="textarea" v-model="tempData.description"/>
+                                                </q-item-section>
+                                            </q-item>
+                                            <q-item>
+                                                <q-item-section>
+                                                    <q-item-label caption>Location</q-item-label>
+                                                    <q-item-label v-if="!isEditMode" lines="2">{{ event.location || '--' }}</q-item-label>
+                                                    <q-input v-if="isEditMode" name="location" v-model="tempData.location"/>
+                                                </q-item-section>
+                                            </q-item>
+                                            <q-item>
+                                                <q-item-section>
+                                                    <q-item-label caption>Type</q-item-label>
+                                                    <q-item-label v-if="!isEditMode" lines="2">{{ event.eventtype }}</q-item-label>
+                                                    <q-select
+                                                      name="eventtype"
+                                                      v-if="isEditMode"
+                                                      v-model="tempData.eventtype"
+                                                      :options="eventTypes"
+                                                      option-value="label"
+                                                      emit-value
+                                                    />
+                                                </q-item-section>
+                                            </q-item>
+                                            <q-item>
+                                                <q-item-section>
+                                                    <q-item-label caption>Date</q-item-label>
+                                                    <q-item-label v-if="!isEditMode" lines="2">{{ event.eventdate }}</q-item-label>
+                                                    <q-input v-if="isEditMode" name="eventdate" v-model="tempData.eventdate">
+                                                        <template v-slot:append>
+                                                            <q-icon name="event" class="cursor-pointer">
+                                                                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                                                                    <q-date mask="YYYY-MM-DD" v-model="tempData.eventdate" @input="() => $refs.qDateProxy.hide()" />
+                                                                </q-popup-proxy>
+                                                            </q-icon>
+                                                        </template>
+                                                    </q-input>
+                                                </q-item-section>
+                                            </q-item>
+                                            <q-item>
+                                                <q-item-section>
+                                                    <q-item-label caption>Status</q-item-label>
+                                                    <q-item-label v-if="!isEditMode" lines="2">{{ event.status }}</q-item-label>
+                                                    <q-input v-if="isEditMode" name="status" v-model="tempData.status"/>
+                                                </q-item-section>
+                                            </q-item>
+                                        </q-list>
+                                    </form>
+                                </q-card-section>
+                            </q-card>
+                        </q-tab-panel>
+                        <q-tab-panel name="participants">
                             <q-card class="relative-position card-example">
                                 <q-card-section>
                                     <div class="text-h4 q-mb-md">Participants</div>
                                 </q-card-section>
                                 <q-table
-                                    title="Participants"
                                     :loading="loading"
                                     :filter="filter"
                                     :data="participants"
@@ -54,7 +113,6 @@
                                     :visible-columns="participantsTableVisibleColumns"
                                 >
                                     <template v-if="loading === false" v-slot:top="props">
-                                        <q-btn flat dense color="primary" :disable="loading" label="Add Participant" @click="addParticipant" />
                                         <q-space />
                                         <q-select
                                             v-model="participantsTableVisibleColumns"
@@ -83,13 +141,12 @@
                                 </q-table>
                             </q-card>
                         </q-tab-panel>
-                        <q-tab-panel name="card">
-                            <div class="text-h4 q-mb-md">Card</div>
-                            <p>Card</p>
-                        </q-tab-panel>
                         <q-tab-panel name="attendance">
-                            <div class="text-h4 q-mb-md">Attendance</div>
-                            <p>Attendance</p>
+                            <q-card class="relative-position card-example">
+                                <q-card-section>
+                                    <div class="text-h4 q-mb-md">Attendance</div>
+                                </q-card-section>
+                            </q-card>
                         </q-tab-panel>
                         <q-tab-panel name="statistic">
                             <div class="text-h4 q-mb-md">Statistic</div>
@@ -125,11 +182,16 @@
                 </template>
             </q-splitter>
         </div>
+        <q-page-sticky position="bottom-right" :offset="[18, 18]">
+            <q-btn v-if="allowed('create') && isEditMode === false" fab color="primary" :disable="loading" icon="mdi-pencil" @click="editEvent" class="q-mr-sm"/>
+            <q-btn v-if="allowed('create') && isEditMode === true" fab color="red" :disable="loading" icon="mdi-check" @click="saveEvent" class="q-mr-sm"/>
+            <q-btn v-if="allowed('create') && isEditMode === true" fab color="grey" :disable="loading" icon="mdi-cancel" @click="cancelEdit" class="q-mr-sm"/>
+        </q-page-sticky>
     </q-page>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'EventEdit',
@@ -137,8 +199,11 @@ export default {
     return {
       loading: false,
       tab: 'info',
+      tempData: {},
+      eventTypes: [],
       splitterModel: 20,
       filter: '',
+      isEditMode: false,
       participants: [],
       participantsTable: [
         { name: 'created_at', align: 'left', label: 'Created At', field: 'created_at', sortable: true },
@@ -167,32 +232,50 @@ export default {
     allowed (arr) {
       return this.userCan(arr)
     },
-    event: {
-      get () {
-        return this.currentEvent()
-      },
-      set (value) {
-        this.value = value
-      }
-    },
     computedColumns () {
       return this.participantsTable.filter((c) => this.participantsTableVisibleColumns.includes(c.name))
     }
   },
   methods: {
-    ...mapActions(['loadEvent', 'deleteEvent']),
+    ...mapActions(['loadEvent', 'loadParticipants', 'updateEvent', 'deleteEvent']),
     ...mapGetters(['currentEvent', 'userCan']),
+    ...mapState(['event']),
     loadPanel (next, prev) {
       switch (next) {
+        case 'participants':
+          this.loadParticipants(this.$route.params).then((response) => {
+            this.loading = false
+            this.participants = response.participants
+          }).catch((err) => console.log(err))
+          break
         case 'info':
         default:
           this.loadEvent(this.$route.params).then((response) => {
             this.loading = false
-            this.event = response.event
-            this.participants = response.participants
-            console.log(this.participants[0])
-          })
+            this.event = this.tempData = JSON.parse(JSON.stringify(response.event))
+            this.eventTypes = JSON.parse(JSON.stringify(response.eventTypes))
+          }).catch((err) => console.log(err))
       }
+    },
+    editEvent () {
+      this.isEditMode = true
+    },
+    saveEvent () {
+      let params = {
+        id: this.$route.params.id,
+        section: this.tab,
+        data: JSON.parse(JSON.stringify(this.event))
+      }
+      this.updateEvent(params).then((resp) => {
+        this.isEditMode = false
+      }).catch((err) => console.log(err))
+    },
+    cancelEdit () {
+      this.isEditMode = false
+    },
+    selectChanged (input) {
+      this.tempData.eventtype = this.event.eventtype
+      this.event.eventtype = input
     },
     addParticipant () {
       // tmp

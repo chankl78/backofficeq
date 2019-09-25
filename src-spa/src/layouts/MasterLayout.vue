@@ -20,12 +20,13 @@
       side="left"
       elevated
       show-if-above
+      v-if="loading === false"
     >
       <q-scroll-area class="fit">
         <q-list v-for="(menuItem, index) in menu" :key="index">
           <q-item v-if="!menuItem.expandable" clickable :to="{ name: menuItem.to }" @click="callFunc(menuItem, index)" v-ripple exact>
             <q-item-section avatar>
-              <q-icon :name="menuItem.icon" :color="menuItem.color || 'primary'" />
+              <q-icon :name="menuItem.icon" :color="currentRoute === menuItem.to ? 'primary' : 'grey-10' " />
             </q-item-section>
             <q-item-section :class="menuItem.class || ''">
                 <q-item-label lines="1">
@@ -118,6 +119,7 @@ export default {
   data () {
     return {
       drawerLeft: true,
+      loading: true,
       menu: []
     }
   },
@@ -127,6 +129,9 @@ export default {
     }),
     resourceTitle () {
       return this.$route.meta.title
+    },
+    currentRoute () {
+      return this.$route.name
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -135,6 +140,7 @@ export default {
         if (resp.status === 401) {
           vm.$router.push('/login')
         }
+        vm.loading = false
         vm.menu = vm.dashboardMenu()
       }).catch(() => {
         vm.$router.push('/login')
