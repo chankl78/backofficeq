@@ -42,7 +42,7 @@
                 </template>
             </q-table>
             <q-page-sticky position="bottom-right" :offset="[18, 18]">
-                <q-btn v-if="allowed('create')" fab color="primary" :disable="loading" icon="mdi-plus" @click="addEvent"/>
+                <q-btn v-if="allowed('create')" fab color="primary" :disable="loading" icon="mdi-plus" @click="addEvent" class="q-mr-sm"/>
             </q-page-sticky>
         </div>
     </q-page>

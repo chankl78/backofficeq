@@ -79,7 +79,9 @@ module.exports = function (ctx) {
         'QRouteTab',
         'QTabPanel',
         'QTabPanels',
-        'QInnerLoading'
+        'QInnerLoading',
+        'QDate',
+        'QPopupProxy'
       ],
 
       directives: [

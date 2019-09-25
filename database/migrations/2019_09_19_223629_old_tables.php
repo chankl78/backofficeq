@@ -243,7 +243,7 @@ class OldTables extends Migration
         Schema::create('Event_z_EventType', function($table)
         {
             $table->increments('id');
-            $table->string('value', 50);
+            $table->string('value', 50)->unique();
             $table->timestamps();
             $table->softDeletes();
         });
